@@ -4,6 +4,7 @@ Fetch Reddit posts and comments for u/IndependenceGold5902
 and generate daily markdown summaries.
 """
 
+import gzip
 import json
 import os
 import time
@@ -16,14 +17,22 @@ POSTS_DIR = "posts"
 README_PATH = "README.md"
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (research-tracker/1.0)"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Accept-Encoding": "gzip, deflate, br",
+    "DNT": "1",
+    "Connection": "keep-alive",
 }
 
 
 def fetch_json(url):
     req = urllib.request.Request(url, headers=HEADERS)
-    with urllib.request.urlopen(req, timeout=10) as resp:
-        return json.loads(resp.read().decode())
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        raw = resp.read()
+        if resp.info().get("Content-Encoding") == "gzip":
+            raw = gzip.decompress(raw)
+        return json.loads(raw.decode("utf-8"))
 
 
 def fetch_all_posts():
