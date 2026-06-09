@@ -97,6 +97,37 @@ ChatGPT 已经做到了这一点——它了解用户的完整历史、兴趣和
 
 ---
 
+### 关于：直接问 AI 它需要什么才能更好地帮助你？
+
+**原帖：** [Has anyone just asked AI what it needs to help me help it help me?](https://www.reddit.com/r/AIMemory/comments/1t8y39l/has_anyone_just_asked_ai_what_it_needs_to_help_me/) — r/AIMemory · u/Empty-Poetry8197
+
+**问题概述：**
+Flat memory.md 文件杂乱无结构；vector DB 一旦变重，相似度搜索开始把不相关的信号连接在一起，几乎等于删除数据；把 prose 强行喂给模型会偏置 context frame。作者的实验结论：**存更少的信息，反而能让模型更好地推理、回忆和综合**。他构建了一个 skill-based dynamic memory system（约 18k 行 TypeScript），模型可以写入和读取，维护在后台自动进行。
+
+**评论概述：**
+
+**u/Tricky_Animator9831：**
+噪声积累问题是真实存在的——embedding space 足够密集后，similarity score 就失去意义了。Skill-based recall 是目前看到的较好方案之一。推荐用 HydraDB 解决 capacity 问题。询问如何处理 skill 演化过程中的 schema drift。
+
+**u/Empty-Poetry8197（OP）⭐：**
+> 核心设计：type 选择 + timestamp 追踪进度和 provenance + subject/theme 标签 → 生成 subgraph。
+>
+> **关键洞察：把 memory 存成 prose/文件是错误的数据形状。** 模型每次召回都要重新 parse 整个文件。正确的形状更像是"路径"——关键词作为 waypoint，携带权重，而不是完整的叙述性文字。
+>
+> "Words carry weight" — 如果你想让模型后来能很好地记住某个输出，要思考哪些词真正重要，而不是把所有东西都写进去。
+
+**总结：**
+Memory 的数据形状比数据量更重要。Prose/文件形式的 memory 需要模型重新 parse，效率低且引入偏差。更好的方向是结构化的 waypoint（带 type、timestamp、provenance、tag）——存更少、更精确的信息，反而能带来更好的推理质量。
+
+**Takeaway / Insight：**
+1. **Memory 的数据形状比数据量更重要**：prose 文件是低效的 memory 格式，模型每次都要重新 parse
+2. **Waypoint > Narrative**：memory 应该像路径上的关键节点，而不是完整叙述——关键词携带的权重比段落更有效
+3. **存更少 = 推理更好**：反直觉但真实——减少 noise 比增加 coverage 更能提升 recall 质量
+4. **Skill-based recall** 是一个值得关注的方向：用 /skill 触发特定记忆召回，而不是把所有 context 预加载
+5. **Noise 积累是 embedding 系统的隐性风险**：dense embedding space 里相似度开始连接不相关信号，几乎等同于数据损坏
+
+---
+
 ### 关于：如何防止 AI memory 变成随机猜测？
 
 **原帖：** [how do you stop AI memory from becoming random guesses?](https://www.reddit.com/r/AIMemory/comments/1txwz9d/how_do_you_stop_ai_memory_from_becoming_random/) — r/AIMemory · u/joyal_ken_vor
