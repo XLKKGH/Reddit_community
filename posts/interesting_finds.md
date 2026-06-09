@@ -8,7 +8,7 @@ Record of posts found interesting during research. Sorted by date discovered (no
 
 ### 关于：User Memory 冷启动方式 — 慢速学习 vs 主动导入
 
-**原帖：** [is user memory supposed to be learned slowly or imported with consent?](https://www.reddit.com/r/AIMemory/) — r/AIMemory · u/joyal_ken_vor
+**原帖：** [is user memory supposed to be learned slowly or imported with consent?](https://www.reddit.com/r/AIMemory/comments/1u0nzbe/is_user_memory_supposed_to_be_learned_slowly_or/) — r/AIMemory · u/joyal_ken_vor
 
 **问题概述：**
 Memory system 从对话中慢慢学习，但前几个 session 还是太通用、没有个性化。试过 summaries、preference extraction、pinned memories，都有点效果但很慢。核心问题：AI memory 应该从用户已有的数据（consented import）开始，还是只从未来的对话里学？**什么该慢慢积累，什么该在第一天就导入？**
