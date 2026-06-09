@@ -28,6 +28,38 @@ Memory system 从对话中慢慢学习，但前几个 session 还是太通用、
 
 ---
 
+### 关于：Memory 的最佳单位是什么？Facts、Preferences 还是 Context Bundles？
+
+**原帖：** [is memory more useful as facts, preferences, or context bundles?](https://www.reddit.com/r/AIMemory/comments/1tlt7p4/is_memory_more_useful_as_facts_preferences_or/) — r/AIMemory · u/joyal_ken_vor
+
+**问题概述：**
+Memory 的"形状"比预期的重要得多。存 facts 很容易，但真正有用的是 bundled context——用户怎么工作、想避免什么、反复出现的 pattern。试过 flat preference list（丢失细节）、summaries（容易过时）、per-project memory（用户的跨项目 pattern 无法共享）。核心问题：**facts、preferences、episodes 还是别的什么，哪种 memory 单位实际效果最好？**
+
+**评论概述：**
+
+**u/FoxFire17739：**
+用 hierarchical sidecar memory：每个代码文件旁边有一个同路径的 markdown 文件做 memory，用 semantic search 检索，底层 graph 提供结构。三层叠加：structure（graph）+ semantics（search）+ domain（sidecar）。sidecar 是纯 markdown，工程师可以直接在 IDE 里看到，透明可检查。
+
+**u/Similar_Boysenberry7 ⭐：**
+> 不要过早选一种 memory 单位。Facts 适合 lookup，preferences 适合 defaults，但真正有用的是**围绕重复场景的小 bundle**：当时在做什么、哪里出错了、用户拒绝了什么、之后发生了什么变化。
+>
+> Flat list 的问题：会把一个临时的 workaround 变成"个性特征"。**Inspectable bundles + decay 比一个巨大的永久 preference 文件感觉更健康。**
+
+**u/Boring_Show_2932：**
+在 Memclaw.net 看到所有类型的 memory 都在被大量使用。关键问题：你是用 rule-based 还是 LLM 来分类这些 memory？还是分别提取 facts、preferences 等？最佳 memory 形状高度依赖具体 use case。
+
+**总结：**
+没有单一最优的 memory 单位。Facts 和 preferences 有各自的适用场景，但最有价值的往往是"情境 bundle"——记录一个完整的行为场景而非孤立的偏好。同时，memory 的可检查性和 decay 机制是防止系统"变 creepy"的关键。
+
+**Takeaway / Insight：**
+1. **Memory 的形状比内容更重要**：存什么不如怎么存——bundle 比 flat list 保留了更多可用的 context
+2. **Flat list 的隐患**：会把临时行为固化成"用户特征"，decay 机制是解药
+3. **真正有用的 memory = 场景快照**：包含意图、失败、拒绝、变化——而不只是结论
+4. **Inspectable + consent-based** 是 memory 产品的基本卫生，invisible memory 会快速变 creepy
+5. **三层架构参考**：structure（graph）+ semantics（search）+ domain（sidecar）是一个经过实战验证的组合
+
+---
+
 ### 关于：如何防止 AI memory 变成随机猜测？
 
 **原帖：** [how do you stop AI memory from becoming random guesses?](https://www.reddit.com/r/AIMemory/comments/1txwz9d/how_do_you_stop_ai_memory_from_becoming_random/) — r/AIMemory · u/joyal_ken_vor
