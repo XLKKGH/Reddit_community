@@ -186,89 +186,104 @@ def add_url():
     return jsonify({"ok": True, "post_id": post_id, "url": url})
 
 
+def _import_item(item: dict, posts: list, updated_posts: list) -> int:
+    """
+    处理一个 {post, comments/new_comments} 条目。
+    返回本次新增处理的 comment 数量。
+    """
+    post_meta    = item["post"]
+    post_id      = post_meta.get("id") or extract_post_id(post_meta.get("url", ""))
+    if not post_id:
+        return 0
+    # 兼容 batch 格式（new_comments）和单文件格式（comments）
+    raw_comments = item.get("new_comments") or item.get("all_comments") or item.get("comments") or []
+
+    existing        = find_post(posts, post_id)
+    is_first_import = existing is None
+
+    if is_first_import:
+        existing = {
+            **post_meta,
+            "added_at":     now_str(),
+            "last_checked": now_str(),
+            "has_new":      False,
+            "new_count":    0,
+            "seen_ids":     [],
+            "comments":     [],
+        }
+        posts.append(existing)
+        if post_meta.get("url"):
+            add_url_to_posts_txt(post_meta["url"])
+
+    existing_ids = {c["id"] for c in existing["comments"]}
+    flat         = flatten_comments(raw_comments)
+    new_raw      = [c for c in flat
+                    if c.get("id") and c["id"] not in existing_ids
+                    and c.get("author") not in BOTS
+                    and c.get("body") not in ("", "[deleted]", "[removed]")]
+
+    if not new_raw:
+        return 0
+
+    processed = []
+    for c in new_raw:
+        a = analyze_one(c, post_meta.get("title", ""))
+        processed.append({**c, "analysis": a, "is_new": not is_first_import})
+        time.sleep(0.4)
+
+    existing["comments"]    += processed
+    existing["seen_ids"]    += [c["id"] for c in new_raw]
+    existing["last_checked"] = now_str()
+
+    if not is_first_import and processed:
+        existing["has_new"]   = True
+        existing["new_count"] = existing.get("new_count", 0) + len(processed)
+        updated_posts.append({
+            "post_id":   post_id,
+            "title":     post_meta.get("title", ""),
+            "new_count": len(processed),
+        })
+
+    return len(processed)
+
+
 @app.route("/api/import", methods=["POST"])
 def import_batches():
     """
-    扫描 raw_comments/batch_*.json，
-    只处理新 batch（或已有 batch 里未处理的 comment）。
-    对新 comment 调 LLM，更新 data/posts.json。
+    扫描 raw_comments/ 下所有 JSON 文件：
+    - batch_*.json   → 批量文件（含 new_comments）
+    - <post_id>.json → 单帖文件（含 comments）
+    对每个未处理的 comment 调 LLM，更新 data/posts.json。
     """
-    data             = load_data()
-    posts            = data["posts"]
-    processed_batches = set(data.get("processed_batches", []))
+    data              = load_data()
+    posts             = data["posts"]
+    processed_files   = set(data.get("processed_batches", []))
 
-    batch_files = sorted(RAW_DIR.glob("batch_*.json"))
-    if not batch_files:
-        return jsonify({"message": "raw_comments/ 下没有 batch 文件", "total_new": 0})
+    # 收集所有要处理的文件
+    all_files = sorted(RAW_DIR.glob("*.json"))
+    if not all_files:
+        return jsonify({"message": "raw_comments/ 下没有文件", "total_new": 0})
 
-    total_new    = 0
+    total_new     = 0
     updated_posts = []
 
-    for batch_path in batch_files:
-        batch_name = batch_path.name
+    for file_path in all_files:
+        fname = file_path.name
+        with open(file_path, encoding="utf-8") as f:
+            content = json.load(f)
 
-        with open(batch_path, encoding="utf-8") as f:
-            batch = json.load(f)
+        if fname.startswith("batch_"):
+            # batch 文件 → list of items
+            for item in content:
+                total_new += _import_item(item, posts, updated_posts)
+        else:
+            # 单帖文件 → {"post": {...}, "comments": [...]}
+            if isinstance(content, dict) and "post" in content:
+                total_new += _import_item(content, posts, updated_posts)
 
-        for item in batch:
-            post_meta    = item["post"]
-            post_id      = post_meta.get("id") or extract_post_id(post_meta.get("url",""))
-            raw_comments = item.get("new_comments") or item.get("all_comments") or []
+        processed_files.add(fname)
 
-            existing = find_post(posts, post_id)
-            is_first_import = existing is None
-
-            if is_first_import:
-                existing = {
-                    **post_meta,
-                    "added_at":     now_str(),
-                    "last_checked": now_str(),
-                    "has_new":      False,
-                    "new_count":    0,
-                    "seen_ids":     [],
-                    "comments":     [],
-                }
-                posts.append(existing)
-                # 同步写入 posts.txt
-                if post_meta.get("url"):
-                    add_url_to_posts_txt(post_meta["url"])
-
-            # 找出还没处理的 comment
-            existing_ids = {c["id"] for c in existing["comments"]}
-            flat         = flatten_comments(raw_comments)
-            new_raw      = [c for c in flat
-                            if c.get("id") and c["id"] not in existing_ids
-                            and c.get("author") not in BOTS
-                            and c.get("body") not in ("", "[deleted]", "[removed]")]
-
-            if not new_raw:
-                continue
-
-            # LLM 处理
-            processed = []
-            for c in new_raw:
-                a = analyze_one(c, post_meta.get("title", ""))
-                processed.append({**c, "analysis": a, "is_new": not is_first_import})
-                time.sleep(0.4)
-
-            existing["comments"]    += processed
-            existing["seen_ids"]    += [c["id"] for c in new_raw]
-            existing["last_checked"] = now_str()
-
-            if not is_first_import and processed:
-                existing["has_new"]   = True
-                existing["new_count"] = existing.get("new_count", 0) + len(processed)
-                updated_posts.append({
-                    "post_id": post_id,
-                    "title":   post_meta.get("title",""),
-                    "new_count": len(processed),
-                })
-
-            total_new += len(processed)
-
-        processed_batches.add(batch_name)
-
-    data["processed_batches"] = list(processed_batches)
+    data["processed_batches"] = list(processed_files)
     save_data(data)
 
     msg = f"处理完成：{total_new} 条新评论" if total_new else "没有新内容（已全部处理过）"
