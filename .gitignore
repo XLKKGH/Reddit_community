@@ -1,0 +1,11 @@
+# Reddit credentials & session — DO NOT commit
+reddit_cookies.json
+
+# Runtime data
+seen_comments.json
+raw_comments/
+
+# Python
+__pycache__/
+*.pyc
+.env
