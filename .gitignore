@@ -4,8 +4,11 @@ reddit_cookies.json
 # Runtime data
 seen_comments.json
 raw_comments/
+processed/
+reports/
 
 # Python
 __pycache__/
 *.pyc
 .env
+.venv/

@@ -1,2 +1,2 @@
-# No external dependencies needed!
-# Uses Python standard library only (urllib, json, gzip)
+openai
+python-dotenv
