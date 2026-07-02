@@ -67,17 +67,23 @@ def call_deepseek(prompt):
         return json.loads(raw)["choices"][0]["message"]["content"].strip()
 
 
-def analyze_comment(comment, post_title):
+def analyze_comment(comment, post_title, retries=3):
     prompt = ANALYZE_PROMPT.format(
         post_title=post_title, author=comment["author"],
         score=comment["score"], body=comment["body"],
     )
-    try:
-        raw = call_deepseek(prompt).lstrip("```json").lstrip("```").rstrip("```").strip()
-        return json.loads(raw)
-    except Exception as e:
-        print(f"    [!] error: {e}")
-        return {"summary":"（失败）","takeaway":"（失败）","quality":0,"quality_reason":"error","highlight":False,"tags":[]}
+    for attempt in range(1, retries + 1):
+        try:
+            raw = call_deepseek(prompt).lstrip("```json").lstrip("```").rstrip("```").strip()
+            return json.loads(raw)
+        except Exception as e:
+            wait = attempt * 3
+            if attempt < retries:
+                print(f"    [!] 第{attempt}次失败({e.__class__.__name__})，{wait}s 后重试...", end=" ", flush=True)
+                time.sleep(wait)
+            else:
+                print(f"    [!] 最终失败: {e}")
+    return {"summary":"（失败）","takeaway":"（失败）","quality":0,"quality_reason":"error","highlight":False,"tags":[]}
 
 
 BOTS = {"AutoModerator", "reddit", "BotDefense"}
