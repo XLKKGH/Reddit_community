@@ -212,27 +212,39 @@ def import_item(db, item: dict) -> int:
 
 
 # ── LLM ───────────────────────────────────────────────────────────────────────
-SYSTEM_PROMPT = "你是 AI Agent Memory 领域研究助手，分析 Reddit 评论，提炼研究价值。"
+SYSTEM_PROMPT = """你是 AI Agent Memory 领域的资深研究助手。
+你的任务是帮助研究者快速理解 Reddit 社区对 agent memory 相关问题的真实反馈。
+你的分析要有深度、有细节，不要为了简洁而牺牲信息量。"""
 
-ANALYZE_PROMPT = """分析以下 Reddit 评论，返回 JSON（直接输出，不加代码块）：
+ANALYZE_PROMPT = """请分析以下 Reddit 评论，返回 JSON（直接输出，不加任何代码块标记）。
 
-帖子：{post_title}
+帖子标题：{post_title}
 作者：u/{author}（score: {score}）
-原文：
+评论原文（英文）：
 {body}
 
-返回格式：
+返回如下格式的 JSON：
 {{
-  "summary": "一句话概括核心观点（中文，30字以内）",
-  "takeaway": "对 agent memory 研究的核心价值（中文，50字以内）",
+  "translation": "将原文完整翻译成中文，保留所有细节和技术术语，不要省略",
+  "summary": "对这条评论内容的完整总结，可以是段落，也可以用 • 开头的 bullet points，把作者的核心观点、具体例子、技术细节都涵盖进来，不限字数",
+  "takeaway": "这条评论对 AI Agent Memory 研究的价值与启发，请用 • 开头的 bullet points，每条是一个独立洞察或值得关注的点，不限条数不限字数",
   "quality": 评分整数1-5,
-  "quality_reason": "评分理由（中文，20字以内）",
+  "quality_reason": "评分理由，说明为什么给这个分",
   "highlight": true或false,
-  "tags": ["标签"]
+  "tags": ["标签1", "标签2"]
 }}
 
-评分：5=深度洞察+真实场景 4=观点新颖或有深度 3=一般参考 2=泛泛而谈 1=无意义
-标签选1-3个：#用户痛点 #技术方案 #产品反馈 #使用场景 #哲学思考 #隐私安全 #跨平台 #记忆管理 #个性化 #工作流 #反对意见 #类比参考"""
+评分标准：
+5 = 有深度洞察 + 真实使用场景，对研究极有价值
+4 = 观点新颖、有技术深度或产品洞察，值得重点关注
+3 = 一般性观点，有一定参考价值
+2 = 泛泛而谈，内容浅薄
+1 = 无实质内容（bot 回复、纯广告、一句话废话）
+
+highlight=true 的条件：质量>=4 且 有具体洞察或真实场景
+
+标签从以下选 1-3 个：
+#用户痛点 #技术方案 #产品反馈 #使用场景 #哲学思考 #隐私安全 #跨平台 #记忆管理 #个性化 #工作流 #反对意见 #类比参考"""
 
 def call_llm(prompt: str) -> str:
     payload = json.dumps({
@@ -241,7 +253,7 @@ def call_llm(prompt: str) -> str:
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user",   "content": prompt},
         ],
-        "temperature": 0.3, "max_tokens": 300,
+        "temperature": 0.3, "max_tokens": 1500,
     }).encode()
     req = urllib.request.Request(
         f"{API_BASE}/chat/completions", data=payload,
@@ -265,11 +277,16 @@ def analyze_one(comment: dict, post_title: str, retries: int = 3) -> dict:
     for attempt in range(1, retries + 1):
         try:
             raw = call_llm(prompt).lstrip("```json").lstrip("```").rstrip("```").strip()
-            return json.loads(raw)
+            result = json.loads(raw)
+            # 兼容：takeaway/summary 可能是 list（bullet point 数组）
+            for field in ("takeaway", "summary"):
+                if isinstance(result.get(field), list):
+                    result[field] = "\n".join(result[field])
+            return result
         except Exception:
             if attempt < retries:
                 time.sleep(attempt * 3)
-    return {"summary":"（分析失败）","takeaway":"（分析失败）",
+    return {"translation":"","summary":"（分析失败）","takeaway":"（分析失败）",
             "quality":0,"quality_reason":"error","highlight":False,"tags":[]}
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -296,6 +313,7 @@ def post_to_dict(db, row) -> dict:
             "is_new":      bool(c["is_new"]),
             "analyzed":    bool(c["analyzed"]),
             "analysis": {
+                "translation":    c["translation"] or "",
                 "summary":        c["summary"] or "",
                 "takeaway":       c["takeaway"] or "",
                 "quality":        c["quality"] or 0,
@@ -488,11 +506,11 @@ def analyze():
         with get_db() as db:
             db.execute("""
                 UPDATE comments SET
-                    analyzed=1, summary=?, takeaway=?, quality=?,
+                    analyzed=1, translation=?, summary=?, takeaway=?, quality=?,
                     quality_reason=?, highlight=?, tags=?
                 WHERE id=?
             """, (
-                a.get("summary"), a.get("takeaway"), a.get("quality"),
+                a.get("translation"), a.get("summary"), a.get("takeaway"), a.get("quality"),
                 a.get("quality_reason"), 1 if a.get("highlight") else 0,
                 tags_json, row["id"],
             ))

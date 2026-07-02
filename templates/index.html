@@ -104,9 +104,12 @@ a{color:#3b82f6;text-decoration:none}a:hover{text-decoration:underline}
 .c-date{color:#94a3b8;font-size:.73rem;margin-left:auto}
 .c-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px}
 .tag{padding:2px 6px;border-radius:10px;font-size:.68rem;font-weight:500}
-.c-analysis{display:flex;flex-direction:column;gap:4px;margin-bottom:7px}
-.c-row{display:flex;gap:6px;font-size:.81rem}
-.c-label{color:#64748b;min-width:42px;flex-shrink:0}
+.c-score-txt{font-size:.76rem;color:#64748b}
+.c-block{margin:8px 0;padding:10px 12px;border-radius:7px;background:white;border:1px solid #e9ecef}
+.c-block-takeaway{background:#f0fdf4;border-color:#bbf7d0}
+.c-block-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+  color:#94a3b8;margin-bottom:5px}
+.c-block-body{font-size:.86rem;color:#1e293b;line-height:1.75}
 details.body-wrap summary{cursor:pointer;color:#6b7280;font-size:.78rem;padding:3px 0;user-select:none}
 details.body-wrap summary:hover{color:#374151}
 .body-text{margin-top:6px;padding:10px;background:white;border-radius:6px;
@@ -207,6 +210,12 @@ function switchTab(tab){
   renderPosts();
 }
 
+// 把 • 换行文本渲染成 html（支持 bullet points 和普通段落）
+function renderRich(text){
+  if(!text) return "";
+  return esc(text).replace(/\n/g,"<br>");
+}
+
 function renderComment(c){
   const a=c.analysis;
   if(!c.analyzed||!a){
@@ -218,7 +227,7 @@ function renderComment(c){
         <span class="c-pending">待分析</span>
         <span class="c-date">${tsDate(c.created_utc)}</span>
       </div>
-      <details class="body-wrap"><summary>查看原文</summary>
+      <details class="body-wrap"><summary>查看英文原文</summary>
         <div class="body-text">${esc(c.body)}</div></details>
     </div>`;
   }
@@ -229,17 +238,34 @@ function renderComment(c){
       <span class="c-score">▲ ${c.score}</span>
       ${c.is_new?'<span class="c-new">NEW</span>':""}
       ${a.highlight?'<span class="c-hl">⭐ 精选</span>':""}
-      <span class="c-stars">${stars(a.quality||0)}</span>
+      <span class="c-stars" title="${a.quality||0}/5">${stars(a.quality||0)}</span>
+      <span class="c-score-txt">${a.quality||0}/5 — ${esc(a.quality_reason||"")}</span>
       <span class="c-date">${tsDate(c.created_utc)}</span>
     </div>
-    <div class="c-tags">${tagHtml(a.tags)}</div>
-    <div class="c-analysis">
-      <div class="c-row"><span class="c-label">📝 摘要</span><span>${esc(a.summary||"")}</span></div>
-      <div class="c-row"><span class="c-label">💡 价值</span><span>${esc(a.takeaway||"")}</span></div>
-      <div class="c-row"><span class="c-label">🎯 评分</span><span>${a.quality||0}/5 — ${esc(a.quality_reason||"")}</span></div>
-    </div>
-    <details class="body-wrap"><summary>查看原文</summary>
-      <div class="body-text">${esc(c.body)}</div></details>
+    ${(a.tags||[]).length ? `<div class="c-tags">${tagHtml(a.tags)}</div>` : ""}
+
+    ${a.translation ? `
+    <div class="c-block">
+      <div class="c-block-title">🌐 中文翻译</div>
+      <div class="c-block-body">${renderRich(a.translation)}</div>
+    </div>` : ""}
+
+    ${a.summary ? `
+    <div class="c-block">
+      <div class="c-block-title">📝 评论总结</div>
+      <div class="c-block-body">${renderRich(a.summary)}</div>
+    </div>` : ""}
+
+    ${a.takeaway ? `
+    <div class="c-block c-block-takeaway">
+      <div class="c-block-title">💡 Key Takeaway</div>
+      <div class="c-block-body">${renderRich(a.takeaway)}</div>
+    </div>` : ""}
+
+    <details class="body-wrap">
+      <summary>查看英文原文</summary>
+      <div class="body-text">${esc(c.body)}</div>
+    </details>
   </div>`;
 }
 
