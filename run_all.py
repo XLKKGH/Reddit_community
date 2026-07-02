@@ -1,44 +1,29 @@
 #!/usr/bin/env python3
 """
-One-command pipeline: fetch new comments -> LLM process -> generate HTML report.
+One-command pipeline:
+  python3 run_all.py
 
-Usage:
-    python3 run_all.py            # fetch + incremental process + report
-    python3 run_all.py --no-fetch # skip fetching, just process + report
-    python3 run_all.py --full     # reprocess all comments (ignores seen cache)
+Flow: fetch → process → generate HTML report
 """
+import sys, subprocess
+from pathlib import Path
 
-import argparse
-import subprocess
-import sys
-
-
-def run(cmd: list) -> None:
-    print(f"\n$ {' '.join(cmd)}")
-    result = subprocess.run(cmd)
-    if result.returncode != 0:
-        print(f"[!] Command failed: {' '.join(cmd)}")
-        sys.exit(result.returncode)
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--no-fetch", action="store_true", help="skip fetch_reddit_playwright.py")
-    parser.add_argument("--full", action="store_true", help="reprocess all comments with the LLM")
-    args = parser.parse_args()
-
-    py = sys.executable
-
-    if not args.no_fetch:
-        run([py, "fetch_reddit_playwright.py"])
-
-    process_cmd = [py, "process_comments.py"]
-    if args.full:
-        process_cmd.append("--full")
-    run(process_cmd)
-
-    run([py, "generate_report.py"])
-
+def run(cmd):
+    print(f"\n{'='*50}\n▶ {' '.join(cmd)}\n{'='*50}")
+    r = subprocess.run(cmd, check=True)
+    return r
 
 if __name__ == "__main__":
-    main()
+    # Step 1: fetch new comments
+    run([sys.executable, "fetch_reddit_playwright.py"])
+
+    # Step 2: process latest batch with DeepSeek
+    batch = sorted(Path("raw_comments").glob("batch_*.json"), reverse=True)[0]
+    run([sys.executable, "process_comments.py", str(batch)])
+
+    # Step 3: generate HTML report
+    processed = sorted(Path("processed").glob("batch_*.json"), reverse=True)[0]
+    run([sys.executable, "generate_report.py", str(processed)])
+
+    report = sorted(Path("reports").glob("report_*.html"), reverse=True)[0]
+    print(f"\n🎉 Done! Open your report:\n   open {report}")

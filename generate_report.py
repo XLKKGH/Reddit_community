@@ -1,174 +1,204 @@
 #!/usr/bin/env python3
 """
-Build a single self-contained HTML report from processed/*.json.
-No server needed — open the file directly or send it to your boss.
-
-Usage:
-    python3 generate_report.py
+Step 3: Generate HTML report from processed comments.
+Reads:  processed/batch_YYYY-MM-DD.json
+Writes: reports/report_YYYY-MM-DD.html
 """
 
-import html
-import json
-from datetime import datetime, timezone
+import json, os, sys
 from pathlib import Path
+from datetime import datetime, timezone
 
-PROCESSED_DIR = Path("processed")
-REPORTS_DIR = Path("reports")
-MANIFEST_FILE = PROCESSED_DIR / "last_run_new_ids.json"
+OUTPUT_DIR = "reports"
 
-CSS = """
-body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-       max-width: 900px; margin: 0 auto; padding: 24px; color: #1a1a1a; background: #fafafa; }
-header.report-header { background: #1a1a2e; color: white; padding: 24px; border-radius: 10px; margin-bottom: 24px; }
-header.report-header h1 { margin: 0 0 8px 0; font-size: 22px; }
-header.report-header .stats { color: #c9c9d9; font-size: 14px; }
-h2.section-title { border-left: 4px solid #4a4ae0; padding-left: 10px; margin-top: 36px; }
-.card { background: white; border: 1px solid #e5e5ea; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
-.card.highlight { border-left: 4px solid #f5a623; }
-.card .meta { font-size: 13px; color: #888; margin-bottom: 6px; }
-.card .meta .author { font-weight: 600; color: #333; }
-.card .tag { display: inline-block; background: #eef0ff; color: #4a4ae0; font-size: 12px;
-             padding: 2px 8px; border-radius: 10px; margin-right: 4px; }
-.card .summary { font-size: 15px; margin: 6px 0; }
-.card .takeaway { font-size: 14px; color: #555; background: #fbf7ea; padding: 8px 10px; border-radius: 6px; }
-.card details { margin-top: 8px; font-size: 13px; color: #666; }
-.card details summary { cursor: pointer; color: #4a4ae0; }
-.card .quality-badge { display: inline-block; font-size: 12px; padding: 1px 6px; border-radius: 4px;
-                        background: #eee; margin-left: 6px; }
-.post-block { margin-top: 28px; }
-.post-block .post-title { font-size: 17px; font-weight: 600; }
-.post-block .post-meta { font-size: 13px; color: #888; margin-bottom: 12px; }
-.new-badge { color: #d9480f; font-weight: 600; }
-"""
+def ts_to_str(ts):
+    if not ts: return ""
+    return datetime.fromtimestamp(ts, tz=timezone.utc).strftime("%Y-%m-%d")
 
+def quality_stars(q):
+    return "★" * q + "☆" * (5 - q)
 
-def load_processed() -> list:
-    posts = []
-    for path in sorted(PROCESSED_DIR.glob("*.json")):
-        if path.name in ("seen_llm.json", "last_run_new_ids.json"):
-            continue
-        with open(path) as f:
-            posts.append(json.load(f))
-    return posts
+def tag_html(tags):
+    colors = {
+        "#用户痛点":  "#ef4444", "#技术方案":  "#3b82f6", "#产品反馈":  "#8b5cf6",
+        "#使用场景":  "#10b981", "#哲学思考":  "#f59e0b", "#隐私安全":  "#6366f1",
+        "#跨平台":    "#14b8a6", "#记忆管理":  "#ec4899", "#个性化":    "#84cc16",
+        "#工作流":    "#f97316", "#反对意见":  "#dc2626", "#类比参考":  "#0ea5e9",
+    }
+    html = ""
+    for t in (tags or []):
+        color = colors.get(t, "#6b7280")
+        html += f'<span class="tag" style="background:{color}20;color:{color};border:1px solid {color}40">{t}</span>'
+    return html
 
-
-def load_manifest() -> dict:
-    if MANIFEST_FILE.exists():
-        with open(MANIFEST_FILE) as f:
-            return json.load(f)
-    return {}
-
-
-def e(s) -> str:
-    return html.escape(str(s), quote=True)
-
-
-def render_comment_card(c: dict, new_ids: set, show_post_link: bool = False, post=None) -> str:
-    is_new = c["id"] in new_ids
-    highlight_class = " highlight" if c.get("highlight") else ""
-    tags_html = "".join(f'<span class="tag">#{e(t)}</span>' for t in c.get("tags", []))
-    new_badge = ' <span class="new-badge">🆕</span>' if is_new else ""
-    star = "⭐ " if c.get("highlight") else ""
-
-    post_link_html = ""
-    if show_post_link and post:
-        post_link_html = f'<div class="meta">来自：<a href="{e(post["url"])}" target="_blank">{e(post["title"][:50])}</a></div>'
-
+def comment_card(c, is_highlight=False):
+    a   = c.get("analysis", {})
+    cls = "comment-card highlight-card" if is_highlight else "comment-card"
+    q   = a.get("quality", 0)
     return f"""
-    <div class="card{highlight_class}">
-      {post_link_html}
-      <div class="meta">
-        {star}<span class="author">u/{e(c['author'])}</span>
-        · score {e(c.get('score', 0))}
-        <span class="quality-badge">quality {e(c.get('quality', '-'))}</span>
-        {new_badge}
-        {tags_html}
+    <div class="{cls}">
+      <div class="comment-header">
+        <span class="author">u/{c['author']}</span>
+        <span class="score">▲ {c['score']}</span>
+        {'<span class="highlight-badge">⭐ 精选</span>' if is_highlight else ''}
+        <span class="quality-stars" title="质量评分 {q}/5">{quality_stars(q)}</span>
+        <span class="date">{ts_to_str(c.get('created_utc'))}</span>
       </div>
-      <div class="summary">📝 {e(c.get('summary', ''))}</div>
-      <div class="takeaway">💡 {e(c.get('takeaway', ''))}</div>
-      <details>
-        <summary>原文 / 打分理由</summary>
-        <p>{e(c.get('body', ''))}</p>
-        <p><em>打分理由：{e(c.get('quality_reason', ''))}</em></p>
+      <div class="tags">{tag_html(a.get('tags', []))}</div>
+      <div class="analysis-row">
+        <div class="analysis-item"><span class="label">📝 摘要</span><span>{a.get('summary','')}</span></div>
+        <div class="analysis-item"><span class="label">💡 价值</span><span>{a.get('takeaway','')}</span></div>
+        <div class="analysis-item"><span class="label">🎯 评分</span><span>{q}/5 — {a.get('quality_reason','')}</span></div>
+      </div>
+      <details class="body-details">
+        <summary>查看原文</summary>
+        <div class="body-text">{c['body'].replace('<','&lt;').replace('>','&gt;').replace(chr(10),'<br>')}</div>
       </details>
-    </div>
-    """
+    </div>"""
 
+def generate_html(processed_path):
+    with open(processed_path) as f:
+        data = json.load(f)
 
-def render_report(posts: list, manifest: dict) -> str:
-    total_comments = sum(len(p["comments"]) for p in posts)
-    all_highlights = []
-    for p in posts:
-        for c in p["comments"]:
-            if c.get("highlight"):
-                all_highlights.append((c, p["post"]))
-    all_highlights.sort(key=lambda x: (x[0].get("quality", 0), x[0].get("score", 0)), reverse=True)
+    date_str      = Path(processed_path).stem.replace("batch_", "")
+    total_new     = sum(x["new_count"] for x in data)
+    total_posts   = len(data)
+    total_hl      = sum(x["highlight_count"] for x in data)
+    all_highlights = [c for x in data for c in x["processed_comments"] if c["analysis"].get("highlight")]
+    all_highlights.sort(key=lambda c: c["analysis"].get("quality", 0), reverse=True)
 
-    date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-
-    parts = [f"<!DOCTYPE html><html><head><meta charset='utf-8'>",
-             f"<title>Reddit Research Report {date_str}</title>",
-             f"<style>{CSS}</style></head><body>"]
-
-    parts.append(f"""
-    <header class="report-header">
-      <h1>📊 Reddit Research Report</h1>
-      <div class="stats">{date_str} | {len(posts)} posts | {total_comments} comments | ⭐ {len(all_highlights)} highlighted</div>
-    </header>
-    """)
-
+    # ── Highlights section ──────────────────────────────────
+    hl_html = ""
     if all_highlights:
-        parts.append('<h2 class="section-title">⭐ Highlights</h2>')
-        for c, post in all_highlights:
-            new_ids = set(manifest.get(post["id"], []))
-            parts.append(render_comment_card(c, new_ids, show_post_link=True, post=post))
+        hl_html = '<section class="section highlights-section"><h2>⭐ 精选评论</h2>'
+        for c in all_highlights:
+            hl_html += comment_card(c, is_highlight=True)
+        hl_html += '</section>'
 
-    for p in posts:
-        post = p["post"]
-        comments = p["comments"]
-        new_ids = set(manifest.get(post["id"], []))
-        new_count = len(new_ids)
-        highlight_count = sum(1 for c in comments if c.get("highlight"))
+    # ── Per-post sections ───────────────────────────────────
+    posts_html = ""
+    for item in data:
+        post = item["post"]
+        pcs  = item["processed_comments"]
+        non_hl = [c for c in pcs if not c["analysis"].get("highlight")]
 
-        parts.append(f"""
-        <div class="post-block">
-          <h2 class="section-title">{e(post['title'])}</h2>
-          <div class="post-meta">
-            <a href="{e(post['url'])}" target="_blank">r/{e(post['subreddit'])}</a>
-            · 总评论 {len(comments)} 条
-            · 新增 {new_count} 条
-            · ⭐ {highlight_count} 条高亮
+        posts_html += f"""
+        <section class="section post-section">
+          <div class="post-header">
+            <h2><a href="{post['url']}" target="_blank">{post['title']}</a></h2>
+            <div class="post-meta">
+              <span>r/{post['subreddit']}</span>
+              <span>▲ {post.get('score',0)}</span>
+              <span>💬 {item['total_comments']} 条评论</span>
+              <span>🆕 {item['new_count']} 条新增</span>
+              {'<span class="hl-badge">⭐ ' + str(item['highlight_count']) + ' 条精选</span>' if item['highlight_count'] else ''}
+            </div>
           </div>
-        """)
-        for c in sorted(comments, key=lambda x: x.get("score", 0), reverse=True):
-            parts.append(render_comment_card(c, new_ids))
-        parts.append("</div>")
+        """
+        if pcs:
+            posts_html += '<div class="comments-list">'
+            for c in non_hl:
+                posts_html += comment_card(c)
+            posts_html += '</div>'
+        else:
+            posts_html += '<p class="no-comments">暂无新评论</p>'
+        posts_html += '</section>'
 
-    parts.append("</body></html>")
-    return "\n".join(parts)
+    html = f"""<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reddit Research Report — {date_str}</title>
+<style>
+  * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+  body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+         background: #f8fafc; color: #1e293b; line-height: 1.6; }}
+  a {{ color: #3b82f6; text-decoration: none; }}
+  a:hover {{ text-decoration: underline; }}
 
+  .header {{ background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+             color: white; padding: 40px 48px; }}
+  .header h1 {{ font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; }}
+  .header-meta {{ display: flex; gap: 24px; margin-top: 16px; flex-wrap: wrap; }}
+  .stat {{ background: rgba(255,255,255,0.1); border-radius: 8px;
+           padding: 10px 18px; text-align: center; }}
+  .stat-num {{ font-size: 1.5rem; font-weight: 700; display: block; }}
+  .stat-label {{ font-size: 0.75rem; opacity: 0.8; }}
 
-def main():
-    if not PROCESSED_DIR.exists():
-        print(f"[!] {PROCESSED_DIR}/ not found — run process_comments.py first")
-        return
+  .container {{ max-width: 900px; margin: 0 auto; padding: 32px 24px; }}
+  .section {{ background: white; border-radius: 12px; padding: 24px;
+              margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }}
 
-    posts = load_processed()
-    if not posts:
-        print(f"[!] No processed posts found in {PROCESSED_DIR}/")
-        return
+  .highlights-section {{ border: 2px solid #fbbf24; background: #fffbeb; }}
+  .highlights-section h2 {{ color: #d97706; margin-bottom: 20px; font-size: 1.1rem; }}
 
-    manifest = load_manifest()
-    report_html = render_report(posts, manifest)
+  .post-header {{ margin-bottom: 20px; }}
+  .post-header h2 {{ font-size: 1.05rem; font-weight: 600; margin-bottom: 8px; }}
+  .post-meta {{ display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.8rem; color: #64748b; }}
+  .hl-badge {{ background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 12px; }}
 
-    REPORTS_DIR.mkdir(exist_ok=True)
-    date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    out_path = REPORTS_DIR / f"report_{date_str}.html"
-    with open(out_path, "w", encoding="utf-8") as f:
-        f.write(report_html)
+  .comment-card {{ border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;
+                   margin-bottom: 12px; background: #f8fafc; }}
+  .highlight-card {{ background: #fffbeb; border-color: #fcd34d; }}
 
-    print(f"[+] Report written to {out_path}")
+  .comment-header {{ display: flex; align-items: center; gap: 10px;
+                     flex-wrap: wrap; margin-bottom: 8px; }}
+  .author {{ font-weight: 600; color: #1e40af; font-size: 0.9rem; }}
+  .score {{ color: #ef4444; font-size: 0.85rem; font-weight: 600; }}
+  .highlight-badge {{ background: #fbbf24; color: white; padding: 2px 8px;
+                      border-radius: 12px; font-size: 0.75rem; font-weight: 600; }}
+  .quality-stars {{ color: #f59e0b; font-size: 0.85rem; letter-spacing: 1px; }}
+  .date {{ color: #94a3b8; font-size: 0.78rem; margin-left: auto; }}
+
+  .tags {{ margin-bottom: 10px; display: flex; gap: 6px; flex-wrap: wrap; }}
+  .tag {{ padding: 2px 8px; border-radius: 12px; font-size: 0.72rem; font-weight: 500; }}
+
+  .analysis-row {{ display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }}
+  .analysis-item {{ display: flex; gap: 8px; font-size: 0.85rem; }}
+  .label {{ color: #64748b; min-width: 48px; flex-shrink: 0; }}
+
+  .body-details summary {{ cursor: pointer; color: #6b7280; font-size: 0.82rem;
+                            padding: 4px 0; user-select: none; }}
+  .body-details summary:hover {{ color: #374151; }}
+  .body-text {{ margin-top: 8px; padding: 12px; background: white; border-radius: 6px;
+               border: 1px solid #e5e7eb; font-size: 0.85rem; color: #374151;
+               white-space: pre-wrap; }}
+
+  .comments-list {{ margin-top: 4px; }}
+  .no-comments {{ color: #94a3b8; font-size: 0.88rem; padding: 8px 0; }}
+  .footer {{ text-align: center; color: #94a3b8; font-size: 0.78rem; padding: 24px 0; }}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🧠 Reddit Research Report</h1>
+  <p style="opacity:0.7;font-size:0.9rem">u/IndependenceGold5902 · {date_str}</p>
+  <div class="header-meta">
+    <div class="stat"><span class="stat-num">{total_posts}</span><span class="stat-label">帖子</span></div>
+    <div class="stat"><span class="stat-num">{total_new}</span><span class="stat-label">新评论</span></div>
+    <div class="stat"><span class="stat-num" style="color:#fbbf24">{total_hl}</span><span class="stat-label">⭐ 精选</span></div>
+  </div>
+</div>
+
+<div class="container">
+  {hl_html}
+  {posts_html}
+</div>
+
+<div class="footer">Auto-generated · {date_str}</div>
+</body>
+</html>"""
+
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    out = str(Path(OUTPUT_DIR) / f"report_{date_str}.html")
+    with open(out, "w", encoding="utf-8") as f:
+        f.write(html)
+    print(f"✅ Report → {out}")
+    return out
 
 
 if __name__ == "__main__":
-    main()
+    bp = sys.argv[1] if len(sys.argv) > 1 else str(sorted(Path("processed").glob("batch_*.json"), reverse=True)[0])
+    generate_html(bp)
