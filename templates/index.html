@@ -164,14 +164,13 @@ details.body-wrap summary:hover{color:#374151}
   </div>
 </div>
 
-<div class="container" id="container">
-  <div class="empty-state" id="emptyState">
-    <div class="icon">📭</div>
-    <p>还没有数据<br><br>
-    另一台电脑 fetch + git push → 这台 git pull<br>
-    → 「导入 raw_comments」→「LLM 分析」</p>
-  </div>
+<div class="empty-state" id="emptyState" style="display:none">
+  <div class="icon">📭</div>
+  <p>还没有数据<br><br>
+  另一台电脑 fetch + git push → 这台 git pull<br>
+  → 「导入 raw_comments」→「LLM 分析」</p>
 </div>
+<div class="container" id="container"></div>
 
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-box">
@@ -288,17 +287,23 @@ function renderPost(p){
 }
 
 function renderPosts(){
-  const ct=document.getElementById("container");
-  const em=document.getElementById("emptyState");
+  const ct = document.getElementById("container");
+  const em = document.getElementById("emptyState");
   const visible = currentTab==="all" ? allPosts : allPosts.filter(p=>p.category===currentTab);
+  const hasPending = (allPosts._pending||[]).length > 0;
 
-  if(!visible.length && !allPosts.pending_urls?.length){
-    ct.innerHTML="";ct.appendChild(em);em.style.display="block";return;
+  if(!visible.length && !hasPending){
+    em.style.display="block"; ct.style.display="none"; return;
   }
-  em.style.display="none";
+  em.style.display="none"; ct.style.display="block";
 
-  // group by category for "all" tab
   let html="";
+  // pending section (only on 'all' tab)
+  if(currentTab==="all" && hasPending){
+    html+=`<div class="pending-section"><h3>⏳ 等待抓取</h3>`+
+      allPosts._pending.map(u=>`<div class="pending-item"><span class="pending-dot"></span><a href="${u}" target="_blank">${u}</a></div>`).join("")+
+      `</div>`;
+  }
   if(currentTab==="all"){
     ["memory","knowledge_base","skills"].forEach(cat=>{
       const ps=allPosts.filter(p=>p.category===cat);
@@ -322,11 +327,11 @@ function updateCounts(posts){
 }
 
 function renderAll({posts, pending_urls, total_unanalyzed}){
-  allPosts=posts||[];
-  // update badge
-  const badge=document.getElementById("unanalyzedBadge");
-  badge.textContent=total_unanalyzed;
-  badge.style.display=total_unanalyzed>0?"inline-block":"none";
+  allPosts = posts || [];
+  allPosts._pending = pending_urls || [];
+  const badge = document.getElementById("unanalyzedBadge");
+  badge.textContent = total_unanalyzed;
+  badge.style.display = total_unanalyzed > 0 ? "inline-block" : "none";
   updateCounts(allPosts);
   renderPosts();
 }
