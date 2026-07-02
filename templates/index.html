@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reddit Research Tracker</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+       background: #f1f5f9; color: #1e293b; min-height: 100vh; }
+
+/* ── Header ── */
+.header { background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+          color: white; padding: 24px 32px; }
+.header h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 16px; }
+.header h1 span { color: #60a5fa; }
+
+.add-form { display: flex; gap: 10px; max-width: 700px; }
+.add-form input { flex: 1; padding: 10px 14px; border-radius: 8px; border: none;
+                  font-size: 0.9rem; background: rgba(255,255,255,0.12);
+                  color: white; outline: none; }
+.add-form input::placeholder { color: rgba(255,255,255,0.45); }
+.add-form input:focus { background: rgba(255,255,255,0.2); }
+.btn { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer;
+       font-size: 0.88rem; font-weight: 600; transition: all .15s; }
+.btn-primary { background: #3b82f6; color: white; }
+.btn-primary:hover { background: #2563eb; }
+.btn-refresh { background: rgba(255,255,255,0.15); color: white; }
+.btn-refresh:hover { background: rgba(255,255,255,0.25); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.header-actions { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+.toast { font-size: 0.82rem; padding: 6px 12px; border-radius: 6px;
+         background: rgba(255,255,255,0.1); display: none; }
+.toast.show { display: inline-block; }
+.toast.success { background: rgba(34,197,94,0.25); color: #86efac; }
+.toast.error   { background: rgba(239,68,68,0.25);  color: #fca5a5; }
+
+/* ── Content ── */
+.container { max-width: 860px; margin: 28px auto; padding: 0 20px; }
+
+.empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
+.empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+.empty-state p { font-size: 0.95rem; }
+
+/* ── Post Card ── */
+.post-card { background: white; border-radius: 12px; margin-bottom: 16px;
+             box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; }
+.post-card.has-new { border-left: 4px solid #ef4444; }
+
+.post-header { padding: 18px 20px; cursor: pointer; user-select: none;
+               display: flex; align-items: flex-start; gap: 12px; }
+.post-header:hover { background: #f8fafc; }
+
+.post-badge { min-width: 42px; }
+.new-badge { background: #ef4444; color: white; font-size: 0.68rem;
+             font-weight: 700; padding: 3px 7px; border-radius: 12px; letter-spacing: .5px; }
+.sub-badge { font-size: 0.75rem; color: #64748b; font-weight: 500; }
+
+.post-info { flex: 1; }
+.post-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 6px;
+              color: #1e293b; line-height: 1.4; }
+.post-title a { color: inherit; text-decoration: none; }
+.post-title a:hover { color: #3b82f6; }
+.post-meta { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.78rem; color: #64748b; }
+.post-meta .hl { color: #d97706; font-weight: 600; }
+.post-meta .newc { color: #ef4444; font-weight: 600; }
+
+.post-toggle { color: #94a3b8; font-size: 1rem; transition: transform .2s; padding-top: 2px; }
+.post-card.open .post-toggle { transform: rotate(180deg); }
+
+/* ── Comments ── */
+.comments-body { border-top: 1px solid #f1f5f9; padding: 16px 20px;
+                 display: none; }
+.post-card.open .comments-body { display: block; }
+.no-comments { color: #94a3b8; font-size: 0.85rem; padding: 8px 0; }
+
+.section-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+                 letter-spacing: .8px; color: #94a3b8; margin: 12px 0 8px; }
+
+/* ── Comment Card ── */
+.comment-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px;
+                margin-bottom: 10px; background: #f8fafc; }
+.comment-card.is-new { background: #fff7ed; border-color: #fed7aa; }
+.comment-card.is-highlight { background: #fffbeb; border-color: #fcd34d; }
+
+.c-header { display: flex; flex-wrap: wrap; align-items: center;
+            gap: 8px; margin-bottom: 8px; }
+.c-author { font-weight: 600; color: #1e40af; font-size: 0.88rem; }
+.c-score  { color: #ef4444; font-size: 0.8rem; font-weight: 600; }
+.c-new    { background: #ef4444; color: white; font-size: 0.65rem;
+            font-weight: 700; padding: 2px 6px; border-radius: 10px; }
+.c-hl     { background: #fbbf24; color: white; font-size: 0.65rem;
+            font-weight: 700; padding: 2px 6px; border-radius: 10px; }
+.c-stars  { color: #f59e0b; font-size: 0.8rem; }
+.c-date   { color: #94a3b8; font-size: 0.75rem; margin-left: auto; }
+
+.c-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+.tag { padding: 2px 7px; border-radius: 10px; font-size: 0.7rem; font-weight: 500; }
+
+.c-analysis { display: flex; flex-direction: column; gap: 5px; margin-bottom: 8px; }
+.c-row { display: flex; gap: 6px; font-size: 0.83rem; }
+.c-label { color: #64748b; min-width: 42px; flex-shrink: 0; }
+
+details.body-wrap summary { cursor: pointer; color: #6b7280; font-size: 0.8rem;
+                             padding: 3px 0; user-select: none; }
+details.body-wrap summary:hover { color: #374151; }
+.body-text { margin-top: 6px; padding: 10px; background: white; border-radius: 6px;
+             border: 1px solid #e5e7eb; font-size: 0.82rem; color: #374151;
+             line-height: 1.6; white-space: pre-wrap; }
+
+/* ── Post actions ── */
+.post-actions { display: flex; gap: 8px; padding: 0 20px 14px;
+                justify-content: flex-end; }
+.btn-sm { padding: 5px 12px; font-size: 0.78rem; border-radius: 6px;
+          border: 1px solid #e2e8f0; background: white; cursor: pointer;
+          color: #64748b; transition: all .15s; }
+.btn-sm:hover { border-color: #94a3b8; color: #374151; }
+.btn-sm.danger:hover { border-color: #ef4444; color: #ef4444; }
+.btn-sm.mark-read { border-color: #3b82f6; color: #3b82f6; }
+
+/* ── Loading overlay ── */
+.loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+                   display: flex; align-items: center; justify-content: center;
+                   z-index: 100; display: none; }
+.loading-box { background: white; border-radius: 12px; padding: 32px 40px;
+               text-align: center; }
+.spinner { width: 36px; height: 36px; border: 3px solid #e2e8f0;
+           border-top-color: #3b82f6; border-radius: 50%;
+           animation: spin .7s linear infinite; margin: 0 auto 14px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { color: #64748b; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🧠 Reddit Research <span>Tracker</span></h1>
+  <div class="add-form">
+    <input id="urlInput" type="text" placeholder="粘贴 Reddit 帖子 URL..." />
+    <button class="btn btn-primary" onclick="addPost()">＋ 添加并分析</button>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-refresh" onclick="refresh()">🔄 检查所有更新</button>
+    <span class="toast" id="toast"></span>
+  </div>
+</div>
+
+<div class="container" id="container">
+  <div class="empty-state" id="emptyState">
+    <div class="icon">📭</div>
+    <p>还没有追踪任何帖子<br>粘贴 Reddit 帖子 URL 开始追踪</p>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loadingText">正在处理，请稍候…</div>
+  </div>
+</div>
+
+<script>
+// ── tag colors ────────────────────────────────────────────────────────────────
+const TAG_COLORS = {
+  "#用户痛点": "#ef4444", "#技术方案": "#3b82f6", "#产品反馈": "#8b5cf6",
+  "#使用场景": "#10b981", "#哲学思考": "#f59e0b", "#隐私安全": "#6366f1",
+  "#跨平台":   "#14b8a6", "#记忆管理": "#ec4899", "#个性化":   "#84cc16",
+  "#工作流":   "#f97316", "#反对意见": "#dc2626", "#类比参考": "#0ea5e9",
+};
+
+function tagHtml(tags = []) {
+  return tags.map(t => {
+    const c = TAG_COLORS[t] || "#6b7280";
+    return `<span class="tag" style="background:${c}20;color:${c};border:1px solid ${c}40">${t}</span>`;
+  }).join("");
+}
+
+function stars(q) {
+  return "★".repeat(q) + "☆".repeat(5 - q);
+}
+
+function tsToDate(ts) {
+  if (!ts) return "";
+  return new Date(ts * 1000).toISOString().slice(0, 10);
+}
+
+// ── render ────────────────────────────────────────────────────────────────────
+function renderComment(c) {
+  const a   = c.analysis || {};
+  const cls = [
+    "comment-card",
+    c.is_new      ? "is-new"       : "",
+    a.highlight   ? "is-highlight" : "",
+  ].filter(Boolean).join(" ");
+
+  return `
+  <div class="comment-card ${cls}" id="c-${c.id}">
+    <div class="c-header">
+      <span class="c-author">u/${c.author}</span>
+      <span class="c-score">▲ ${c.score}</span>
+      ${c.is_new    ? '<span class="c-new">NEW</span>' : ""}
+      ${a.highlight ? '<span class="c-hl">⭐ 精选</span>' : ""}
+      <span class="c-stars" title="${a.quality || 0}/5">${stars(a.quality || 0)}</span>
+      <span class="c-date">${tsToDate(c.created_utc)}</span>
+    </div>
+    <div class="c-tags">${tagHtml(a.tags)}</div>
+    <div class="c-analysis">
+      <div class="c-row"><span class="c-label">📝 摘要</span><span>${a.summary || ""}</span></div>
+      <div class="c-row"><span class="c-label">💡 价值</span><span>${a.takeaway || ""}</span></div>
+      <div class="c-row"><span class="c-label">🎯 评分</span><span>${a.quality || 0}/5 — ${a.quality_reason || ""}</span></div>
+    </div>
+    <details class="body-wrap">
+      <summary>查看原文</summary>
+      <div class="body-text">${escHtml(c.body)}</div>
+    </details>
+  </div>`;
+}
+
+function renderPost(p) {
+  const highlights = (p.comments || []).filter(c => c.analysis?.highlight);
+  const newComments = (p.comments || []).filter(c => c.is_new);
+  const regular    = (p.comments || []).filter(c => !c.is_new);
+
+  let commentsHtml = "";
+  if (!p.comments || p.comments.length === 0) {
+    commentsHtml = '<p class="no-comments">暂无已分析的评论</p>';
+  } else {
+    if (newComments.length) {
+      commentsHtml += `<div class="section-label">🆕 新增评论 (${newComments.length})</div>`;
+      commentsHtml += newComments.map(renderComment).join("");
+    }
+    if (highlights.filter(c => !c.is_new).length) {
+      commentsHtml += `<div class="section-label">⭐ 精选</div>`;
+      commentsHtml += highlights.filter(c => !c.is_new).map(renderComment).join("");
+    }
+    const others = regular.filter(c => !c.analysis?.highlight);
+    if (others.length) {
+      commentsHtml += `<div class="section-label">所有评论</div>`;
+      commentsHtml += others.map(renderComment).join("");
+    }
+  }
+
+  return `
+  <div class="post-card ${p.has_new ? "has-new" : ""}" id="post-${p.id}">
+    <div class="post-header" onclick="togglePost('${p.id}')">
+      <div class="post-badge">
+        ${p.has_new
+          ? `<span class="new-badge">NEW ${p.new_count}</span>`
+          : `<span class="sub-badge">r/${p.subreddit}</span>`}
+      </div>
+      <div class="post-info">
+        <div class="post-title">
+          <a href="${p.url}" target="_blank" onclick="e=>e.stopPropagation()">${escHtml(p.title)}</a>
+        </div>
+        <div class="post-meta">
+          ${p.has_new ? `<span>r/${p.subreddit}</span>` : ""}
+          <span>▲ ${p.score}</span>
+          <span>💬 ${p.num_comments} 条</span>
+          ${highlights.length ? `<span class="hl">⭐ ${highlights.length} 精选</span>` : ""}
+          ${p.has_new ? `<span class="newc">🆕 ${p.new_count} 条新评论</span>` : ""}
+          <span>最后检查: ${p.last_checked}</span>
+        </div>
+      </div>
+      <div class="post-toggle">▼</div>
+    </div>
+    <div class="comments-body">${commentsHtml}</div>
+    <div class="post-actions">
+      ${p.has_new ? `<button class="btn-sm mark-read" onclick="markRead('${p.id}')">✓ 标为已读</button>` : ""}
+      <button class="btn-sm danger" onclick="deletePost('${p.id}')">🗑 停止追踪</button>
+    </div>
+  </div>`;
+}
+
+function renderAll(posts) {
+  const container = document.getElementById("container");
+  const empty     = document.getElementById("emptyState");
+  if (!posts || posts.length === 0) {
+    container.innerHTML = "";
+    container.appendChild(empty);
+    empty.style.display = "block";
+    return;
+  }
+  empty.style.display = "none";
+  // Sort: has_new first, then by last_checked
+  posts.sort((a, b) => (b.has_new ? 1 : 0) - (a.has_new ? 1 : 0));
+  container.innerHTML = posts.map(renderPost).join("");
+}
+
+function togglePost(id) {
+  const card = document.getElementById(`post-${id}`);
+  card.classList.toggle("open");
+}
+
+// ── API calls ─────────────────────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function showLoading(text) {
+  document.getElementById("loadingText").textContent = text;
+  document.getElementById("loadingOverlay").style.display = "flex";
+}
+
+function hideLoading() {
+  document.getElementById("loadingOverlay").style.display = "none";
+}
+
+function showToast(msg, type = "success") {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = `toast show ${type}`;
+  setTimeout(() => t.className = "toast", 4000);
+}
+
+async function loadPosts() {
+  const res   = await fetch("/api/posts");
+  const posts = await res.json();
+  renderAll(posts);
+}
+
+async function addPost() {
+  const input = document.getElementById("urlInput");
+  const url   = input.value.trim();
+  if (!url) return;
+
+  showLoading("正在抓取帖子并分析评论，请稍候…（每条评论约需 3-5 秒）");
+  try {
+    const res  = await fetch("/api/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url }),
+    });
+    const data = await res.json();
+    if (data.error) { showToast(data.error, "error"); return; }
+    input.value = "";
+    await loadPosts();
+    showToast(`✓ 已添加「${data.title?.slice(0, 30)}…」`);
+  } catch (e) {
+    showToast("请求失败: " + e.message, "error");
+  } finally {
+    hideLoading();
+  }
+}
+
+async function refresh() {
+  showLoading("正在检查所有帖子的新评论…");
+  try {
+    const res  = await fetch("/api/refresh", { method: "POST" });
+    const data = await res.json();
+    if (data.error) { showToast(data.error, "error"); return; }
+    await loadPosts();
+    if (data.updated?.length) {
+      showToast(`🔴 ${data.updated.length} 个帖子有新评论！`);
+    } else {
+      showToast("✓ 没有新评论");
+    }
+  } catch (e) {
+    showToast("请求失败: " + e.message, "error");
+  } finally {
+    hideLoading();
+  }
+}
+
+async function markRead(postId) {
+  await fetch(`/api/clear-new/${postId}`, { method: "POST" });
+  await loadPosts();
+}
+
+async function deletePost(postId) {
+  if (!confirm("停止追踪这个帖子？数据将被删除。")) return;
+  await fetch(`/api/delete/${postId}`, { method: "DELETE" });
+  await loadPosts();
+  showToast("已移除");
+}
+
+// Enter key to add
+document.getElementById("urlInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") addPost();
+});
+
+// Init
+loadPosts();
+</script>
+</body>
+</html>
