@@ -13,7 +13,7 @@ import urllib.request
 import urllib.error
 
 USERNAME = "IndependenceGold5902"
-POSTS_DIR = "posts"
+POSTS_DIR = "memory_kb_post"
 README_PATH = "README.md"
 
 HEADERS = {
@@ -174,7 +174,7 @@ def generate_readme(posts_meta):
         title = p["title"][:60] + ("..." if len(p["title"]) > 60 else "")
         score = p["score"]
         num_comments = p["num_comments"]
-        filename = f"posts/{p['id']}_{date}.md"
+        filename = f"{POSTS_DIR}/{p['id']}_{date}.md"
         lines.append(f"| {date} | r/{subreddit} | [{title}]({filename}) | {score} | {num_comments} |")
 
     lines.append("")
