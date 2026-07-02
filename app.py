@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
-Reddit Research Tracker — Flask Web App
+Reddit Research Tracker — Flask + SQLite
 
-两台电脑分工：
-  另一台电脑：运行 fetch_reddit_playwright.py → 生成 raw_comments/batch_*.json → git push
-  这台 Mac：git pull → 网页点「导入」→ DeepSeek 处理 → 展示
+架构：
+  另一台电脑：fetch → raw_comments/*.json → git push
+  这台 Mac：  git pull → 「导入 DB」→ 「LLM 分析」→ 网页展示
 """
 
-import json, os, re, time, gzip, ssl, urllib.request
+import json, os, re, time, gzip, ssl, sqlite3, urllib.request
 from pathlib import Path
 from datetime import datetime, timezone
+from contextlib import contextmanager
 from flask import Flask, request, jsonify, render_template
 from dotenv import load_dotenv
 
@@ -17,12 +18,12 @@ load_dotenv()
 app = Flask(__name__)
 
 # ── config ────────────────────────────────────────────────────────────────────
-DATA_FILE    = "data/posts.json"
-POSTS_TXT    = "posts.txt"
-RAW_DIR      = Path("raw_comments")
-API_KEY      = os.getenv("DEEPSEEK_API_KEY")
-API_BASE     = os.getenv("DEEPSEEK_API_BASE", "https://api.deepseek.com/v1")
-MODEL        = os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
+DB_FILE   = "data/research.db"
+POSTS_TXT = "posts.txt"
+RAW_DIR   = Path("raw_comments")
+API_KEY   = os.getenv("DEEPSEEK_API_KEY")
+API_BASE  = os.getenv("DEEPSEEK_API_BASE", "https://api.deepseek.com/v1")
+MODEL     = os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
 
 SSL_CTX = ssl.create_default_context()
 SSL_CTX.check_hostname = False
@@ -30,32 +31,66 @@ SSL_CTX.verify_mode    = ssl.CERT_NONE
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-# ── data helpers ──────────────────────────────────────────────────────────────
-def load_data() -> dict:
-    """Returns {"posts": [...], "processed_batches": [...]}"""
-    if Path(DATA_FILE).exists():
-        with open(DATA_FILE, encoding="utf-8") as f:
-            d = json.load(f)
-            # 兼容旧格式（list）
-            if isinstance(d, list):
-                return {"posts": d, "processed_batches": []}
-            return d
-    return {"posts": [], "processed_batches": []}
+# ── SQLite helpers ────────────────────────────────────────────────────────────
+@contextmanager
+def get_db():
+    Path(DB_FILE).parent.mkdir(exist_ok=True)
+    conn = sqlite3.connect(DB_FILE)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA journal_mode=WAL")
+    try:
+        yield conn
+        conn.commit()
+    finally:
+        conn.close()
 
-def save_data(data: dict):
-    Path(DATA_FILE).parent.mkdir(exist_ok=True)
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+def init_db():
+    with get_db() as db:
+        db.executescript("""
+        CREATE TABLE IF NOT EXISTS posts (
+            id           TEXT PRIMARY KEY,
+            title        TEXT,
+            subreddit    TEXT,
+            url          TEXT,
+            score        INTEGER,
+            selftext     TEXT,
+            num_comments INTEGER,
+            created_utc  REAL,
+            added_at     TEXT,
+            last_checked TEXT
+        );
 
-def find_post(posts: list, post_id: str):
-    return next((p for p in posts if p["id"] == post_id), None)
+        CREATE TABLE IF NOT EXISTS comments (
+            id             TEXT PRIMARY KEY,
+            post_id        TEXT NOT NULL,
+            author         TEXT,
+            body           TEXT,
+            score          INTEGER,
+            depth          INTEGER DEFAULT 0,
+            created_utc    REAL,
+            is_new         INTEGER DEFAULT 0,
+            analyzed       INTEGER DEFAULT 0,
+            summary        TEXT,
+            takeaway       TEXT,
+            quality        INTEGER,
+            quality_reason TEXT,
+            highlight      INTEGER DEFAULT 0,
+            tags           TEXT,
+            FOREIGN KEY (post_id) REFERENCES posts(id)
+        );
 
-def now_str() -> str:
+        CREATE TABLE IF NOT EXISTS imported_files (
+            filename    TEXT PRIMARY KEY,
+            imported_at TEXT
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_comments_post   ON comments(post_id);
+        CREATE INDEX IF NOT EXISTS idx_comments_unanalyzed ON comments(analyzed);
+        """)
+
+def now_str():
     return datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-
-def extract_post_id(url: str) -> str:
-    m = re.search(r"/comments/([a-z0-9]+)", url)
-    return m.group(1) if m else ""
+# ─────────────────────────────────────────────────────────────────────────────
 
 
 # ── posts.txt helpers ─────────────────────────────────────────────────────────
@@ -66,15 +101,102 @@ def load_tracked_urls() -> list:
         return [l.strip() for l in f if l.strip() and not l.startswith("#")]
 
 def add_url_to_posts_txt(url: str):
-    existing = load_tracked_urls()
-    if url not in existing:
+    if url not in load_tracked_urls():
         with open(POSTS_TXT, "a", encoding="utf-8") as f:
             f.write(url + "\n")
 
+def extract_post_id(url: str) -> str:
+    m = re.search(r"/comments/([a-z0-9]+)", url)
+    return m.group(1) if m else ""
+# ─────────────────────────────────────────────────────────────────────────────
 
-# ── LLM ───────────────────────────────────────────────────────────────────────
+
+# ── JSON → DB import ──────────────────────────────────────────────────────────
 BOTS = {"AutoModerator", "reddit", "BotDefense", "Snooful"}
 
+def flatten_comments(comments: list) -> list:
+    out = []
+    def _f(cs):
+        for c in cs:
+            out.append(c)
+            _f(c.get("replies", []))
+    _f(comments)
+    return out
+
+def import_item(db, item: dict) -> int:
+    """Insert one post + its comments into DB. Returns number of new comments added."""
+    post_meta = item["post"]
+    post_id   = post_meta.get("id") or extract_post_id(post_meta.get("url", ""))
+    if not post_id:
+        return 0
+
+    raw = item.get("new_comments") or item.get("all_comments") or item.get("comments") or []
+
+    # Upsert post (keep existing added_at if already there)
+    existing = db.execute("SELECT added_at FROM posts WHERE id=?", (post_id,)).fetchone()
+    added_at  = existing["added_at"] if existing else now_str()
+    db.execute("""
+        INSERT INTO posts (id, title, subreddit, url, score, selftext, num_comments,
+                           created_utc, added_at, last_checked)
+        VALUES (?,?,?,?,?,?,?,?,?,?)
+        ON CONFLICT(id) DO UPDATE SET
+            score=excluded.score, num_comments=excluded.num_comments,
+            last_checked=excluded.last_checked
+    """, (
+        post_id,
+        post_meta.get("title", ""),
+        post_meta.get("subreddit", ""),
+        post_meta.get("url", ""),
+        post_meta.get("score", 0),
+        post_meta.get("selftext", ""),
+        post_meta.get("num_comments", 0),
+        post_meta.get("created_utc"),
+        added_at,
+        now_str(),
+    ))
+
+    if post_meta.get("url"):
+        add_url_to_posts_txt(post_meta["url"])
+
+    # Check if this post already had comments (determines is_new flag)
+    has_existing = db.execute(
+        "SELECT 1 FROM comments WHERE post_id=? LIMIT 1", (post_id,)
+    ).fetchone() is not None
+
+    flat    = flatten_comments(raw)
+    new_cnt = 0
+    for c in flat:
+        cid    = c.get("id", "")
+        body   = c.get("body", "").strip()
+        author = c.get("author", "unknown")
+
+        if not cid or not body or author in BOTS:
+            continue
+        if body in ("[deleted]", "[removed]"):
+            continue
+
+        rows = db.execute("SELECT 1 FROM comments WHERE id=?", (cid,)).fetchone()
+        if rows:
+            continue  # already imported
+
+        is_new = 1 if has_existing else 0
+        db.execute("""
+            INSERT INTO comments (id, post_id, author, body, score, depth,
+                                  created_utc, is_new, analyzed)
+            VALUES (?,?,?,?,?,?,?,?,0)
+        """, (
+            cid, post_id, author, body,
+            c.get("score", 0), c.get("depth", 0),
+            c.get("created_utc"),
+            is_new,
+        ))
+        new_cnt += 1
+
+    return new_cnt
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+# ── LLM ───────────────────────────────────────────────────────────────────────
 SYSTEM_PROMPT = "你是 AI Agent Memory 领域研究助手，分析 Reddit 评论，提炼研究价值。"
 
 ANALYZE_PROMPT = """分析以下 Reddit 评论，返回 JSON（直接输出，不加代码块）：
@@ -118,29 +240,77 @@ def call_llm(prompt: str) -> str:
             raw = gzip.decompress(raw)
         return json.loads(raw)["choices"][0]["message"]["content"].strip()
 
-def analyze_one(comment: dict, post_title: str, retries=3) -> dict:
+def analyze_one(comment: dict, post_title: str, retries: int = 3) -> dict:
     prompt = ANALYZE_PROMPT.format(
-        post_title=post_title, author=comment["author"],
-        score=comment["score"], body=comment["body"],
+        post_title=post_title,
+        author=comment["author"],
+        score=comment["score"],
+        body=comment["body"],
     )
     for attempt in range(1, retries + 1):
         try:
             raw = call_llm(prompt).lstrip("```json").lstrip("```").rstrip("```").strip()
             return json.loads(raw)
-        except Exception as e:
+        except Exception:
             if attempt < retries:
                 time.sleep(attempt * 3)
     return {"summary":"（分析失败）","takeaway":"（分析失败）",
             "quality":0,"quality_reason":"error","highlight":False,"tags":[]}
+# ─────────────────────────────────────────────────────────────────────────────
 
-def flatten_comments(comments: list) -> list:
-    out = []
-    def _f(cs):
-        for c in cs:
-            out.append(c)
-            _f(c.get("replies", []))
-    _f(comments)
-    return out
+
+# ── API data helpers ──────────────────────────────────────────────────────────
+def post_to_dict(db, row) -> dict:
+    """Build full post dict with comments for API response."""
+    post_id = row["id"]
+    comments_rows = db.execute("""
+        SELECT * FROM comments WHERE post_id=?
+        ORDER BY is_new DESC, quality DESC, score DESC
+    """, (post_id,)).fetchall()
+
+    comments = []
+    for c in comments_rows:
+        tags = json.loads(c["tags"]) if c["tags"] else []
+        comments.append({
+            "id":          c["id"],
+            "author":      c["author"],
+            "body":        c["body"],
+            "score":       c["score"],
+            "depth":       c["depth"],
+            "created_utc": c["created_utc"],
+            "is_new":      bool(c["is_new"]),
+            "analyzed":    bool(c["analyzed"]),
+            "analysis": {
+                "summary":        c["summary"] or "",
+                "takeaway":       c["takeaway"] or "",
+                "quality":        c["quality"] or 0,
+                "quality_reason": c["quality_reason"] or "",
+                "highlight":      bool(c["highlight"]),
+                "tags":           tags,
+            } if c["analyzed"] else None,
+        })
+
+    new_count = sum(1 for c in comments if c["is_new"])
+    hl_count  = sum(1 for c in comments if c.get("analysis") and c["analysis"]["highlight"])
+    unanalyzed = sum(1 for c in comments if not c["analyzed"])
+
+    return {
+        "id":           row["id"],
+        "title":        row["title"],
+        "subreddit":    row["subreddit"],
+        "url":          row["url"],
+        "score":        row["score"],
+        "num_comments": row["num_comments"],
+        "created_utc":  row["created_utc"],
+        "added_at":     row["added_at"],
+        "last_checked": row["last_checked"],
+        "has_new":      new_count > 0,
+        "new_count":    new_count,
+        "hl_count":     hl_count,
+        "unanalyzed":   unanalyzed,
+        "comments":     comments,
+    }
+# ─────────────────────────────────────────────────────────────────────────────
 
 
 # ── Flask routes ──────────────────────────────────────────────────────────────
@@ -148,25 +318,26 @@ def flatten_comments(comments: list) -> list:
 def index():
     return render_template("index.html")
 
+
 @app.route("/api/posts", methods=["GET"])
 def get_posts():
-    data = load_data()
-    # 附上 pending_urls（在 posts.txt 里但还没 import 的）
-    tracked_ids = {p["id"] for p in data["posts"]}
-    pending = [
-        u for u in load_tracked_urls()
-        if extract_post_id(u) not in tracked_ids
-    ]
-    return jsonify({"posts": data["posts"], "pending_urls": pending})
+    with get_db() as db:
+        posts_rows = db.execute(
+            "SELECT * FROM posts ORDER BY last_checked DESC"
+        ).fetchall()
+        posts = [post_to_dict(db, r) for r in posts_rows]
+
+    tracked_ids = {p["id"] for p in posts}
+    pending     = [u for u in load_tracked_urls()
+                   if extract_post_id(u) not in tracked_ids]
+
+    total_unanalyzed = sum(p["unanalyzed"] for p in posts)
+    return jsonify({"posts": posts, "pending_urls": pending,
+                    "total_unanalyzed": total_unanalyzed})
 
 
 @app.route("/api/add", methods=["POST"])
 def add_url():
-    """
-    只把 URL 写入 posts.txt，不连 Reddit。
-    另一台电脑下次 git pull + 跑 fetch 脚本后会生成 batch，
-    这台 Mac 再 import 就有数据了。
-    """
     url = request.json.get("url", "").strip()
     if not url:
         return jsonify({"error": "URL 不能为空"}), 400
@@ -174,151 +345,129 @@ def add_url():
         return jsonify({"error": "请输入有效的 Reddit 帖子 URL"}), 400
 
     post_id = extract_post_id(url)
-    data    = load_data()
-    if find_post(data["posts"], post_id):
-        return jsonify({"error": "该帖子已在追踪列表中"}), 400
+    with get_db() as db:
+        if db.execute("SELECT 1 FROM posts WHERE id=?", (post_id,)).fetchone():
+            return jsonify({"error": "该帖子已在追踪列表中"}), 400
 
-    tracked = load_tracked_urls()
-    if url in tracked:
+    if url in load_tracked_urls():
         return jsonify({"error": "该 URL 已在 posts.txt 中"}), 400
 
     add_url_to_posts_txt(url)
-    return jsonify({"ok": True, "post_id": post_id, "url": url})
-
-
-def _import_item(item: dict, posts: list, updated_posts: list) -> int:
-    """
-    处理一个 {post, comments/new_comments} 条目。
-    返回本次新增处理的 comment 数量。
-    """
-    post_meta    = item["post"]
-    post_id      = post_meta.get("id") or extract_post_id(post_meta.get("url", ""))
-    if not post_id:
-        return 0
-    # 兼容 batch 格式（new_comments）和单文件格式（comments）
-    raw_comments = item.get("new_comments") or item.get("all_comments") or item.get("comments") or []
-
-    existing        = find_post(posts, post_id)
-    is_first_import = existing is None
-
-    if is_first_import:
-        existing = {
-            **post_meta,
-            "added_at":     now_str(),
-            "last_checked": now_str(),
-            "has_new":      False,
-            "new_count":    0,
-            "seen_ids":     [],
-            "comments":     [],
-        }
-        posts.append(existing)
-        if post_meta.get("url"):
-            add_url_to_posts_txt(post_meta["url"])
-
-    existing_ids = {c["id"] for c in existing["comments"]}
-    flat         = flatten_comments(raw_comments)
-    new_raw      = [c for c in flat
-                    if c.get("id") and c["id"] not in existing_ids
-                    and c.get("author") not in BOTS
-                    and c.get("body") not in ("", "[deleted]", "[removed]")]
-
-    if not new_raw:
-        return 0
-
-    processed = []
-    for c in new_raw:
-        a = analyze_one(c, post_meta.get("title", ""))
-        processed.append({**c, "analysis": a, "is_new": not is_first_import})
-        time.sleep(0.4)
-
-    existing["comments"]    += processed
-    existing["seen_ids"]    += [c["id"] for c in new_raw]
-    existing["last_checked"] = now_str()
-
-    if not is_first_import and processed:
-        existing["has_new"]   = True
-        existing["new_count"] = existing.get("new_count", 0) + len(processed)
-        updated_posts.append({
-            "post_id":   post_id,
-            "title":     post_meta.get("title", ""),
-            "new_count": len(processed),
-        })
-
-    return len(processed)
+    return jsonify({"ok": True, "post_id": post_id})
 
 
 @app.route("/api/import", methods=["POST"])
-def import_batches():
+def import_json():
     """
-    扫描 raw_comments/ 下所有 JSON 文件：
-    - batch_*.json   → 批量文件（含 new_comments）
-    - <post_id>.json → 单帖文件（含 comments）
-    对每个未处理的 comment 调 LLM，更新 data/posts.json。
+    扫描 raw_comments/*.json → 写入 SQLite（增量，已导入的跳过）。
+    快速操作，不调 LLM。
     """
-    data              = load_data()
-    posts             = data["posts"]
-    processed_files   = set(data.get("processed_batches", []))
-
-    # 收集所有要处理的文件
-    all_files = sorted(RAW_DIR.glob("*.json"))
+    all_files = sorted(RAW_DIR.glob("*.json")) if RAW_DIR.exists() else []
     if not all_files:
-        return jsonify({"message": "raw_comments/ 下没有文件", "total_new": 0})
+        return jsonify({"message": "raw_comments/ 下没有文件", "new_comments": 0})
 
-    total_new     = 0
-    updated_posts = []
+    total_new = 0
+    new_posts  = 0
 
-    for file_path in all_files:
-        fname = file_path.name
-        with open(file_path, encoding="utf-8") as f:
-            content = json.load(f)
+    with get_db() as db:
+        imported = {r[0] for r in db.execute("SELECT filename FROM imported_files").fetchall()}
 
-        if fname.startswith("batch_"):
-            # batch 文件 → list of items
-            for item in content:
-                total_new += _import_item(item, posts, updated_posts)
-        else:
-            # 单帖文件 → {"post": {...}, "comments": [...]}
-            if isinstance(content, dict) and "post" in content:
-                total_new += _import_item(content, posts, updated_posts)
+        for fpath in all_files:
+            fname = fpath.name
+            if fname in imported:
+                continue  # already done
 
-        processed_files.add(fname)
+            with open(fpath, encoding="utf-8") as f:
+                content = json.load(f)
 
-    data["processed_batches"] = list(processed_files)
-    save_data(data)
+            items = content if isinstance(content, list) else [content]
+            for item in items:
+                if "post" not in item:
+                    continue
+                pid     = item["post"].get("id","")
+                is_first = not db.execute("SELECT 1 FROM posts WHERE id=?", (pid,)).fetchone()
+                cnt     = import_item(db, item)
+                total_new += cnt
+                if is_first and cnt > 0:
+                    new_posts += 1
 
-    msg = f"处理完成：{total_new} 条新评论" if total_new else "没有新内容（已全部处理过）"
+            db.execute("INSERT OR IGNORE INTO imported_files VALUES (?,?)",
+                       (fname, now_str()))
+
+    unanalyzed = 0
+    with get_db() as db:
+        unanalyzed = db.execute(
+            "SELECT COUNT(*) FROM comments WHERE analyzed=0"
+        ).fetchone()[0]
+
     return jsonify({
-        "message":      msg,
-        "total_new":    total_new,
-        "updated_posts": updated_posts,
+        "message":    f"导入完成：新增 {total_new} 条评论，{new_posts} 个新帖子",
+        "new_comments": total_new,
+        "new_posts":    new_posts,
+        "unanalyzed":   unanalyzed,
     })
+
+
+@app.route("/api/analyze", methods=["POST"])
+def analyze():
+    """
+    SELECT analyzed=0 → LLM → UPDATE。
+    慢操作，仅处理未分析的。
+    """
+    with get_db() as db:
+        rows = db.execute("""
+            SELECT c.*, p.title as post_title
+            FROM comments c JOIN posts p ON c.post_id = p.id
+            WHERE c.analyzed = 0
+            ORDER BY c.is_new DESC, c.score DESC
+        """).fetchall()
+
+    if not rows:
+        return jsonify({"message": "没有待分析的评论", "analyzed": 0})
+
+    done = 0
+    for row in rows:
+        a = analyze_one(
+            {"author": row["author"], "score": row["score"], "body": row["body"]},
+            row["post_title"],
+        )
+        tags_json = json.dumps(a.get("tags", []), ensure_ascii=False)
+        with get_db() as db:
+            db.execute("""
+                UPDATE comments SET
+                    analyzed=1, summary=?, takeaway=?, quality=?,
+                    quality_reason=?, highlight=?, tags=?
+                WHERE id=?
+            """, (
+                a.get("summary"), a.get("takeaway"), a.get("quality"),
+                a.get("quality_reason"), 1 if a.get("highlight") else 0,
+                tags_json, row["id"],
+            ))
+        done += 1
+        time.sleep(0.4)
+
+    return jsonify({"message": f"分析完成：{done} 条评论", "analyzed": done})
 
 
 @app.route("/api/clear-new/<post_id>", methods=["POST"])
 def clear_new(post_id):
-    data = load_data()
-    post = find_post(data["posts"], post_id)
-    if post:
-        post["has_new"]   = False
-        post["new_count"] = 0
-        for c in post.get("comments", []):
-            c["is_new"] = False
-        save_data(data)
+    with get_db() as db:
+        db.execute("UPDATE comments SET is_new=0 WHERE post_id=?", (post_id,))
     return jsonify({"ok": True})
 
 
 @app.route("/api/delete/<post_id>", methods=["DELETE"])
 def delete_post(post_id):
-    data         = load_data()
-    data["posts"] = [p for p in data["posts"] if p["id"] != post_id]
-    save_data(data)
-    # 同步从 posts.txt 移除
-    urls = load_tracked_urls()
-    urls = [u for u in urls if extract_post_id(u) != post_id]
+    with get_db() as db:
+        db.execute("DELETE FROM comments WHERE post_id=?", (post_id,))
+        db.execute("DELETE FROM posts WHERE id=?", (post_id,))
+    # 从 posts.txt 移除
+    urls = [u for u in load_tracked_urls() if extract_post_id(u) != post_id]
     with open(POSTS_TXT, "w", encoding="utf-8") as f:
         f.write("\n".join(urls) + ("\n" if urls else ""))
     return jsonify({"ok": True})
 
 
 if __name__ == "__main__":
+    init_db()
     app.run(debug=True, port=5001)

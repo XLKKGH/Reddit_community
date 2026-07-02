@@ -9,7 +9,6 @@
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f1f5f9;color:#1e293b;min-height:100vh}
 a{color:#3b82f6;text-decoration:none}a:hover{text-decoration:underline}
 
-/* header */
 .header{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%);color:white;padding:24px 32px}
 .header h1{font-size:1.4rem;font-weight:700;margin-bottom:16px}
 .header h1 span{color:#60a5fa}
@@ -20,68 +19,67 @@ a{color:#3b82f6;text-decoration:none}a:hover{text-decoration:underline}
 .add-form input:focus{background:rgba(255,255,255,.2)}
 .btn{padding:10px 18px;border:none;border-radius:8px;cursor:pointer;font-size:.88rem;font-weight:600;transition:all .15s}
 .btn-primary{background:#3b82f6;color:white}.btn-primary:hover{background:#2563eb}
-.btn-import{background:#10b981;color:white}.btn-import:hover{background:#059669}
+.btn-import{background:#0ea5e9;color:white}.btn-import:hover{background:#0284c7}
+.btn-analyze{background:#8b5cf6;color:white;position:relative}.btn-analyze:hover{background:#7c3aed}
 .btn:disabled{opacity:.5;cursor:not-allowed}
-.header-actions{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
-.hint{font-size:.78rem;color:rgba(255,255,255,.5);margin-left:4px}
+.badge{position:absolute;top:-7px;right:-7px;background:#ef4444;color:white;
+  border-radius:10px;font-size:.65rem;font-weight:700;padding:1px 6px;min-width:18px;text-align:center}
 
-/* toast */
+.header-actions{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+.divider{width:1px;height:24px;background:rgba(255,255,255,.2);margin:0 2px}
+
 .toast{font-size:.82rem;padding:6px 12px;border-radius:6px;background:rgba(255,255,255,.1);display:none}
 .toast.show{display:inline-block}
 .toast.success{background:rgba(34,197,94,.25);color:#86efac}
 .toast.error{background:rgba(239,68,68,.25);color:#fca5a5}
 .toast.info{background:rgba(59,130,246,.25);color:#93c5fd}
 
-/* container */
 .container{max-width:860px;margin:28px auto;padding:0 20px}
 .empty-state{text-align:center;padding:60px 20px;color:#94a3b8}
 .empty-state .icon{font-size:3rem;margin-bottom:12px}
 
-/* pending section */
 .pending-section{background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;
   padding:16px 20px;margin-bottom:20px}
 .pending-section h3{font-size:.85rem;color:#d97706;font-weight:600;margin-bottom:10px}
 .pending-item{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.82rem;color:#92400e}
-.pending-item .dot{width:6px;height:6px;border-radius:50%;background:#fbbf24;flex-shrink:0}
+.pending-dot{width:6px;height:6px;border-radius:50%;background:#fbbf24;flex-shrink:0}
 
-/* post card */
 .post-card{background:white;border-radius:12px;margin-bottom:16px;
   box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden}
 .post-card.has-new{border-left:4px solid #ef4444}
-.post-header{padding:18px 20px;cursor:pointer;user-select:none;
-  display:flex;align-items:flex-start;gap:12px}
+.post-header{padding:18px 20px;cursor:pointer;user-select:none;display:flex;align-items:flex-start;gap:12px}
 .post-header:hover{background:#f8fafc}
-.post-badge{min-width:44px}
+.post-badge{min-width:44px;padding-top:2px}
 .new-badge{background:#ef4444;color:white;font-size:.68rem;font-weight:700;
   padding:3px 7px;border-radius:12px;letter-spacing:.5px;white-space:nowrap}
 .sub-badge{font-size:.75rem;color:#64748b;font-weight:500}
 .post-info{flex:1}
 .post-title{font-size:.95rem;font-weight:600;margin-bottom:6px;color:#1e293b;line-height:1.4}
-.post-title a{color:inherit}
-.post-title a:hover{color:#3b82f6}
+.post-title a{color:inherit}.post-title a:hover{color:#3b82f6}
 .post-meta{display:flex;flex-wrap:wrap;gap:10px;font-size:.78rem;color:#64748b}
 .post-meta .hl{color:#d97706;font-weight:600}
 .post-meta .newc{color:#ef4444;font-weight:600}
+.post-meta .unanalyzed{color:#8b5cf6;font-weight:600}
 .post-toggle{color:#94a3b8;font-size:1rem;transition:transform .2s;padding-top:2px}
 .post-card.open .post-toggle{transform:rotate(180deg)}
 
-/* comments */
 .comments-body{border-top:1px solid #f1f5f9;padding:16px 20px;display:none}
 .post-card.open .comments-body{display:block}
 .no-comments{color:#94a3b8;font-size:.85rem;padding:8px 0}
 .section-label{font-size:.72rem;font-weight:700;text-transform:uppercase;
   letter-spacing:.8px;color:#94a3b8;margin:12px 0 8px}
 
-/* comment card */
 .comment-card{border:1px solid #e2e8f0;border-radius:8px;padding:14px;
   margin-bottom:10px;background:#f8fafc}
 .comment-card.is-new{background:#fff7ed;border-color:#fed7aa}
 .comment-card.is-highlight{background:#fffbeb;border-color:#fcd34d}
+.comment-card.not-analyzed{background:#f5f3ff;border-color:#ddd6fe;opacity:.85}
 .c-header{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px}
 .c-author{font-weight:600;color:#1e40af;font-size:.88rem}
 .c-score{color:#ef4444;font-size:.8rem;font-weight:600}
 .c-new{background:#ef4444;color:white;font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:10px}
 .c-hl{background:#fbbf24;color:white;font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:10px}
+.c-pending{background:#8b5cf6;color:white;font-size:.65rem;font-weight:600;padding:2px 6px;border-radius:10px}
 .c-stars{color:#f59e0b;font-size:.8rem}
 .c-date{color:#94a3b8;font-size:.75rem;margin-left:auto}
 .c-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
@@ -94,7 +92,6 @@ details.body-wrap summary:hover{color:#374151}
 .body-text{margin-top:6px;padding:10px;background:white;border-radius:6px;
   border:1px solid #e5e7eb;font-size:.82rem;color:#374151;line-height:1.6;white-space:pre-wrap}
 
-/* post actions */
 .post-actions{display:flex;gap:8px;padding:0 20px 14px;justify-content:flex-end}
 .btn-sm{padding:5px 12px;font-size:.78rem;border-radius:6px;border:1px solid #e2e8f0;
   background:white;cursor:pointer;color:#64748b;transition:all .15s}
@@ -102,14 +99,13 @@ details.body-wrap summary:hover{color:#374151}
 .btn-sm.danger:hover{border-color:#ef4444;color:#ef4444}
 .btn-sm.mark-read{border-color:#3b82f6;color:#3b82f6}
 
-/* loading */
 .loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);
   display:none;align-items:center;justify-content:center;z-index:100}
-.loading-box{background:white;border-radius:12px;padding:32px 40px;text-align:center;min-width:260px}
+.loading-box{background:white;border-radius:12px;padding:32px 40px;text-align:center;min-width:280px}
 .spinner{width:36px;height:36px;border:3px solid #e2e8f0;border-top-color:#3b82f6;
   border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{color:#64748b;font-size:.9rem}
+.loading-text{color:#374151;font-size:.95rem;font-weight:600}
 .loading-sub{color:#94a3b8;font-size:.78rem;margin-top:6px}
 </style>
 </head>
@@ -118,12 +114,16 @@ details.body-wrap summary:hover{color:#374151}
 <div class="header">
   <h1>🧠 Reddit Research <span>Tracker</span></h1>
   <div class="add-form">
-    <input id="urlInput" type="text" placeholder="粘贴 Reddit 帖子 URL，添加到追踪列表…"/>
+    <input id="urlInput" type="text" placeholder="粘贴 Reddit 帖子 URL…"/>
     <button class="btn btn-primary" onclick="addUrl()">＋ 添加追踪</button>
   </div>
   <div class="header-actions">
-    <button class="btn btn-import" onclick="importBatches()">📥 导入 raw_comments</button>
-    <span class="hint">另一台电脑 git push 后，git pull 再点这里</span>
+    <button class="btn btn-import" onclick="importData()">📥 导入 raw_comments</button>
+    <div class="divider"></div>
+    <button class="btn btn-analyze" id="btnAnalyze" onclick="analyzeAll()">
+      🤖 LLM 分析
+      <span class="badge" id="unanalyzedBadge" style="display:none">0</span>
+    </button>
     <span class="toast" id="toast"></span>
   </div>
 </div>
@@ -132,8 +132,8 @@ details.body-wrap summary:hover{color:#374151}
   <div class="empty-state" id="emptyState">
     <div class="icon">📭</div>
     <p>还没有数据<br><br>
-    1. 添加帖子 URL → 去另一台电脑 git pull + 跑 fetch 脚本<br>
-    2. 另一台 git push → 这台 git pull → 点「导入 raw_comments」</p>
+    1. 另一台电脑 git pull + 跑 fetch 脚本 → git push raw_comments/<br>
+    2. 这台 git pull → 点「导入 raw_comments」→ 点「LLM 分析」</p>
   </div>
 </div>
 
@@ -146,22 +146,37 @@ details.body-wrap summary:hover{color:#374151}
 </div>
 
 <script>
-const TAG_COLORS = {
+const TAG_COLORS={
   "#用户痛点":"#ef4444","#技术方案":"#3b82f6","#产品反馈":"#8b5cf6",
   "#使用场景":"#10b981","#哲学思考":"#f59e0b","#隐私安全":"#6366f1",
   "#跨平台":"#14b8a6","#记忆管理":"#ec4899","#个性化":"#84cc16",
   "#工作流":"#f97316","#反对意见":"#dc2626","#类比参考":"#0ea5e9",
 };
-const tagHtml = tags=>(tags||[]).map(t=>{
+const tagHtml=tags=>(tags||[]).map(t=>{
   const c=TAG_COLORS[t]||"#6b7280";
   return `<span class="tag" style="background:${c}20;color:${c};border:1px solid ${c}40">${t}</span>`;
 }).join("");
-const stars = q=>"★".repeat(q)+"☆".repeat(5-q);
-const esc = s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-const tsDate = ts=>ts?new Date(ts*1000).toISOString().slice(0,10):"";
+const stars=q=>"★".repeat(q)+"☆".repeat(5-q);
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const tsDate=ts=>ts?new Date(ts*1000).toISOString().slice(0,10):"";
 
 function renderComment(c){
-  const a=c.analysis||{};
+  const a=c.analysis;
+  if(!c.analyzed || !a){
+    return `<div class="comment-card not-analyzed ${c.is_new?'is-new':''}">
+      <div class="c-header">
+        <span class="c-author">u/${esc(c.author)}</span>
+        <span class="c-score">▲ ${c.score}</span>
+        ${c.is_new?'<span class="c-new">NEW</span>':""}
+        <span class="c-pending">待分析</span>
+        <span class="c-date">${tsDate(c.created_utc)}</span>
+      </div>
+      <details class="body-wrap">
+        <summary>查看原文</summary>
+        <div class="body-text">${esc(c.body)}</div>
+      </details>
+    </div>`;
+  }
   const cls=["comment-card",c.is_new?"is-new":"",a.highlight?"is-highlight":""].filter(Boolean).join(" ");
   return `<div class="${cls}">
     <div class="c-header">
@@ -186,45 +201,46 @@ function renderComment(c){
 }
 
 function renderPost(p){
-  const hls  = (p.comments||[]).filter(c=>c.analysis?.highlight);
-  const newCs = (p.comments||[]).filter(c=>c.is_new);
-  const rest  = (p.comments||[]).filter(c=>!c.is_new&&!c.analysis?.highlight);
+  const newCs  = (p.comments||[]).filter(c=>c.is_new);
+  const hls    = (p.comments||[]).filter(c=>c.analyzed&&c.analysis?.highlight&&!c.is_new);
+  const others = (p.comments||[]).filter(c=>!c.is_new&&!(c.analyzed&&c.analysis?.highlight));
 
   let body="";
   if(!(p.comments||[]).length){
-    body='<p class="no-comments">暂无已分析的评论</p>';
+    body='<p class="no-comments">暂无评论</p>';
   } else {
     if(newCs.length){
       body+=`<div class="section-label">🆕 新增评论（${newCs.length}）</div>`;
       body+=newCs.map(renderComment).join("");
     }
-    const hlOld=hls.filter(c=>!c.is_new);
-    if(hlOld.length){
+    if(hls.length){
       body+=`<div class="section-label">⭐ 精选</div>`;
-      body+=hlOld.map(renderComment).join("");
+      body+=hls.map(renderComment).join("");
     }
-    if(rest.length){
+    if(others.length){
       body+=`<div class="section-label">全部评论</div>`;
-      body+=rest.map(renderComment).join("");
+      body+=others.map(renderComment).join("");
     }
   }
 
   return `<div class="post-card ${p.has_new?"has-new":""}" id="post-${p.id}">
     <div class="post-header" onclick="togglePost('${p.id}')">
       <div class="post-badge">
-        ${p.has_new
-          ?`<span class="new-badge">🔴 ${p.new_count}NEW</span>`
-          :`<span class="sub-badge">r/${p.subreddit}</span>`}
+        ${p.has_new?`<span class="new-badge">🔴 +${p.new_count}</span>`
+                   :`<span class="sub-badge">r/${p.subreddit}</span>`}
       </div>
       <div class="post-info">
-        <div class="post-title"><a href="${p.url}" target="_blank" onclick="event.stopPropagation()">${esc(p.title)}</a></div>
+        <div class="post-title">
+          <a href="${p.url}" target="_blank" onclick="event.stopPropagation()">${esc(p.title)}</a>
+        </div>
         <div class="post-meta">
           ${p.has_new?`<span>r/${p.subreddit}</span>`:""}
           <span>▲ ${p.score||0}</span>
-          <span>💬 ${p.num_comments||0} 条</span>
-          ${hls.length?`<span class="hl">⭐ ${hls.length} 精选</span>`:""}
-          ${p.has_new?`<span class="newc">🆕 ${p.new_count} 条新评论</span>`:""}
-          <span>检查于 ${p.last_checked||""}</span>
+          <span>💬 ${(p.comments||[]).length} 条</span>
+          ${p.hl_count?`<span class="hl">⭐ ${p.hl_count} 精选</span>`:""}
+          ${p.has_new?`<span class="newc">🆕 ${p.new_count} 新评论</span>`:""}
+          ${p.unanalyzed?`<span class="unanalyzed">🤖 ${p.unanalyzed} 待分析</span>`:""}
+          <span style="color:#cbd5e1">检查于 ${p.last_checked||""}</span>
         </div>
       </div>
       <div class="post-toggle">▼</div>
@@ -237,21 +253,27 @@ function renderPost(p){
   </div>`;
 }
 
-function renderAll({posts, pending_urls}){
+function renderAll({posts, pending_urls, total_unanalyzed}){
   const ct=document.getElementById("container");
   const em=document.getElementById("emptyState");
+
+  // update badge
+  const badge=document.getElementById("unanalyzedBadge");
+  if(total_unanalyzed>0){badge.textContent=total_unanalyzed;badge.style.display="inline-block";}
+  else{badge.style.display="none";}
+
   if((!posts||!posts.length)&&(!pending_urls||!pending_urls.length)){
-    ct.innerHTML=""; ct.appendChild(em); em.style.display="block"; return;
+    ct.innerHTML="";ct.appendChild(em);em.style.display="block";return;
   }
   em.style.display="none";
-  posts.sort((a,b)=>(b.has_new?1:0)-(a.has_new?1:0));
+  posts.sort((a,b)=>(b.has_new?1:0)-(a.has_new?1:0)||(b.unanalyzed>0?1:0)-(a.unanalyzed>0?1:0));
 
   let html="";
-  // pending section
   if(pending_urls&&pending_urls.length){
     html+=`<div class="pending-section">
-      <h3>⏳ 等待抓取（已加入 posts.txt，另一台电脑运行 fetch 后 import 即可）</h3>
-      ${pending_urls.map(u=>`<div class="pending-item"><span class="dot"></span><a href="${u}" target="_blank">${u}</a></div>`).join("")}
+      <h3>⏳ 等待抓取（已加入 posts.txt，另一台电脑 fetch + push 后再 import）</h3>
+      ${pending_urls.map(u=>`<div class="pending-item"><span class="pending-dot"></span>
+        <a href="${u}" target="_blank">${u}</a></div>`).join("")}
     </div>`;
   }
   html+=posts.map(renderPost).join("");
@@ -268,7 +290,7 @@ function showLoading(text,sub=""){
 function hideLoading(){document.getElementById("loadingOverlay").style.display="none"}
 function showToast(msg,type="success"){
   const t=document.getElementById("toast");
-  t.textContent=msg; t.className=`toast show ${type}`;
+  t.textContent=msg;t.className=`toast show ${type}`;
   setTimeout(()=>t.className="toast",5000);
 }
 
@@ -281,29 +303,36 @@ async function addUrl(){
   const input=document.getElementById("urlInput");
   const url=input.value.trim();
   if(!url) return;
-  const r=await fetch("/api/add",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});
+  const r=await fetch("/api/add",{method:"POST",
+    headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});
   const d=await r.json();
   if(d.error){showToast(d.error,"error");return;}
   input.value="";
   await loadPosts();
-  showToast("✓ 已加入 posts.txt — 去另一台电脑 git pull 后跑 fetch，再回来 import","info");
+  showToast("✓ 已加入 posts.txt — 另一台 fetch+push 后再 import","info");
 }
 
-async function importBatches(){
-  showLoading("正在处理 raw_comments…","每条评论约需 3-5 秒，请耐心等待");
+async function importData(){
+  showLoading("正在导入 raw_comments 到数据库…","快速操作，不调用 LLM");
   try{
     const r=await fetch("/api/import",{method:"POST"});
     const d=await r.json();
     if(d.error){showToast(d.error,"error");return;}
     await loadPosts();
-    if(d.total_new>0){
-      const updated=d.updated_posts||[];
-      const detail=updated.map(p=>`「${p.title.slice(0,20)}…」+${p.new_count}`).join("，");
-      showToast(`✓ ${d.total_new} 条新评论已处理${detail?" — "+detail:""}`);
-    } else {
-      showToast("✓ "+d.message);
-    }
-  }catch(e){showToast("请求失败: "+e.message,"error");}
+    showToast(`✓ ${d.message}${d.unanalyzed>0?" — 点「LLM 分析」处理 "+d.unanalyzed+"条":""}`);
+  }catch(e){showToast("导入失败: "+e.message,"error");}
+  finally{hideLoading();}
+}
+
+async function analyzeAll(){
+  showLoading("LLM 分析中…","每条评论约 3-5 秒，请耐心等待");
+  try{
+    const r=await fetch("/api/analyze",{method:"POST"});
+    const d=await r.json();
+    if(d.error){showToast(d.error,"error");return;}
+    await loadPosts();
+    showToast(`✓ ${d.message}`);
+  }catch(e){showToast("分析失败: "+e.message,"error");}
   finally{hideLoading();}
 }
 

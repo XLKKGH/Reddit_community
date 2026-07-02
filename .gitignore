@@ -3,7 +3,6 @@ reddit_cookies.json
 
 # Runtime data (local only)
 seen_comments.json
-raw_comments/
 data/
 
 # Python
