@@ -51,6 +51,7 @@ def init_db():
             id           TEXT PRIMARY KEY,
             title        TEXT,
             subreddit    TEXT,
+            category     TEXT DEFAULT 'memory',
             url          TEXT,
             score        INTEGER,
             selftext     TEXT,
@@ -87,6 +88,20 @@ def init_db():
         CREATE INDEX IF NOT EXISTS idx_comments_post   ON comments(post_id);
         CREATE INDEX IF NOT EXISTS idx_comments_unanalyzed ON comments(analyzed);
         """)
+        # migration: add category if missing
+        cols = [r[1] for r in db.execute("PRAGMA table_info(posts)").fetchall()]
+        if "category" not in cols:
+            db.execute("ALTER TABLE posts ADD COLUMN category TEXT DEFAULT 'memory'")
+
+def auto_classify(title: str) -> str:
+    t = title.lower()
+    if any(k in t for k in ["validate", "dimensions", "what a user already",
+                              "what they already", "model what", "user's knowledge"]):
+        return "skills"
+    if any(k in t for k in ["knowledge base", "knowledge graph", "incremental update",
+                              "combining memory and knowledge"]):
+        return "knowledge_base"
+    return "memory"
 
 def now_str():
     return datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
@@ -135,24 +150,24 @@ def import_item(db, item: dict) -> int:
     # Upsert post (keep existing added_at if already there)
     existing = db.execute("SELECT added_at FROM posts WHERE id=?", (post_id,)).fetchone()
     added_at  = existing["added_at"] if existing else now_str()
+    title = post_meta.get("title", "")
     db.execute("""
         INSERT INTO posts (id, title, subreddit, url, score, selftext, num_comments,
-                           created_utc, added_at, last_checked)
-        VALUES (?,?,?,?,?,?,?,?,?,?)
+                           created_utc, added_at, last_checked, category)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?)
         ON CONFLICT(id) DO UPDATE SET
             score=excluded.score, num_comments=excluded.num_comments,
             last_checked=excluded.last_checked
     """, (
-        post_id,
-        post_meta.get("title", ""),
+        post_id, title,
         post_meta.get("subreddit", ""),
         post_meta.get("url", ""),
         post_meta.get("score", 0),
         post_meta.get("selftext", ""),
         post_meta.get("num_comments", 0),
         post_meta.get("created_utc"),
-        added_at,
-        now_str(),
+        added_at, now_str(),
+        auto_classify(title),
     ))
 
     if post_meta.get("url"):
@@ -304,6 +319,7 @@ def post_to_dict(db, row) -> dict:
         "created_utc":  row["created_utc"],
         "added_at":     row["added_at"],
         "last_checked": row["last_checked"],
+        "category":     row["category"] or "memory",
         "has_new":      new_count > 0,
         "new_count":    new_count,
         "hl_count":     hl_count,
@@ -323,7 +339,7 @@ def index():
 def get_posts():
     with get_db() as db:
         posts_rows = db.execute(
-            "SELECT * FROM posts ORDER BY last_checked DESC"
+            "SELECT * FROM posts ORDER BY category, created_utc ASC"
         ).fetchall()
         posts = [post_to_dict(db, r) for r in posts_rows]
 
@@ -447,6 +463,16 @@ def analyze():
         time.sleep(0.4)
 
     return jsonify({"message": f"分析完成：{done} 条评论", "analyzed": done})
+
+
+@app.route("/api/post/<post_id>/category", methods=["PUT"])
+def set_category(post_id):
+    cat = request.json.get("category", "").strip()
+    if cat not in ("memory", "knowledge_base", "skills"):
+        return jsonify({"error": "category must be memory / knowledge_base / skills"}), 400
+    with get_db() as db:
+        db.execute("UPDATE posts SET category=? WHERE id=?", (cat, post_id))
+    return jsonify({"ok": True})
 
 
 @app.route("/api/clear-new/<post_id>", methods=["POST"])
