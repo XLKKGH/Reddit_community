@@ -424,6 +424,43 @@ def import_json():
     })
 
 
+@app.route("/api/import/markdown", methods=["POST"])
+def import_markdown():
+    """
+    从 memory_kb_post/*.md 提取分析 → 写入 DB。
+    比 LLM 快，用已有研究笔记作为 summary/takeaway。
+    """
+    import sys
+    sys.path.insert(0, str(Path(".")))
+    # 动态引入 import_markdown 模块的核心函数
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "import_markdown", Path("import_markdown.py")
+    )
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    md_dir = Path("memory_kb_post")
+    if not md_dir.exists():
+        return jsonify({"error": "memory_kb_post/ 目录不存在"}), 400
+
+    all_secs = []
+    for f in sorted(md_dir.glob("*.md")):
+        all_secs.extend(mod.parse_md(f))
+
+    uc, up = mod.import_to_db(all_secs)
+    with get_db() as db:
+        analyzed   = db.execute("SELECT COUNT(*) FROM comments WHERE analyzed=1").fetchone()[0]
+        unanalyzed = db.execute("SELECT COUNT(*) FROM comments WHERE analyzed=0").fetchone()[0]
+
+    return jsonify({
+        "message":    f"从研究笔记导入完成：{uc} 条评论，{up} 个帖子摘要",
+        "updated":    uc,
+        "unanalyzed": unanalyzed,
+        "analyzed":   analyzed,
+    })
+
+
 @app.route("/api/analyze", methods=["POST"])
 def analyze():
     """
