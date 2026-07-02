@@ -1,1 +1,2 @@
-playwright>=1.40.0
+# No external dependencies needed!
+# Uses Python standard library only (urllib, json, gzip)
