@@ -1,15 +1,16 @@
 # Reddit credentials & session — DO NOT commit
 reddit_cookies.json
 
-# Runtime data
+# Runtime data (local only)
 seen_comments.json
 raw_comments/
-processed/
-reports/
+data/
 
 # Python
 __pycache__/
 *.pyc
 .env
 .venv/
-.venv/
+
+# macOS
+.DS_Store
