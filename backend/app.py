@@ -97,7 +97,9 @@ def init_db():
 def auto_classify(title: str) -> str:
     t = title.lower()
     if any(k in t for k in ["validate", "dimensions", "what a user already",
-                              "what they already", "model what", "user's knowledge"]):
+                              "what they already", "model what", "user's knowledge",
+                              "skill", "capability", "capabilities", "tool use",
+                              "never keeps", "agent skill"]):
         return "skills"
     if any(k in t for k in ["knowledge base", "knowledge graph", "incremental update",
                               "combining memory and knowledge"]):
