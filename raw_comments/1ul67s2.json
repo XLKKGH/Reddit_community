@@ -1,0 +1,124 @@
+{
+  "post": {
+    "id": "1ul67s2",
+    "title": "Am I the only one who almost never keeps an agent skill installed?",
+    "selftext": "Maybe this is just me, but I've found that most agent skills optimize for looking impressive rather than being genuinely reusable.\n\nThe README is polished.\n\nThe demo works. \\^\\_\\^\n\nThen I install it ... and never use it again....  :-(\n\nThe few skills I've actually kept tend to be boring:\n\n\\- tiny\n\n\\- composable\n\n\\- easy to modify\n\n\\- don't require a huge dependency stack\n\nI'm curious whether other people have had the same experience, or if you've found places where high-quality skills consistently show up.",
+    "subreddit": "AI_Agents",
+    "score": 4,
+    "url": "https://www.reddit.com/r/AI_Agents/comments/1ul67s2/",
+    "created_utc": 1782961036.0,
+    "num_comments": 12
+  },
+  "comments": [
+    {
+      "id": "ov1rp8w",
+      "author": "BatResponsible1106",
+      "body": "same here. the skills that stick are usually the ones solving one small repeatable problem well. if i have to relearn how they work they rarely survive.",
+      "score": 3,
+      "depth": 0,
+      "created_utc": 1782962830.0,
+      "replies": [
+        {
+          "id": "ov1t1w2",
+          "author": "IndependenceGold5902",
+          "body": "what skills you keep in the end then?",
+          "score": 2,
+          "depth": 1,
+          "created_utc": 1782963339.0,
+          "replies": []
+        }
+      ]
+    },
+    {
+      "id": "ov1orbw",
+      "author": "Acceptable-Win9726",
+      "body": "it's not just you. i've cleared out my agent configs like three times this year and every time i'm left with maybe two tools that i actually reach for\n\n  \nthe problem is over-complicated demos hide how fragile the skill is outside the happy path. stuff gets weird fast when it touches real data or slightly non-standard inputs\n\n  \nthe ones i keep are boring too. basically grep with a nicer interface",
+      "score": 3,
+      "depth": 0,
+      "created_utc": 1782961750.0,
+      "replies": [
+        {
+          "id": "ov1vvd0",
+          "author": "Different_Pain5781",
+          "body": "The best compliment for a skill is forgetting it's there because it just works",
+          "score": 2,
+          "depth": 1,
+          "created_utc": 1782964413.0,
+          "replies": []
+        },
+        {
+          "id": "ov1sxkl",
+          "author": "IndependenceGold5902",
+          "body": "what are the skills you keep? I feel like my agents getting dumber and slower with more skills installed. looking for some good skills to installed lo",
+          "score": 1,
+          "depth": 1,
+          "created_utc": 1782963294.0,
+          "replies": []
+        }
+      ]
+    },
+    {
+      "id": "ov1s6qh",
+      "author": "BrightCook5861",
+      "body": "Not just you. The skills that survive are usually the boring ones that solve one repeatable problem cleanly. If a skill needs a whole mental model, a big dependency stack, or only works in the demo path, I probably won’t keep it installed either.",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1782963011.0,
+      "replies": []
+    },
+    {
+      "id": "ov2axfu",
+      "author": "TrivialFluke",
+      "body": "the flashy demos are like those kitchen gadgets that only make avocado roses, cool for 5 minutes then it just takes up drawer space",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1782970788.0,
+      "replies": []
+    },
+    {
+      "id": "ov1mr4m",
+      "author": "AutoModerator",
+      "body": "Thank you for your submission, for any questions regarding AI, please check out our wiki at https://www.reddit.com/r/ai_agents/wiki (this is currently in test and we are actively adding to the wiki)\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/AI_Agents) if you have any questions or concerns.*",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1782961037.0,
+      "replies": []
+    },
+    {
+      "id": "ov2awo9",
+      "author": "iportnov",
+      "body": "I find skills not very much reusable across industry. If your job is building landing pages for websites, then you maybe have a skill that says \"You're a landing pages builder\", and it is very useful for you. And probably for other people who do exactly the same, too. But if another person does goods list pages, it is totally useless...  \nSo, imho it is much better to use those online available skill collections just as a reference, to build your own skills, which fit for your personal workflow.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1782970779.0,
+      "replies": []
+    },
+    {
+      "id": "ov2dmi5",
+      "author": "percoAi",
+      "body": "Same experience. The skills I keep are usually small and boring because I can inspect them modify them and trust the boundary. Once a skill needs a giant setup or hides too much behavior it stops feeling reusable and starts feeling like another framework to maintain.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1782972020.0,
+      "replies": []
+    },
+    {
+      "id": "ov2fo6b",
+      "author": "ArtDealer",
+      "body": "I'm 100% opposite.  Skills are awesome because you don't have to think about them.  I avoid MCPs if a CLI is available and i create a skill for it instead (datadog's newish CLI is the perfect example).  I don't use pre-built agents anymore.  I create the skill and forget it.  \n\n\"Hand-off the remaining tasks to an AI instance in a different worktree\" knows to emulate the /compact skill and add a prompt md file for next tasks into the global temp folder.\n\n\"Add that information to my learnings\" knows which obsidian vault and folder to put a new file and how to link it to my knowledge graph of certain criteria are met.\n\nAgent files were great back in the day (a few months ago), but skills have completely replaced them.  \"Launch an agent which does xyz using a certain skill\"",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1782972975.0,
+      "replies": []
+    },
+    {
+      "id": "ov3f2d7",
+      "author": "Low_Original5508",
+      "body": "honestly the ones i keep are the ones i could've written myself in an afternoon. makes me wonder if a \"skill\" as a shippable unit is even the right abstraction, vs just a few snippets in your own config that you actually understand and can fix when they break mid-run. the flashy ones fail in ways you can't debug because you never really knew what they did.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1782989913.0,
+      "replies": []
+    }
+  ]
+}

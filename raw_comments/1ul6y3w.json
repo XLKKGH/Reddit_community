@@ -1,0 +1,77 @@
+{
+  "post": {
+    "id": "1ul6y3w",
+    "title": "Curious whether anyone else has had the same experience about skills",
+    "selftext": "Every time I discover a cool skill repository I think: \"This one looks pretty useful.\" And ten minutes later I uninstall it. The README is usually more impressive than the actual workflow improvement.\n\nAt this point I've become much more skeptical of GitHub stars and flashy demos. they all look so good and can solve thousands of problems, but actually not really working on my end :( \n\nWondering if anyone else has had the same experience.",
+    "subreddit": "aiagents",
+    "score": 5,
+    "url": "https://www.reddit.com/r/aiagents/comments/1ul6y3w/",
+    "created_utc": 1782963136.0,
+    "num_comments": 7
+  },
+  "comments": [
+    {
+      "id": "ov28hw2",
+      "author": "tribat",
+      "body": "I made 2 skills for this: /evaluate and /reddit-fetch. When I see something interesting (often on reddit) I have claude code evaluate if it's worth a) adopting or b) lifting the good stuff. 90% of the time it's \"You already have this, this, and this but these 3 things might be worth adding\". \n\nMy skills, [claude.md](http://claude.md), and other tools kinda just grow like weeds because I let Claude Code add any of them that seem worthwhile, but in my experience, it's very skeptical about adding new stuff.",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1782969691.0,
+      "replies": []
+    },
+    {
+      "id": "ov2pjpw",
+      "author": "Proper-Campaign6834",
+      "body": "I used to have the same experience. A lot of repos optimize for the demo instead of the day-to-day workflow. I've started judging projects by three things: how quickly I can get them running, whether I can customize them easily, and whether I still use them a week later. GitHub stars are useful as a signal, but they don't tell you if a tool fits your workflow.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1782977704.0,
+      "replies": []
+    },
+    {
+      "id": "ov2rjvf",
+      "author": "TheGoddessInari",
+      "body": "Personally, we simply curate our own skills, treating them as manuals, not vibes or personas or roles.\n\nLetting the model learn from the context and easily achieve things that it literally can't without.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1782978719.0,
+      "replies": []
+    },
+    {
+      "id": "ov2y8l8",
+      "author": "Faux_Real",
+      "body": "If I find something that reads well and it looks like I can use it, I will fork and customize it to my domain. I had your experience once and never again",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1782982066.0,
+      "replies": []
+    },
+    {
+      "id": "ov39cal",
+      "author": "Hybrid-Intelligence",
+      "body": "OMG yes! I find almost every Skill and GPT being shared to be entirely useless for the intended use case, at least relative what I can do for myself. \n\nFull disclosure, I'm not a developer or coder of any kind. I'm just a very heavy user. \n\nSo, there might be tons of skills out there helpful to developers and I would never know it. Everything I use and do is for regular office work, HR, project management, legal, business development, operations, etc.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1782987452.0,
+      "replies": []
+    },
+    {
+      "id": "ov3ok99",
+      "author": "zenmatrix83",
+      "body": "I just make my own, anytime I work with an agent it it struggles I make a skill for that.  Anything general enough for most people to want the llm probably can do better on its own, anything specific enough you should make probably as it fits better.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1782993530.0,
+      "replies": []
+    },
+    {
+      "id": "ov22pgd",
+      "author": "Rosie_grac",
+      "body": "yep, you're not crazy. the README-to-reality gap on these skill repos is real.\n\nmy rough count: installed maybe 15-20 of these over the last few months, kept 2. the pattern is they nail the demo on the author's exact setup with curated inputs, then quietly fall apart the second your data looks slightly different or you step off the happy path. and the killer isn't the install — it's the hours you sink wiring it in before you realize it doesn't fit your actual workflow.\n\nrule I've landed on: if a repo only shows success cases and never shows how it fails, I skip it. github stars mean basically nothing now, half of them are launch-day hype from a twitter thread.\n\nthe 2 I actually kept are honestly dumb little single-purpose wrappers around one API call. turns out that's what I needed, not another \"orchestration framework.\"",
+      "score": 0,
+      "depth": 0,
+      "created_utc": 1782967172.0,
+      "replies": []
+    }
+  ]
+}
