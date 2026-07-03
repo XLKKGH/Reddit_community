@@ -89,10 +89,16 @@ def init_db():
         CREATE INDEX IF NOT EXISTS idx_comments_post   ON comments(post_id);
         CREATE INDEX IF NOT EXISTS idx_comments_unanalyzed ON comments(analyzed);
         """)
-        # migration: add category if missing
+        # migrations
         cols = [r[1] for r in db.execute("PRAGMA table_info(posts)").fetchall()]
         if "category" not in cols:
             db.execute("ALTER TABLE posts ADD COLUMN category TEXT DEFAULT 'memory'")
+        if "notes" not in cols:
+            db.execute("ALTER TABLE posts ADD COLUMN notes TEXT")
+        if "question_summary" not in cols:
+            db.execute("ALTER TABLE posts ADD COLUMN question_summary TEXT")
+        if "post_summary" not in cols:
+            db.execute("ALTER TABLE posts ADD COLUMN post_summary TEXT")
 
 def auto_classify(title: str) -> str:
     t = title.lower()
@@ -340,12 +346,15 @@ def post_to_dict(db, row) -> dict:
         "created_utc":  row["created_utc"],
         "added_at":     row["added_at"],
         "last_checked": row["last_checked"],
-        "category":     row["category"] or "memory",
-        "has_new":      new_count > 0,
-        "new_count":    new_count,
-        "hl_count":     hl_count,
-        "unanalyzed":   unanalyzed,
-        "comments":     comments,
+        "category":         row["category"] or "memory",
+        "question_summary": row["question_summary"] or "",
+        "post_summary":     row["post_summary"] or "",
+        "notes":            row["notes"] or "",
+        "has_new":          new_count > 0,
+        "new_count":        new_count,
+        "hl_count":         hl_count,
+        "unanalyzed":       unanalyzed,
+        "comments":         comments,
     }
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -518,6 +527,83 @@ def analyze():
         time.sleep(0.4)
 
     return jsonify({"message": f"分析完成：{done} 条评论", "analyzed": done})
+
+
+POST_SUMMARIZE_PROMPT = """你是 AI Agent Memory 领域的研究助手。
+请根据以下帖子信息，生成两部分内容，返回 JSON（直接输出，不加代码块）：
+
+帖子标题：{title}
+帖子内容：{selftext}
+
+该帖子下的评论摘要：
+{comment_summaries}
+
+返回格式：
+{{
+  "question_summary": "这个帖子在问什么？用2-3句中文说清楚：问题的背景是什么、核心疑问是什么、为什么这个问题值得关注",
+  "post_summary": "综合所有评论，给出整体总结和 key takeaway，格式：\\n【整体观点】\\n一段话概括社区的主要看法\\n\\n【Key Takeaways】\\n• 第一条洞察\\n• 第二条洞察\\n• （更多条目，不限数量）"
+}}"""
+
+
+@app.route("/api/summarize/posts", methods=["POST"])
+def summarize_posts():
+    """
+    为没有 question_summary 的帖子生成摘要。
+    有 notes（研究笔记）的帖子直接复用 notes 作为 post_summary，只生成 question_summary。
+    """
+    with get_db() as db:
+        posts = db.execute("""
+            SELECT id, title, selftext, notes, question_summary
+            FROM posts
+            WHERE question_summary IS NULL OR question_summary = ''
+        """).fetchall()
+
+    if not posts:
+        return jsonify({"message": "所有帖子已有摘要", "done": 0})
+
+    done = 0
+    for post in posts:
+        pid   = post["id"]
+        title = post["title"] or ""
+
+        # 收集该帖子的 comment summaries
+        with get_db() as db:
+            c_rows = db.execute("""
+                SELECT summary FROM comments
+                WHERE post_id=? AND analyzed=1 AND summary IS NOT NULL AND summary != ''
+                ORDER BY quality DESC, score DESC
+                LIMIT 20
+            """, (pid,)).fetchall()
+        comment_summaries = "\n".join(f"• {r['summary']}" for r in c_rows) or "（暂无已分析评论）"
+
+        selftext = (post["selftext"] or "").strip()[:500]
+
+        prompt = POST_SUMMARIZE_PROMPT.format(
+            title=title,
+            selftext=selftext if selftext else "（无正文）",
+            comment_summaries=comment_summaries,
+        )
+
+        try:
+            raw = call_llm(prompt).lstrip("```json").lstrip("```").rstrip("```").strip()
+            result = json.loads(raw)
+
+            question_summary = result.get("question_summary", "")
+            # 如果已有 notes（研究笔记），用 notes 作为 post_summary；否则用 LLM 生成的
+            post_summary = post["notes"] or result.get("post_summary", "")
+
+            with get_db() as db:
+                db.execute(
+                    "UPDATE posts SET question_summary=?, post_summary=? WHERE id=?",
+                    (question_summary, post_summary, pid)
+                )
+            done += 1
+        except Exception as e:
+            print(f"  [!] {pid}: {e}")
+
+        time.sleep(0.5)
+
+    return jsonify({"message": f"生成完成：{done} 个帖子", "done": done})
 
 
 @app.route("/api/post/<post_id>/category", methods=["PUT"])

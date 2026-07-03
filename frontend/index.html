@@ -22,6 +22,16 @@ a{color:#3b82f6;text-decoration:none}a:hover{text-decoration:underline}
 .btn-primary{background:#3b82f6;color:white}.btn-primary:hover{background:#2563eb}
 .btn-import{background:#0ea5e9;color:white}.btn-import:hover{background:#0284c7}
 .btn-analyze{background:#8b5cf6;color:white;position:relative}.btn-analyze:hover{background:#7c3aed}
+.btn-summarize{background:#f59e0b;color:white}.btn-summarize:hover{background:#d97706}
+/* post summary blocks */
+.post-question{margin:10px 20px 0;padding:10px 14px;background:#f0f9ff;border-left:3px solid #38bdf8;
+  border-radius:0 6px 6px 0;font-size:.86rem;color:#0c4a6e;line-height:1.6}
+.post-question-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+  color:#0ea5e9;margin-bottom:4px}
+.post-overview{margin:8px 20px 12px;padding:10px 14px;background:#fafafa;border:1px solid #e2e8f0;
+  border-radius:6px;font-size:.84rem;color:#334155;line-height:1.7}
+.post-overview-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+  color:#64748b;margin-bottom:4px}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .badge{position:absolute;top:-7px;right:-7px;background:#ef4444;color:white;
   border-radius:10px;font-size:.65rem;font-weight:700;padding:1px 6px;min-width:18px;text-align:center}
@@ -148,6 +158,7 @@ details.body-wrap summary:hover{color:#374151}
       🤖 LLM 分析剩余
       <span class="badge" id="unanalyzedBadge" style="display:none">0</span>
     </button>
+    <button class="btn btn-summarize" onclick="summarizePosts()">📊 生成帖子总结</button>
     <span class="toast" id="toast"></span>
   </div>
 </div>
@@ -305,6 +316,16 @@ function renderPost(p){
       </div>
       <div class="post-toggle">▼</div>
     </div>
+    ${p.question_summary ? `
+    <div class="post-question" onclick="togglePost('${p.id}')">
+      <div class="post-question-label">💭 这帖在问什么</div>
+      ${renderRich(esc(p.question_summary))}
+    </div>` : ""}
+    ${p.post_summary ? `
+    <div class="post-overview" onclick="togglePost('${p.id}')">
+      <div class="post-overview-label">📋 社区观点总结</div>
+      ${renderRich(esc(p.post_summary))}
+    </div>` : ""}
     <div class="comments-body">${body}</div>
     <div class="post-actions">
       ${p.has_new?`<button class="btn-sm mark-read" onclick="markRead('${p.id}')">✓ 已读</button>`:""}
@@ -426,6 +447,15 @@ async function analyzeAll(){
     if(d.error){showToast(d.error,"error");return;}
     await loadPosts();showToast(`✓ ${d.message}`);
   }catch(e){showToast("分析失败: "+e.message,"error");}
+  finally{hideLoading();}
+}
+async function summarizePosts(){
+  showLoading("生成帖子总结…","用 LLM 生成每个帖子的问题概括和社区观点总结");
+  try{
+    const r=await fetch("/api/summarize/posts",{method:"POST"});const d=await r.json();
+    if(d.error){showToast(d.error,"error");return;}
+    await loadPosts();showToast(`✓ ${d.message}`);
+  }catch(e){showToast("失败: "+e.message,"error");}
   finally{hideLoading();}
 }
 async function markRead(id){
