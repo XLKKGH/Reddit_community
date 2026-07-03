@@ -637,9 +637,11 @@ def delete_post(post_id):
 
 @app.route("/api/export/html", methods=["GET"])
 def export_html():
-    """生成自包含静态 HTML 报告，可直接发送给他人查看。"""
+    """生成自包含静态 HTML 报告。?category=skills|memory|knowledge_base|all"""
     from flask import make_response
     from datetime import datetime, timezone
+
+    cat_filter = request.args.get("category", "all")   # all / memory / knowledge_base / skills
 
     with get_db() as db:
         posts_rows = db.execute(
@@ -732,21 +734,32 @@ def export_html():
             '</div>'
         )
 
+    # 按分类过滤
+    cats_to_show = (["memory","knowledge_base","skills"] if cat_filter == "all"
+                    else [cat_filter])
+    filtered_posts = [p for p in posts if p["category"] in cats_to_show]
+
     body = ""
-    for cat in ["memory","knowledge_base","skills"]:
-        cat_posts = [p for p in posts if p["category"]==cat and p["comments"]]
+    for cat in cats_to_show:
+        cat_posts = [p for p in filtered_posts if p["category"]==cat and p["comments"]]
         if not cat_posts: continue
-        body += f'<h2 style="font-size:1rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin:32px 0 16px;padding-bottom:8px;border-bottom:2px solid #e2e8f0">{cat_labels[cat]}  <span style="font-weight:400;font-size:.85rem">({len(cat_posts)} 个帖子)</span></h2>'
+        # 只有一个分类时不重复显示标题
+        if len(cats_to_show) > 1:
+            body += (f'<h2 style="font-size:1rem;font-weight:700;color:#64748b;text-transform:uppercase;'
+                     f'letter-spacing:1px;margin:32px 0 16px;padding-bottom:8px;border-bottom:2px solid #e2e8f0">'
+                     f'{cat_labels[cat]} <span style="font-weight:400;font-size:.85rem">({len(cat_posts)} 个帖子)</span></h2>')
         body += "".join(render_post(p) for p in cat_posts)
 
-    date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    total_posts = len([p for p in posts if p["comments"]])
-    total_hl    = sum(p["hl_count"] for p in posts)
+    date_str    = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    total_posts = len([p for p in filtered_posts if p["comments"]])
+    total_hl    = sum(p["hl_count"] for p in filtered_posts)
+    report_title = (cat_labels.get(cat_filter, "All") + " · Reddit Research Report"
+                    if cat_filter != "all" else "Reddit Research Report")
 
     html = f"""<!DOCTYPE html>
 <html lang="zh"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Reddit Research Report · {date_str}</title>
+<title>{report_title} · {date_str}</title>
 <style>
 *{{box-sizing:border-box;margin:0;padding:0}}
 body{{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f1f5f9;color:#1e293b}}
@@ -754,7 +767,7 @@ a{{color:#3b82f6}}
 </style>
 </head><body>
 <div style="background:linear-gradient(135deg,#0f172a,#1e3a5f);color:white;padding:32px 40px">
-  <h1 style="font-size:1.6rem;font-weight:700;margin-bottom:8px">🧠 Reddit Research Report</h1>
+  <h1 style="font-size:1.6rem;font-weight:700;margin-bottom:8px">🧠 {report_title}</h1>
   <p style="color:rgba(255,255,255,.6);font-size:.9rem">u/IndependenceGold5902 · {date_str}</p>
   <div style="display:flex;gap:20px;margin-top:16px">
     <div style="background:rgba(255,255,255,.1);border-radius:8px;padding:10px 18px;text-align:center">
@@ -779,7 +792,8 @@ a{{color:#3b82f6}}
 
     resp = make_response(html)
     resp.headers["Content-Type"] = "text/html; charset=utf-8"
-    resp.headers["Content-Disposition"] = f"attachment; filename=reddit-report-{date_str}.html"
+    fname = f"reddit-report-{cat_filter}-{date_str}.html" if cat_filter != "all" else f"reddit-report-{date_str}.html"
+    resp.headers["Content-Disposition"] = f"attachment; filename={fname}"
     return resp
 
 

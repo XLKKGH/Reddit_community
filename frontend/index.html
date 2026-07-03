@@ -159,7 +159,7 @@ details.body-wrap summary:hover{color:#374151}
       <span class="badge" id="unanalyzedBadge" style="display:none">0</span>
     </button>
     <button class="btn btn-summarize" onclick="summarizePosts()">📊 生成帖子总结</button>
-    <a class="btn" href="/api/export/html" download style="background:#475569;color:white;text-decoration:none">📄 导出报告</a>
+    <a class="btn" id="btnExport" href="/api/export/html?category=all" download style="background:#475569;color:white;text-decoration:none">📄 导出当前分类</a>
     <span class="toast" id="toast"></span>
   </div>
 </div>
@@ -219,6 +219,12 @@ function switchTab(tab){
   currentTab=tab;
   document.querySelectorAll(".tab").forEach(el=>el.classList.remove("active"));
   document.getElementById("tab-"+tab).classList.add("active");
+  // 更新导出链接
+  const btn = document.getElementById("btnExport");
+  if(btn){
+    btn.href = `/api/export/html?category=${tab}`;
+    btn.textContent = tab==="all" ? "📄 导出全部" : `📄 导出 ${CAT_LABELS[tab]||tab}`;
+  }
   renderPosts();
 }
 
