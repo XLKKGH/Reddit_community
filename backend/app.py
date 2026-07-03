@@ -360,7 +360,7 @@ def index():
 def get_posts():
     with get_db() as db:
         posts_rows = db.execute(
-            "SELECT * FROM posts ORDER BY category, created_utc ASC"
+            "SELECT * FROM posts ORDER BY category, created_utc DESC"
         ).fetchall()
         posts = [post_to_dict(db, r) for r in posts_rows]
 
