@@ -16,14 +16,12 @@ import urllib.request
 import urllib.error
 from datetime import datetime, timezone
 from pathlib import Path
-from http.cookiejar import CookieJar
-import http.cookiejar
-
 # ── config ──────────────────────────────────────────────────────────────────
-COOKIES_FILE = "reddit_cookies.json"
-POSTS_FILE   = "posts.txt"
-SEEN_FILE    = "seen_comments.json"
-OUTPUT_DIR   = "raw_comments"
+ROOT         = Path(__file__).parent.parent   # fetcher/ → repo root
+COOKIES_FILE = str(ROOT / "reddit_cookies.json")
+POSTS_FILE   = str(ROOT / "posts.txt")
+SEEN_FILE    = str(ROOT / "seen_comments.json")
+OUTPUT_DIR   = str(ROOT / "raw_comments")
 # ────────────────────────────────────────────────────────────────────────────
 
 HEADERS = {

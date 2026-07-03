@@ -1,0 +1,71 @@
+{
+  "post": {
+    "id": "1tosjmd",
+    "title": "Agent Memory",
+    "selftext": "Hi, something I've been wondering as a student diving into agent infra: every agent framework has a \"memory\" module. But they all just store stuff. Nobody seems to handle memory consolidation - merging duplicates, forgeeting outdated info, resolving conflicts. \n\nIs anyone working on this? Or is the assumption that vector search solves it? -&gt; personally think that it actually doesn't :(",
+    "subreddit": "AI_Agents",
+    "score": 5,
+    "url": "https://www.reddit.com/r/AI_Agents/comments/1tosjmd/",
+    "created_utc": 1779849805.0,
+    "num_comments": 16
+  },
+  "comments": [
+    {
+      "id": "oo3i3ii",
+      "author": "AutoModerator",
+      "body": "Thank you for your submission, for any questions regarding AI, please check out our wiki at https://www.reddit.com/r/ai_agents/wiki (this is currently in test and we are actively adding to the wiki)\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/AI_Agents) if you have any questions or concerns.*",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1779849805.0,
+      "replies": []
+    },
+    {
+      "id": "oo94egr",
+      "author": "No-Hovercraft-9481",
+      "body": "You might want to check out localmem: \n\nhttps://github.com/jordanaftermidnight/localmem  \nIt’s a persistent storage module for LLM agents\n\nhybrid (dense + sparse) vector search, behavioral pattern graphs, temporal knowledge triples, layered wake-up context, lifecycle management, and a read-only browser dashboard. All on-device, no cloud dependencies.  \nPlease leave a star and share if you find it useful:)",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1779917235.0,
+      "replies": [
+        {
+          "id": "ooaoriu",
+          "author": "IndependenceGold5902",
+          "body": "Iccc, this is super interesting tho. I still have a few questions:  \n\\- Does the storage module itself help with memory consolidation, or is it mainly focused on retrieval and persistence?  \n\\- How do you guys handle conflicting memories over time?  \n\\- And since you mentioned the browser dashboard is read-only, can users still manually edit / correct memories somewhere?\n\nI’m really curious because a lot of current agent memory systems seem great at storing/retrieving context, but much less clear on how they maintain consistency over long-running sessions.",
+          "score": 1,
+          "depth": 1,
+          "created_utc": 1779935516.0,
+          "replies": []
+        }
+      ]
+    },
+    {
+      "id": "oo5g4ok",
+      "author": "Comfortable_Gas_3046",
+      "body": "I am working on an opensource tool that handles this problem. It stores different artifacts at repo level which are inspectable and portable. It takes care about stale context, injects a resume capsule in agent context, and works primary as a MCP, with fallback to a CLI. I am working on it yet but it has started to keep a nice level of continuity between sessions. If you want to take a look you can check the docs here https://aitcx.org. let me know if you want to discuss about it.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1779880815.0,
+      "replies": [
+        {
+          "id": "oo5hqmk",
+          "author": "IndependenceGold5902",
+          "body": "This is super interesting — especially the part about handling stale context and continuity between sessions.  \nOne thing I’ve been wondering is: how are you thinking about memory consolidation itself?  \nFor example: merging semantically duplicated memories， resolving conflicting facts over time，decaying outdated information，distinguishing “episodic” vs “persistent” memory  \nIt feels like most current frameworks stop at retrieval/vector storage, but not actual memory management. Curious how you’re approaching that in AITCX.",
+          "score": 1,
+          "depth": 1,
+          "created_utc": 1779881425.0,
+          "replies": [
+            {
+              "id": "oo67esl",
+              "author": "Comfortable_Gas_3046",
+              "body": "I’m trying to avoid treating all stored context as the same kind of memory.\n\nIn AICTX I’m separating a few layers:\n\n* **episodic/runtime evidence**: execution summaries, lifecycle events, resume/finalize traces, validation evidence\n* **operational state**: active Work State, next action, open risks, current handoff\n* **persistent knowledge**: decisions, failure patterns, strategy memory, repo structure hints\n* **quality/governance signals**: stale, missing, demoted, obsolete or unverified continuity\n\nSo the goal is not just retrieval. It’s deciding what should still be trusted as operational guidance.\n\nRight now AICTX does this conservatively: it does not silently merge or overwrite memories. It keeps repo-local artifacts inspectable, flags stale/missing/conflicting-looking context, demotes weak continuity, and lets the developer correct or delete artifacts directly.\n\nFor semantic duplicates / conflicts, my current bias is to avoid “magic consolidation” too early. I’d rather surface candidate duplicates/conflicts first, with evidence and source paths, before letting the system rewrite memory. Otherwise the memory layer becomes another black box.\n\nLong term, I think the right direction is:\n\ncapture → classify → score freshness/trust → surface conflicts/duplicates → human-reviewable consolidation",
+              "score": 2,
+              "depth": 2,
+              "created_utc": 1779889554.0,
+              "replies": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

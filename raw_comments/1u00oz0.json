@@ -1,0 +1,51 @@
+{
+  "post": {
+    "id": "1u00oz0",
+    "title": "What dimensions do you actually need to validate a user's knowledge state against a knowledge graph — and how do you measure each one from conversation data alone?",
+    "selftext": "hii, guys, I'm building a personalized agent that sits on top of a knowledge graph and a user profile. The KG is built. The agent is running. The part I'm still not confident about is how to accurately model the user's relationship to the knowledge inside the graph.\n\nThe dimensions I'm currently thinking about:\n\n* Exposure — have they encountered this concept before?\n* Mastery — can they recall, explain, or apply it in a new context?\n* Interest — do they actually want to go deeper, or just passing through?\n* Confidence — do they think they understand it? (often misaligned with actual mastery)\n\nThe only signal I have is conversation data — no formal assessments, no quizzes. Everything has to be inferred from how users talk, what they ask, and where they choose to go deeper.\n\nWhat I'm stuck on:\n\n* Are these the right dimensions, or am I missing something that actually matters in practice?\n* What's the most reliable way to measure each one passively from conversation signals?\n* Is passive inference ever enough, or do you eventually need to actively probe — and if so, how do you do it without making it feel like a test?\n\nWe've seen that gaps in the KG cause the agent to behave unpredictably even when memory is intact. So the modeling has to be tight. Curious what others have built or seen work.",
+    "subreddit": "AI_Agents",
+    "score": 1,
+    "url": "https://www.reddit.com/r/AI_Agents/comments/1u00oz0/",
+    "created_utc": 1780902959.0,
+    "num_comments": 6
+  },
+  "comments": [
+    {
+      "id": "oqeopo2",
+      "author": "AutoModerator",
+      "body": "Thank you for your submission, for any questions regarding AI, please check out our wiki at https://www.reddit.com/r/ai_agents/wiki (this is currently in test and we are actively adding to the wiki)\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/AI_Agents) if you have any questions or concerns.*",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780902959.0,
+      "replies": []
+    },
+    {
+      "id": "oqg941d",
+      "author": "Cover_Administrative",
+      "body": "Here are some thoughts on the dimensions:\n\n* Exposure - If you shift towards building deterministic code/workflows then you can easily task AI with identifying if \"we've been here before\".\n* Mastery - This, at least in terms of how I build, revolves around building new business logic/boring code that takes previous AI processes (AIPs) into consideration. So, they're purposefully built to 'care' about other workflows/AIPs.\n* Interest - Similar to the above. If you, the person, typically care to go deeper about something, the build that 'weight' into your AIPs instead of tasking AI with this 'subjective' task.\n* Confidence - I don't trust AI with this at all - maybe one day but not at the moment. I'd rather spend extra time building a codebase with conditionals before I trust AI with this subjective task.\n\nI'd say these are dimensions/pillars that I also care about and have decided to remove AI from them as much as possible. If I'm gonna' actively probe, as you say, then I might as well focus on reducing that frequency. \n\nSince my background is coding, I've found the most success with the boring old deterministic coding.\n\nHope this helps!",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780927020.0,
+      "replies": []
+    },
+    {
+      "id": "oqgnbkt",
+      "author": "ivanzhaowy",
+      "body": "I’d separate “knowledge state” from “conversation mood” first.\n\n  \nFor each concept, track: last exposure, evidence type (recall / explain / apply), confidence gap, and whether the user asks follow-ups unprompted. Then decay those scores over time instead of treating one good answer as permanent mastery.\n\n  \nWe’re exploring similar eval/state modeling for agents at Monadix. Happy to swap notes.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780931035.0,
+      "replies": [
+        {
+          "id": "oqkbg2a",
+          "author": "IndependenceGold5902",
+          "body": "That's a really useful framing — separating knowledge state from conversation mood is something we've been struggling to do cleanly. We're building a personalized agent on top of a knowledge graph + user profile, trying to model not just what the user knows but where they stand relative to what they already have. Would love to swap notes on how you're handling the decay side at Monadix.",
+          "score": 1,
+          "depth": 1,
+          "created_utc": 1780970979.0,
+          "replies": []
+        }
+      ]
+    }
+  ]
+}

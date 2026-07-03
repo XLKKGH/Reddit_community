@@ -1,0 +1,98 @@
+{
+  "post": {
+    "id": "1tx71et",
+    "title": "How you guys handle incremental updates to a knowledge base without full rebuilds?",
+    "selftext": "Every time I add a new document to my knowledge base, I feel like I’m forced to re-extract all entities and relations from scratch - or risk ending up with a fragmented, inconsistent graph. \n\nSpecifically:   \n\\- new entities might duplicate or contradict existing one  \n\\- new relations can invalidate old ones   \n\\- merging is nontrivial without a global view \n\nAre there established patterns for incremental KG construction? thins I’ve looked into: entity-centric upset, embedding similarity for setup, versioned subgraphs. \n\nHow are you solving this problem? Any libraries or architectures that handle this gracefully at scale?",
+    "subreddit": "AI_Agents",
+    "score": 7,
+    "url": "https://www.reddit.com/r/AI_Agents/comments/1tx71et/",
+    "created_utc": 1780623496.0,
+    "num_comments": 15
+  },
+  "comments": [
+    {
+      "id": "optnrob",
+      "author": "AutoModerator",
+      "body": "Thank you for your submission, for any questions regarding AI, please check out our wiki at https://www.reddit.com/r/ai_agents/wiki (this is currently in test and we are actively adding to the wiki)\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/AI_Agents) if you have any questions or concerns.*",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780623496.0,
+      "replies": []
+    },
+    {
+      "id": "optpx3o",
+      "author": "Routine_Plastic4311",
+      "body": "entity resolution + versioned edges. look into dgl or neo4j with temporal layers. full rebuilds stop being an option once you have any scale",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780624262.0,
+      "replies": [
+        {
+          "id": "optziad",
+          "author": "IndependenceGold5902",
+          "body": "That makes sense. I’m starting to think the hard part is less “how to store the KG” and more the entity resolution + temporal edge governance layer.\n\nFor versioned edges, do you usually model outdated relations as expired edges with valid_from/valid_to, or keep them as separate historical subgraphs? Also curious whether you’d use Neo4j mainly for storage/querying and DGL only for similarity/link prediction, or whether DGL can realistically help with the incremental merge step too.",
+          "score": 0,
+          "depth": 1,
+          "created_utc": 1780627726.0,
+          "replies": []
+        }
+      ]
+    },
+    {
+      "id": "optwcql",
+      "author": "Positive_Willow_7794",
+      "body": "I have run into a similar problem while building an Agentic Workforce Framework, especially around failure memory, durable decisions, and audit context.\n\n\nThe pattern I would use is less “rebuild the whole KG” and more versioned memory with reconciliation:\n\n\n- every extraction tied to source doc, chunk, timestamp, and extraction version\n- stable entity IDs instead of name-only matching\n- possible duplicates and contradictions stored as reviewable events, not silently merged\n- relationship changes versioned so you can compare before/after\n- provenance and confidence on every fact or edge\n- an authority model for which source wins when facts conflict\n\n\nFor agent systems, this becomes important fast. If the knowledge base contains stale or contradictory context, the agent may still act on it confidently.\n\n\nSo I think incremental KG updates need to behave more like governed memory: provenance, versioning, conflict handling, rollback, and auditability.\n\n\nI’m exploring some of this in an open-source Agentic Workforce Framework here if useful:\nhttps://github.com/rayyagari2-create/agentic-workforce-framework",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780626570.0,
+      "replies": [
+        {
+          "id": "optz7sn",
+          "author": "IndependenceGold5902",
+          "body": "That’s an interesting approach. One thing I’m still struggling with is when those reviewable contradictions should actually get resolved.\n\nIf two facts conflict and neither can be confidently discarded, do you keep them as competing records indefinitely, or do you have a promotion path where higher-confidence evidence can automatically supersede older claims?\n\nI’m wondering where you draw the line between “contested memory” and “resolved memory”.",
+          "score": 1,
+          "depth": 1,
+          "created_utc": 1780627619.0,
+          "replies": [
+            {
+              "id": "opu0hp5",
+              "author": "Positive_Willow_7794",
+              "body": "I try to avoid resolving contradictions too early. The way I think about it is three states:\n\n\n1. Candidate memory: newly extracted, not yet trusted.\n2. Contested memory: conflicts with something already known.\n3. Resolved memory: promoted because there is enough authority, confidence, or human review behind it.\n\n\nIf two facts conflict and neither source clearly wins, I would keep both as contested records with provenance instead of forcing one truth. The agent should then know: “this is unresolved, don’t use it as firm context without review.”\n\n\nAutomatic superseding should only happen when the authority model is clear. For example: newer policy doc beats older policy doc, production config beats planning note, human-approved correction beats model extraction, etc.\n\n\nSo the line between contested and resolved memory is not just confidence score. It is confidence + source authority + recency + impact/risk of using that fact.\n\n\nFor low-risk context, auto-promotion may be fine. For anything that affects decisions/actions, I’d keep it contested until a stronger source or human review resolves it.",
+              "score": 1,
+              "depth": 2,
+              "created_utc": 1780628079.0,
+              "replies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "opw29ol",
+      "author": "just_reading_1979",
+      "body": "i usually run a local similarity check against the existing node embeddings before adding anything new. if the score is over a certain threshold i just merge the attributes instead of creating a new entry. its saved me a ton of time but managing the contradictions still gets tricky tbh",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780661784.0,
+      "replies": []
+    },
+    {
+      "id": "oq1zuu0",
+      "author": "rahuliitk",
+      "body": "the cleanest pattern i’ve seen is treating each ingest as a versioned delta: extract candidates, resolve entities against a canonical entity table using ids + aliases + embeddings, store provenance on every edge, and only promote changes after conflict checks instead of mutating the whole graph blindly.\nLowkey, provenance saves you here.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780733131.0,
+      "replies": []
+    },
+    {
+      "id": "oq21urc",
+      "author": "Neboy72",
+      "body": "Try Hermes-Nexus-Memory on GitHub",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780734193.0,
+      "replies": []
+    }
+  ]
+}

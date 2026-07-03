@@ -1,0 +1,32 @@
+{
+  "post": {
+    "id": "1u0sue0",
+    "title": "How do you model what a user already has vs. what they already know — and use that gap to generate relevant suggestions rather than teach them something new?",
+    "selftext": "Most personalized agent stacks focus on filling gaps — teaching users what they don't know, or retrieving what they've forgotten.\n\nBut the use case I'm building for is different: the agent should work with what the user already has, not fill what they're missing.\n\nA simple example: if a user bought ingredients for cake A last week, and comes back wanting to bake something new — the agent should suggest recipes based on the ingredients they already have, not teach them baking fundamentals.\n\nTranslated to a more general framework:\n\n\"What the user has\" = past actions, resources, experiences logged in memory\n\n\"What the user knows\" = their relationship to concepts in a knowledge graph\n\nThe agent's job = find the best match between current intent and existing assets — not educate\n\nThe part I'm stuck on:\n\n\\- How do you model \"what the user already has\" in a way that's actually queryable at inference time?\n\n\\- Is this just a retrieval problem, or does it require a different kind of user state representation?\n\n\\- Has anyone built something like this in production — where the agent activates existing resources rather than filling knowledge gaps?\n\nCurious if there's an established pattern for this, or if everyone is reinventing it.",
+    "subreddit": "AI_Agents",
+    "score": 1,
+    "url": "https://www.reddit.com/r/AI_Agents/comments/1u0sue0/",
+    "created_utc": 1780973410.0,
+    "num_comments": 2
+  },
+  "comments": [
+    {
+      "id": "oqkiecn",
+      "author": "AutoModerator",
+      "body": "Thank you for your submission, for any questions regarding AI, please check out our wiki at https://www.reddit.com/r/ai_agents/wiki (this is currently in test and we are actively adding to the wiki)\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/AI_Agents) if you have any questions or concerns.*",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780973410.0,
+      "replies": []
+    },
+    {
+      "id": "oqmfhv9",
+      "author": "KapilNainani_",
+      "body": "The framing is right and the distinction matters. Retrieval-to-fill-gaps and retrieval-to-activate-existing-assets are architecturally different even if the underlying store looks similar.\n\nFor \"what the user has\" to be queryable at inference time, it needs to be structured at ingestion, not just embedded. Pure vector search on past actions will surface semantically similar things but won't answer \"do I have X available right now.\" You need explicit state representation alongside the embeddings. Something like entity nodes with attributes, ingredient: flour, status: available, quantity: partial, that you can filter and join, not just rank by similarity.\n\nThe graph approach works well here because the relationships matter as much as the items. \"Has flour\" is less useful than \"has flour + eggs + sugar + no oven-safe pan\", the combination determines what's actually actionable. Graph traversal lets you reason over those combinations in ways flat retrieval doesn't.\n\nIs it just a retrieval problem, no. Retrieval finds relevant things. What you're describing requires reasoning over a state representation to find what's actionable given current intent. The difference is subtle but it means the architecture needs an explicit state layer that gets updated, not just an append-only log that gets searched.\n\nHaven't seen a clean off-the-shelf pattern for this. Most production implementations I've seen roll their own state graph with a thin retrieval layer on top.\n\nWhat domain is this for, the ingredients example is illustrative but curious what the actual use case looks like.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1781005254.0,
+      "replies": []
+    }
+  ]
+}

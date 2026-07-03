@@ -1,0 +1,68 @@
+{
+  "post": {
+    "id": "1u2n1xv",
+    "title": "The hard part of agent memory isn't storage — it's knowing when to surface something. How are you solving retrieval timing?",
+    "selftext": "Most discussions about agent memory focus on what to store and how to represent it. But the problem I keep running into is different: knowing when a past memory is actually relevant to bring up.\n\nStoring everything is easy. The failure mode isn't forgetting — it's either:\n\n* surfacing something too early, before the user cares\n* surfacing something too late, after the moment has passed\n* never surfacing it at all, because the trigger condition was never met\n\nA concrete example: a user worked on Project A three months ago. Today they're starting something that looks similar. Should the agent:\n\n* mention Project A immediately when the new project starts?\n* wait until a specific overlap becomes clear?\n* only bring it up if the user hits the same problem they hit last time?\n\nWhat signals are people actually using to trigger memory retrieval — and how do you avoid making every conversation feel like a history lesson?",
+    "subreddit": "AIMemory",
+    "score": 6,
+    "url": "https://www.reddit.com/r/AIMemory/comments/1u2n1xv/",
+    "created_utc": 1781146654.0,
+    "num_comments": 7
+  },
+  "comments": [
+    {
+      "id": "or3nz5r",
+      "author": "No-Professional9246",
+      "body": "Most memory systems treat retrieval as a similarity problem: \n  find things that look related and hope they help.\n\n The failure mode is that similarity is not the same thing as relevance.\n  ​One approach is to store memory as structured artifacts rather than flat collections of past events. Instead of storing only what happened, each artifact is captured through a set of relationships:\n​Who was involved\n​What was being worked on\n​Where it occurred\n​When it occurred\n​Why it mattered\n\n​Retrieval then becomes a structural alignment problem rather than a similarity problem.\n   A memory isn't surfaced because it vaguely resembles the current conversation.\n  It's surfaced when the current context overlaps the same structural relationships that produced the original artifact.\n\n​For example, if a user starts a new project that happens to share a few keywords with an old one, semantic similarity may retrieve the old project immediately. A structural model can require overlap in the actual task (What), participants (Who), environment (Where), or purpose (Why) before the memory becomes eligible.\n​The system stops asking:\n\"Does this look similar?\"\n​And starts asking:\n\"Is this memory fulfilling the same structural intent?\"\n\n​That shifts retrieval timing away from heuristics and toward structural fit. In practice, it reduces the \"history lesson\" problem because memories appear when they are participating in the current context, not simply because they resemble it.",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1781208850.0,
+      "replies": []
+    },
+    {
+      "id": "oqyvg66",
+      "author": "Alpjor",
+      "body": "1 surface on the first prompt. Connect to the pre-tool-call hook, write a script that looks at the tool call and decides if the agent is \"rediscovering\" something it already knows, return recall of memory instead of approving the tool call. works well enough. I also added to the [agents.md](http://agents.md) file directions to use the recall script when it seems it could use memory (doesn't always work)",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1781148974.0,
+      "replies": []
+    },
+    {
+      "id": "or280fb",
+      "author": "Ok_Development2754",
+      "body": "This is something I have spent months figuring out. My solution is to stop trying to predict the right moment. Score against signals that already exist instead. Guessing \"is now the time?\" means being right before the evidence shows up, and that's how you end up with an agent that opens every session with a history lesson.\n\nFirst thing I do is treat every project as its own vertical silo.\n\nThere is no cross-project memory by default. If I want it, I set up a memory \"layer\" that I allow certain projects to access. So I spin up Project A, which I have been developing for weeks, then spin up Project B, assign an orchestration layer across both, and now Project B can see all the canonical facts and plain facts from Project A.\n\nThat decision alone answers half of your Project A question before retrieval timing even comes into it. If I never connect the two projects, the agent doesn't have to guess whether last quarter's work is relevant, because it can't see it. Cross-project relevance is a human call, made once, not something the agent re-litigates every conversation.\n\nWithin a silo, I treat every user message as a retrieval query, with silence as the default answer. Each message gets scored against the stored memories. Nothing clears the threshold? Surface nothing. Most systems get this backwards because they retrieve top-K every time, so something always gets injected whether it's relevant or not. Most turns should surface nothing at all, and that has to be a legitimate outcome rather than a failure.\n\nI also watch what the agent does, not just what the user says. This made the biggest difference for me. A user saying \"starting a new project, kind of like a CRM\" is a weak overlap signal. The agent opening the same config file where things went wrong three months ago, or hitting the same error, is a strong one. So for your Project A example, assuming the projects are connected at all: mostly option 3. Don't mention it at kickoff. Wait for the overlap to show up in the actual work.\n\nThat canonical-versus-plain split I mentioned is doing real work here too. The canonical pile is small and hand-curated (hard constraints, standing decisions) and gets surfaced every session. Plain facts sit in a much bigger pool and only surface when they score against the current message or action. The discipline is keeping the canonical pile tiny. Every fact you pin is a tax on every future conversation.\n\nThe mistake that bit me hardest was ranking by importance. Once you track which memories are \"trusted\" or \"important\", it's tempting to sort by that. I did, and recall quality collapsed. Important-but-irrelevant memories crowded out boring-but-relevant ones. The fix that held up: relevance to the current signal is the base score, and importance is only a multiplier on top. Importance breaks ties between relevant candidates. It must never beat relevance outright.\n\nI cap the injection budget hard. Under-surfacing is cheap to recover from; the user asks, you retrieve. Over-surfacing pollutes the context and the user can't un-read it.\n\nFor background: I've been building my own cross agent/model orchestration and shared memory product for months, and part of it is a memory layer I extracted from an enterprise RAG system I built. All of the above is scar tissue from getting it wrong first. If you wnat more detail, say so in the comments and I'll go deeper.\n\n**Addendum: Alpjor mentions hooks, so this is what I do on each hook**\n\nMost agent runtimes expose roughly the same six hooks (expect Mistral vibe where I forked the codebase and added them ;), and the trick is that each one gets exactly one memory job. The timing problem mostly dissolves once you stop trying to do everything everywhere.\n\nSession start. Continuity, not relevance. If the previous session ended mid-task, replay a short resume note: what was in flight, what was decided, what's still open. No memory scoring here at all, because there's no signal yet to score against. The worst thing you can do at session start is dump history.\n\nUser prompt submitted. This is the main read path. Score the memory pool against what the user just typed, inject whatever clears the threshold plus the small canonical pile, all within a hard token budget. If nothing clears, inject nothing. This hook fires on every message, so this is where the silence-by-default rule lives or dies.\n\nBefore each tool call. Observe and record, nothing more. I log what the agent is about to touch, which builds the action trail the next hook scores against. I deliberately don't inject memory here; it fires far too often, and stuffing context in front of every file read is how you poison a session. (You can also use it as a guard rail to block dangerous calls, but that's a safety feature, not a memory one.)\n\nAfter each tool call. This is the mid-session drip, and the hook that earns its keep. The agent just opened a file, ran a command, or hit an error: that's the strong overlap signal I mentioned above. Score memories against the action, not the conversation. This is the hook that surfaces \"you hit this exact error in March, the fix was X\" at the moment it's useful rather than at kickoff. Same threshold discipline applies: most tool calls surface nothing.\n\nBefore context compaction. Runtimes compress the conversation when it gets long, and anything not written down is gone. So this hook takes a snapshot of working state: current goal, recent decisions, open threads. Not retrieval, pure self-defence. Without it the agent gets amnesia mid-task and you'll blame your retrieval logic for what is actually a compaction problem.\n\nSession end. The write path. Distil the session into a handful of durable facts and decisions, with provenance, into the plain-facts pool. Nothing gets auto-promoted to canonical; that stays a human call. What you write here, and how ruthlessly you summarise, decides whether every future retrieval is searching signal or sludge.\n\nThe shape that falls out: two hooks read (prompt and post-tool), one writes (session end), and the rest are continuity plumbing. Most of the over-surfacing horror stories come from systems that read on every hook because they can.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1781195088.0,
+      "replies": []
+    },
+    {
+      "id": "orak3uq",
+      "author": "sarcasticfrog84",
+      "body": "we ran into this exact problem and honestly the answer to your three scenarios is none of them work if you treat retrieval as a similarity problem. like if the user starts a new project and it shares some keywords with an old one, cosine similarity is gonna pull that old project immediately whether its relevant or not. thats your “history lesson” problem right there.\n\nthe signal that actually worked for us was shifting from “does this look similar” to “does this memory serve the same intent as whats happening right now.” so instead of matching on surface level keywords you look at whether the task, the people involved, and the purpose actually overlap. two projects can share a ton of vocabulary and have nothing to do with eachother. but if someone hits the same type of problem with the same constraints, thats when the old context is genuinely useful not just similar.\n\npractically what that means is you dont surface project A the moment project B starts. you also dont wait for them to hit the exact same wall. you surface it when the structural overlap becomes clear, like when the retrieval pipeline can establish that the what and why match, not just the words. the timing ends up being more natural because the memory shows up when its actually participating in the current context instead of just resembling it.\n\nthe other thing that helped a lot was realizing the “when to surface” question actually starts way earlier at ingest. we built a gate that scores incoming events on novelty and salience and prediction error before deciding whats worth encoding. if you get that part right then what ends up in memory is already filtered for significance which makes the retrieval timing problem way easier downstream. you’re not sifting through noise anymore.\n\nI wrote a paper on this called “Storage Is Not Memory” if your curious, its on arxiv. and the system we built around it is called TrueMemory. but the core insight is honestly just that similarity is not relevance and once you internalize that the timing question starts answering itself.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1781294397.0,
+      "replies": []
+    },
+    {
+      "id": "oray9sc",
+      "author": "justkid201",
+      "body": "On my project I took this problem pretty seriously..  I created a process that is identifying / tagging each turn against a dynamic vocab of topics.  Then as compression builds the memory of the topics discussed it matches against what is NOW being discussed and brings in that context.   Further, the model is given mcp style tools to recover anything from a universe of all topics if it needs to.  Overall subjects discussed are always present to the model and never a retrieval problem.   Project is here [https://github.com/virtual-context/virtual-context](https://github.com/virtual-context/virtual-context)",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1781298499.0,
+      "replies": []
+    },
+    {
+      "id": "orfs7wf",
+      "author": "stilldebugging",
+      "body": "I would say only bring it up if the user asks.  If it was similar to Project A, the user will also know that.  Maybe not know some of the specifics, but they’ll know it’s similar.  Trigger condition should be, “did the user ask to look into similarities with Project A.”",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1781367302.0,
+      "replies": []
+    }
+  ]
+}

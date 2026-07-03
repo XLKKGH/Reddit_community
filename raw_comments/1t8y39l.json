@@ -1,0 +1,13 @@
+{
+  "post": {
+    "id": "1t8y39l",
+    "title": "Has anyone just asked AI what it needs to help me help it help me?",
+    "selftext": "From what I can tell so far, it's not a collection of flat [memory.MD](http://memory.MD), they are messy and unstructured; it's not vector DBs or embedding retrieval systems. Once they get heavy, it's almost the same as deleting data, because it's harder to find and organize efficiently.  \n\nIt also starts accumulating noise, and similarity starts linking unrelated signals, and there's a capacity problem trying to hold a working kv state and a prefilled context window. The new context coming in and finishing the forward pass in a reasonable budget is asking a lot of non-serialized information; it is convenient that we, as the human operator, can read it, edit it, whatever, but forcing feeding prose into a model just seems to bias that context frame.\n\nAnyway, my attempt ended up being something that has changed the way I work with AI in every way. It's such a different experience to have it call this skill, and the model realigns almost perfectly with a previous session, and the maintenance of it happens in the background, so I don't have to constantly remind it to use the skill. its dope.\n\nWhen I say /skill Its quiet a bit more than that under the hood, that just happens to be a convenient way to access the feature. I plan on doing the punchlist clean-up by Wednesday and then some panache. I'll link a V1 by next weekend \n\n  \nSome feedback would be cool",
+    "subreddit": "AIMemory",
+    "score": 1,
+    "url": "https://www.reddit.com/r/AIMemory/comments/1t8y39l/",
+    "created_utc": 1778391345.0,
+    "num_comments": 9
+  },
+  "comments": []
+}

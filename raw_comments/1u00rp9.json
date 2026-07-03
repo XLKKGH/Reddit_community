@@ -1,0 +1,13 @@
+{
+  "post": {
+    "id": "1u00rp9",
+    "title": "What dimensions do you actually need to validate a user's knowledge state against a knowledge graph — and how do you measure each one from conversation data alone?",
+    "selftext": "I'm building a personalized agent that sits on top of a knowledge graph and a user profile. The KG is built. The agent is running. The part I'm still not confident about is how to accurately model the user's relationship to the knowledge inside the graph.\n\nThe dimensions I'm currently thinking about:\n\n* Exposure — have they encountered this concept before?\n* Mastery — can they recall, explain, or apply it in a new context?\n* Interest — do they actually want to go deeper, or just passing through?\n* Confidence — do they think they understand it? (often misaligned with actual mastery)\n\nThe only signal I have is conversation data — no formal assessments, no quizzes. Everything has to be inferred from how users talk, what they ask, and where they choose to go deeper.\n\nWhat I'm stuck on:\n\n* Are these the right dimensions, or am I missing something that actually matters in practice?\n* What's the most reliable way to measure each one passively from conversation signals?\n* Is passive inference ever enough, or do you eventually need to actively probe — and if so, how do you do it without making it feel like a test?\n\nWe've seen that gaps in the KG cause the agent to behave unpredictably even when memory is intact. So the modeling has to be tight. Curious what others have built or seen work.",
+    "subreddit": "learnmachinelearning",
+    "score": 1,
+    "url": "https://www.reddit.com/r/learnmachinelearning/comments/1u00rp9/",
+    "created_utc": 1780903212.0,
+    "num_comments": 0
+  },
+  "comments": []
+}

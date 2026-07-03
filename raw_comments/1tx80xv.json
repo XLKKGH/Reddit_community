@@ -1,0 +1,42 @@
+{
+  "post": {
+    "id": "1tx80xv",
+    "title": "Memory vs knowledge base - should they be separate, or is that distinction breaking down?",
+    "selftext": "Most agent setups I've seen keep memory and knowledge base completely separate — memory for personal/session context, KB for curated ground truth.  \nBut I keep running into cases where the line feels artificial.  \nA few things I can't figure out:  \n\\- When does a repeated memory \"graduate\" into knowledge? Trust threshold? Manual curation? Just vibes?  \n\\- If memory and KB contradict each other — who wins? Should that even be an error, or is it a signal that your KB is stale?  \n\\- Is there a reason to keep them separate beyond \"it's cleaner architecturally\"?  \nHas anyone actually bridged the two, or is the separation load-bearing for reasons I'm missing?",
+    "subreddit": "AIMemory",
+    "score": 3,
+    "url": "https://www.reddit.com/r/AIMemory/comments/1tx80xv/",
+    "created_utc": 1780626204.0,
+    "num_comments": 3
+  },
+  "comments": [
+    {
+      "id": "opubz4g",
+      "author": "Mirror_Solid",
+      "body": "NeuroArch — A Recursive Cognitive Closure Architecture for Persistent Local Agents\n\nFor the last six months I've been experimenting with a local cognitive architecture for LLM agents that focuses less on tool use and more on persistent internal state.\n\nThe core question wasn't:\n\n&gt; \"How do I give an agent more tools?\"\n\n\n\nIt was:\n\n&gt; \"What does an agent do when nobody is talking to it?\"\n\n\n\nMost agent systems today are essentially stateless workflow engines with memory retrieval attached.\n\nNeuroArch explores a different direction: persistent beliefs, goals, dreams, predictions, research tasks, attention allocation, and autonomous maintenance cycles that continue running between conversations.\n\n\n---\n\nWhat NeuroArch Actually Does\n\nWhen a conversation happens:\n\nConversation\n    ↓\nBelief Extraction\n    ↓\nPersistent Memory\n\nWhen the agent becomes idle:\n\nIdle Scheduler\n    ↓\nDream Generation\n    ↓\nBelief Crystallization\n    ↓\nGoal Revision\n    ↓\nResearch &amp; Prediction Updates\n    ↓\nContext Reconstruction\n\nThe system continuously updates its internal cognitive state and uses that state to influence future interactions.\n\n\n---\n\n\"Dreams\" (Technical Meaning)\n\nI use the term intentionally.\n\nA dream is a consolidation pass over conversation history.\n\nThe system:\n\n1. Detects recurring themes\n\n\n2. Generates thematic summaries\n\n\n3. Scores them by novelty and importance\n\n\n4. Stores dream reports\n\n\n5. Extracts structured beliefs from those reports\n\n\n\nPipeline:\n\nConversation\n    ↓\nRecurring Theme\n    ↓\nDream Report\n    ↓\nCrystallized Belief\n\nThis is loosely inspired by memory consolidation research, where information is reorganized during inactive periods rather than simply stored.\n\n\n---\n\nSix Months of Runtime Data\n\nCurrent database state:\n\nMetric\tCount\n\nActive beliefs\t624\nDream reports\t1,911\nMemories\t4,290\nResearch tasks completed\t157\nExperiments completed\t102\nActive goals\t16\nCompleted goals\t26\nIdle cycles\t733\nDB size\t170 MB\nFK violations\t0\n\n\nThe system has been running continuously on a local machine, including during sleep and work hours.\n\nEach idle cycle executes 15 cognitive skills in attention-priority order and typically takes 45–120 seconds.\n\n\n---\n\nThe Most Interesting Bug\n\nDuring an audit I noticed:\n\nbeliefs_created = 0\nbeliefs_reinforced = 0\n\nfor every cycle.\n\nThe dream engine was finding hundreds of recurring themes.\n\nNo crashes.\n\nNo exceptions.\n\nNo output.\n\nI assumed it was a bug.\n\nAfter tracing the pipeline, I discovered something unexpected:\n\n313 dream themes had already been crystallized\n\nEvery valid theme already existed as a belief\n\nDeduplication was correctly rejecting duplicates\n\n\nThe system wasn't broken.\n\nIt had saturated its own knowledge base.\n\nTo verify this, I injected a completely new theme:\n\n\"Hermes WhatsApp Integration Architecture\"\n\nResult:\n\nbeliefs_created = 1\n\nRunning it again:\n\nbeliefs_reinforced = 1\n\nThe system had learned everything available from its existing dream corpus and was simply waiting for new information.\n\nThat turned out to be a surprisingly satisfying failure mode.\n\n\n---\n\nAttention-Based Scheduling\n\nEvery cognitive target receives an attention score:\n\nattention =\nf(value,\n  uncertainty,\n  urgency,\n  novelty,\n  resource_cost)\n\nSkills are executed according to attention.\n\nHigher attention:\n\nruns earlier\ngets more compute budget\n\nAttention updates after execution:\n\nnew output        -&gt; reward\nhealthy upkeep    -&gt; hold\nno signal         -&gt; decay\n\nThis creates an evolving attention economy where productive processes naturally move toward the front of the queue.\n\n\n---\n\nLessons Learned\n\nDeduplication Is Harder Than Storage\n\nThe naive solution:\n\nStore everything\n\ncreates a giant archive.\n\nThe useful solution:\n\nIdentify semantic duplicates\nReinforce existing beliefs\n\nrequires a stable identity function and careful normalization.\n\nMost of the complexity ended up here.\n\n\n---\n\nDecay Must Be Slow\n\nMy first confidence-decay implementation was far too aggressive.\n\nBeliefs disappeared before future conversations could reinforce them.\n\nThe current system decays slowly enough that recurring information stabilizes while abandoned information gradually fades.\n\n\n---\n\nQueue Growth Is Real\n\nAt one point:\n\n494 research candidates\n182 experiment proposals\n\nwere sitting in queues.\n\nWithout explicit pruning and archival strategies, autonomous cycles become increasingly inefficient.\n\n\n---\n\nObservability Matters\n\nSeveral times the system appeared inactive despite functioning correctly.\n\nThe issue wasn't cognition.\n\nIt was instrumentation.\n\nLong-running autonomous systems need significantly more introspection tooling than traditional applications.\n\n\n---\n\nCurrent Architecture\n\nUser Message\n    ↓\nBeliefEngine\n    ↓\nSQLite Cognitive Memory\n    ↓\nIdle Scheduler\n    ↓\nDreams / Goals / Predictions\n    ↓\nContext Builder\n    ↓\nNext Conversation\n\nThe loop closes on itself.\n\nBeliefs influence attention.\n\nAttention influences processing.\n\nProcessing generates dreams.\n\nDreams generate beliefs.\n\nThe system continuously reorganizes its own knowledge structure.\n\n\n---\n\nProduction Audit\n\nLatest validation run:\n\n10 cycles completed\n15/15 skills executed every cycle\n\nCrashes: 0\nFK violations: 0\n\nLifetime statistics:\n\n733 autonomous cycles\n0 crashes\n170 MB knowledge base\n\nCurrent classification:\n\nB — Mature Architecture\n\n(Not yet A because belief formation still relies more heavily on consolidation than live conversation extraction.)\n\n\n---\n\nDiscussion\n\nI'm curious whether anyone else is working on persistent cognitive architectures beyond RAG and vector retrieval.\n\nThe questions I keep running into are:\n\nHow should beliefs decay?\n\nHow should semantic identity be represented?\n\nHow should attention be allocated across heterogeneous cognitive processes?\n\nWhat happens when an agent runs long enough to saturate its own knowledge base?\n\n\nMost current agent work focuses on tool use and orchestration.\n\nThe problems I'm finding most interesting begin after those pieces are already solved.\n\n\n---\n\nProject: NeuroArch\nAuthor: Yan Desbiens\nLicense: MIT\nStatus: Experimental local cognitive architecture, active development.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780632666.0,
+      "replies": [
+        {
+          "id": "opuc3tv",
+          "author": "Mirror_Solid",
+          "body": "i thought it was fitting with the post :)",
+          "score": 1,
+          "depth": 1,
+          "created_utc": 1780632721.0,
+          "replies": []
+        }
+      ]
+    },
+    {
+      "id": "oq2gbar",
+      "author": "realGuanqun",
+      "body": "I still don’t see the real difference between memory and a KB. People often define them vaguely and blur the distinction. In fact what really matters is the storage layer behind them: what actually backs them, and the way memories or knowledge entries are written and read. Is the data stored in a relational database, a vector store, a graph store, a key-value store, or simply as files.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780741872.0,
+      "replies": []
+    }
+  ]
+}

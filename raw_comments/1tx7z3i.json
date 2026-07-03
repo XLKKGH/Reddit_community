@@ -1,0 +1,41 @@
+{
+  "post": {
+    "id": "1tx7z3i",
+    "title": "How do you guys handle incremental updates to a knowledge base without full rebuilds?",
+    "selftext": "Every time I add a new document to my knowledge base, I feel like I’m forced to re-extract all entities and relations from scratch - or risk ending up with a fragmented, inconsistent graph.\n\nSpecifically:    \n\\\\- new entities might duplicate or contradict existing one    \n\\\\- new relations can invalidate old ones    \n\\\\- merging is nontrivial without a global view\n\nAre there established patterns for incremental KG construction? thins I’ve looked into: entity-centric upset, embedding similarity for setup, versioned subgraphs.\n\nHow are you solving this problem? Any libraries or architectures that handle this gracefully at scale?",
+    "subreddit": "semanticweb",
+    "score": 13,
+    "url": "https://www.reddit.com/r/semanticweb/comments/1tx7z3i/",
+    "created_utc": 1780626062.0,
+    "num_comments": 5
+  },
+  "comments": [
+    {
+      "id": "oqenjpg",
+      "author": "hroptatyr",
+      "body": "I use W3C delta (http://www.w3.org/2004/delta#) and a simple SPARQL diff + patch.  First, I load the new graph into a stage area.  Then I apply the diff query (stage versus full KG) which emits W3C delta insertions and deletions (into a patch graph).  Then I apply the patch query which actually INSERTs and DELETEs in the full KG.\n\nAs a bonus and for provenance, I put the patch graph into the full KG as well.  This allows for as-of queries as now you can just look at a resource and its patches.",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1780902353.0,
+      "replies": []
+    },
+    {
+      "id": "os4umln",
+      "author": "marintkael",
+      "body": "What helped me was separating the two problems you've mushed together: adding facts is cheap, deciding identity is the hard part. If every new entity has to resolve against a stable canonical key before it's allowed in, dedup and contradiction become a write-time check instead of a periodic rebuild. The relations then hang off the canonical id, so a merge is updating one pointer instead of rewriting the graph. Versioned subgraphs earn their keep mostly for rolling back a bad merge, not for the incrementality itself.",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1781677254.0,
+      "replies": []
+    },
+    {
+      "id": "oq59i4g",
+      "author": "damngoodwizard",
+      "body": "I had the same problem. Luckily my problem lends itself to fractal compartmentalization. By designing the relationships in a specific way I can afford to update only the impacted subgraph as it is naturally independant from other subgraphs. Some changes can be local by design and thus fenced from the rest of the graph.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780775240.0,
+      "replies": []
+    }
+  ]
+}

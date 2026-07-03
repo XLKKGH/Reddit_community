@@ -1,0 +1,23 @@
+{
+  "post": {
+    "id": "1txf8sz",
+    "title": "How you actually combining memory and knowledge base in practice? Is “stuff both into context” really the standard?",
+    "selftext": "Most setups I've seen for \"personalized agents\" look roughly like this:  \n\\- Long-term memory (episodic, semantic, or both)  \n\\- Personal knowledge base (RAG over docs/notes)  \n\\- Merge both into context → send to LLM  \nAnd it works well enough for simple cases. But as either layer grows, I keep running into the same questions:  \n1. How do you decide what to retrieve from each layer? Do memory and KB go through the same retrieval pipeline, or separate ones? How do you weight them when they return conflicting or overlapping results?  \n2. Is context-stuffing the only viable form, or are there real alternatives?For example — pre-filtering with memory before the RAG query, using memory to rewrite the query, or having the LLMinteract with memory and KB as tools rather than pre-loaded context.  \n3. How do you handle the case where memory and KB say different things?Does your system reconcile this before the LLM sees it, or do you let the LLM figure it out?Curious what architectures people are actually running in production (or serious experiments), not just the toy demosetup.",
+    "subreddit": "AI_Agents",
+    "score": 1,
+    "url": "https://www.reddit.com/r/AI_Agents/comments/1txf8sz/",
+    "created_utc": 1780649349.0,
+    "num_comments": 4
+  },
+  "comments": [
+    {
+      "id": "opva4b7",
+      "author": "AutoModerator",
+      "body": "Thank you for your submission, for any questions regarding AI, please check out our wiki at https://www.reddit.com/r/ai_agents/wiki (this is currently in test and we are actively adding to the wiki)\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/AI_Agents) if you have any questions or concerns.*",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780649349.0,
+      "replies": []
+    }
+  ]
+}

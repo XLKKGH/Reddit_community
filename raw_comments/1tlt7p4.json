@@ -1,0 +1,60 @@
+{
+  "post": {
+    "id": "1tlt7p4",
+    "title": "is memory more useful as facts, preferences, or context bundles?",
+    "selftext": "i’m trying to think through ai memory and the shape of the memory matters way more than i expected.\n\n\n\nsaving facts is easy. “user uses fastapi” or “user prefers short answers” is simple enough. but real usefulness seems to come from bundled context, like how someone works, what they’re trying to avoid, and what patterns they repeat.\n\n\n\ni tried flat preference lists, summaries, and per-project memory. flat lists miss nuance, summaries get stale, and project memory doesn’t help when the same user pattern shows up somewhere else.\n\n\n\ni’m also trying to keep this consent-based and inspectable, because invisible memory feels bad fast.\n\n\n\nfor people building memory systems, what unit of memory has actually worked best: facts, preferences, episodes, or something else?",
+    "subreddit": "AIMemory",
+    "score": 3,
+    "url": "https://www.reddit.com/r/AIMemory/comments/1tlt7p4/",
+    "created_utc": 1779572865.0,
+    "num_comments": 9
+  },
+  "comments": [
+    {
+      "id": "onie09r",
+      "author": "theelevators13",
+      "body": "Depends on the type of memory you want to create but I would approach it from an “entity” place. Essentially everything is a thing including the thing itself",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1779577605.0,
+      "replies": []
+    },
+    {
+      "id": "onisxhp",
+      "author": "FoxFire17739",
+      "body": "For code in specific I like to work with hirarchical side car memory. Keeps the specifics scoped. I use semantic search over these memory files which reveals the structure as the side-car files have nearly the exact same path. The code itself uses a graph. With all 3 layers I get structure, semantics, and domain. The side cars are plain markdown so every engineer can easily inspect and read those. If they search for a code file in a ide they also see the markdown beside it. So far I fair really well as I use this for months at work on large codebases.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1779583145.0,
+      "replies": [
+        {
+          "id": "onv5xcj",
+          "author": "Individual_Ideal",
+          "body": "Can you expand on the graph? How are you creating this graph?",
+          "score": 1,
+          "depth": 1,
+          "created_utc": 1779746912.0,
+          "replies": []
+        }
+      ]
+    },
+    {
+      "id": "onjyb3l",
+      "author": "Similar_Boysenberry7",
+      "body": "I’d avoid choosing one unit too early.\n\nfacts are fine for lookup, preferences are fine for defaults, but the useful memory is usually the little bundle around a repeated situation: what was being attempted, what went wrong, what the person rejected, and what changed afterward.\n\nflat lists get spooky fast because they turn a temporary workaround into a personality trait lol. inspectable bundles + decay feels less creepy to me than a giant permanent preference file.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1779600534.0,
+      "replies": []
+    },
+    {
+      "id": "onxe3dr",
+      "author": "Boring_Show_2932",
+      "body": "Interesting observation. In [Memclaw.net](http://Memclaw.net) we actually see that all the types are in heavy use by the fleets of agents that consumes the memories. You didn't mention how you classify them - rule based or LLM? or you extract separately facts, preferences and so on?  \nGenerally speaking it really depends on your use cases. would be happy to discuss your use case. I'm also spending much time wondering about the best shape of the memory and how it can adapt dynamically.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1779777841.0,
+      "replies": []
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "post": {
+    "id": "1u0szfj",
+    "title": "What's the least annoying way to cold start a personalized agent — and what have users actually accepted?",
+    "selftext": "Every personalized agent has a cold start problem: before you have enough signal, the agent is essentially blind.\n\nThe question I'm trying to answer isn't just \"how many interactions until it's useful\" — it's \"what onboarding experience do users actually tolerate without dropping off?\"\n\nOne approach I'm considering: right after install, show the user a short set of options to select from — topics, preferences, or existing resources they already have. Use those choices to bootstrap a knowledge graph before the first real conversation even starts.\n\nBut I'm not sure if that's the right move. A few things I'm uncertain about:\n\n* Do users actually engage with onboarding prompts, or do they just click through without thinking?\n* Is a structured selection better than just asking open-ended questions upfront?\n* Is there a way to infer enough from the first few real conversations to skip explicit onboarding entirely?\n* What's the tradeoff between \"fast cold start\" and \"user feels surveyed before they've seen any value\"?\n\nCurious what approaches people have actually shipped — and whether users engaged with them or abandoned.",
+    "subreddit": "AI_Agents",
+    "score": 9,
+    "url": "https://www.reddit.com/r/AI_Agents/comments/1u0szfj/",
+    "created_utc": 1780973811.0,
+    "num_comments": 10
+  },
+  "comments": [
+    {
+      "id": "oqkjjx4",
+      "author": "AutoModerator",
+      "body": "Thank you for your submission, for any questions regarding AI, please check out our wiki at https://www.reddit.com/r/ai_agents/wiki (this is currently in test and we are actively adding to the wiki)\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/AI_Agents) if you have any questions or concerns.*",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780973811.0,
+      "replies": []
+    },
+    {
+      "id": "oqkm1zs",
+      "author": "LeftLeads",
+      "body": "You're framing onboarding as the way to collect signal, but the real win is using it to set expectations, not fill a knowledge graph. Users absolutely click through structured prompts without thinking, so anything you collect that way is half garbage anyway. What they actually tolerate is one or two questions that visibly change what happens next, because then it reads as setup, not a survey. The 'feels surveyed before any value' fear is the whole game: every question you ask before delivering something is a withdrawal from an account you haven't deposited into yet. So skip explicit onboarding, infer from the first real conversation, and if you must ask, ask one thing and immediately show the answer changing the output in front of them. Cold start isn't a data problem, it's a trust-pacing problem.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780974694.0,
+      "replies": []
+    },
+    {
+      "id": "oqkwvnn",
+      "author": "throwaway_3966510",
+      "body": "Skip the structured checklist entirely and just let them start talking, then use those first few messages to figure out what they actually need instead of what they think they need upfront. Users will tolerate a slightly rough first interaction way better than another signup form.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780978873.0,
+      "replies": []
+    },
+    {
+      "id": "oqlk8tr",
+      "author": "AI_Strategist1098",
+      "body": "My observation after seeing multiple agent products:\n\nUsers are surprisingly willing to provide context **after the agent proves useful once**.\n\nBefore that, every onboarding screen feels like a tax.\n\nThe first job of onboarding may not be collecting information.\n\nIt may simply be earning the right to ask for it.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780990017.0,
+      "replies": []
+    },
+    {
+      "id": "oqm43q9",
+      "author": "Such_Field_3294",
+      "body": "one thing worth thinking about, are you building for power users or casual ones? power users will actually fill out onboarding because they want control. casual users skip everything. the answer to your onboarding question depends entirely on which segment youre optimizing for.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1781000435.0,
+      "replies": []
+    },
+    {
+      "id": "oqmbl12",
+      "author": "KapilNainani_",
+      "body": "The \"surveyed before they've seen value\" problem is the real one. Every onboarding step you add before the first useful output is a dropout risk. Users don't know if your agent is worth training yet.\n\nWhat actually works, show value first, ask for context second. Let the agent do something useful with minimal input, then at the moment it could do better with more context, ask for it. \"I could personalize this if I knew X, want to add that?\" Feels natural, timing is right, and the user has already seen enough to care.\n\nStructured selection vs open-ended questions, structured wins for completion rate, open-ended wins for quality of signal. The answer depends on what kind of personalization you actually need. Topic selection is fine for structured. Communication style or workflow preferences, open-ended or observed behavior is better.\n\nInferring from first few conversations, yes, this works better than people expect for preference signals. Tone, verbosity, topic focus, an agent can pick these up passively and confirm rather than ask. \"You seem to prefer concise answers, should I keep that?\" is less friction than asking upfront.\n\nThe honest answer on click-through behavior, yes, most users click through onboarding without thinking. Design for the user who doesn't engage, not the one who does.\n\nWhat kind of agent is this for, productivity, research, something else?",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1781003700.0,
+      "replies": []
+    },
+    {
+      "id": "oqnvdyn",
+      "author": "Electronic_Bag_8094",
+      "body": "What’s the context? What are users trying to do with the agent?",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1781020478.0,
+      "replies": []
+    },
+    {
+      "id": "oqkke8s",
+      "author": "Any-Pie1615",
+      "body": "The easiest way to cold start is a migration log. Full project timeline of what happened why it happened what broke how you fixed it why you fixed it the way you fixed it. \n\n---\n###\n---\nhttps://github.com/Sovereign-shards/core/blob/main/technical%20migration%20log.pdf\n---\n###\n---",
+      "score": 0,
+      "depth": 0,
+      "created_utc": 1780974100.0,
+      "replies": []
+    }
+  ]
+}

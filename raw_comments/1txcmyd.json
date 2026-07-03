@@ -1,0 +1,126 @@
+{
+  "post": {
+    "id": "1txcmyd",
+    "title": "Memory + knowledge base still feels incomplete- what’s the actually layer for an agent that truly “knows” you",
+    "selftext": "Most \"personalized agent\" stacks I've seen look like this:Long-term memory (episodic + semantic) + Personal knowledge base (RAG over your docs/notes) → stuffed into context → LLM  \n  And I think this is still fundamentally incomplete. Memory captures \\*what happened\\*.Knowledge base captures \\*what you know\\*.  \n  But neither captures:   \n  1. How you reason and make decisions  \n  Your decision-making patterns under uncertainty, under time pressure, your implicit tradeoffs — none of this is in your memory or your docs. It has to be \\*inferred\\* from behavior over time.  \n2. Identity drift  \n  Your preferences change. An append-only memory system has no way to represent that the person today isn't the same as 6 months ago.  \n  You need belief revision, not just accumulation  \n 3. Proactive modeling  \n  The best collaborators don't wait for you to explain context - they've built a mental model of \\*you\\*. Current systems are reactive.  \nThe hard problem is: can an agent form hypotheses about you that you've never explicitly stated?",
+    "subreddit": "AIMemory",
+    "score": 7,
+    "url": "https://www.reddit.com/r/AIMemory/comments/1txcmyd/",
+    "created_utc": 1780640215.0,
+    "num_comments": 13
+  },
+  "comments": [
+    {
+      "id": "opwz0zy",
+      "author": "Alpjor",
+      "body": "sounds like whatever memory system you wrote or use is just a catalog of old memories. Just build a few processes that look into those memories and propose changes to them. You need 1 that finds inconsistencies and cross-links them and marks 1 side as right, you need a process that looks over your history of session and finds patterns and surfaces them to you for action, you need one that splits memory files when they start to cover 2 topics, etc. There are a bunch of these small cognitive processes, that when you put them all together, start to be the evolving memory system you're talking about. Start small, and after a few iterations you'll find that it IS learning along with you rather than just being a librarian of the past.",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1780671622.0,
+      "replies": []
+    },
+    {
+      "id": "opwlwv0",
+      "author": "42cyy",
+      "body": "Memory is a constantly evolving space and personal AI is going to become a huge market. \n\nA good solution will require exactly what you're talking about - a space for the AI to store more about how you think and how that's evolving with every interaction. Just like the human brain. \n\nWe're experimenting with this to build personal intelligence. Curious how you're approaching it?",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780667950.0,
+      "replies": []
+    },
+    {
+      "id": "oq7rzp5",
+      "author": "Ancient_Olive_4412",
+      "body": "It is evolving and getting interesting space as we get more into agents and harnesses. We will have more agents and their preferences their patterns to monitor than of humans. Append only systems dumping context into files works only so much. Personal preferences change over time working styles evolve and same will start happening with agents",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780809056.0,
+      "replies": []
+    },
+    {
+      "id": "oq8eej2",
+      "author": "PenfieldLabs",
+      "body": "Good breakdown. There's another gap: relational structure. Not just what happened, but how earlier beliefs shaped later ones, which experiences actually mattered, and when you stopped believing something you used to hold hard.\n\nThe real problem is that most systems treat memory as a library when it needs to be a graph. Libraries store. Graphs connect.\n\nYour proactive modeling point is the hardest one. \"This person prioritizes speed over thoroughness under pressure\" only becomes visible after enough behavioral data gets connected across time. That's a graph problem, not a retrieval problem.\nIt's exactly why we built Penfield the way we did. Still the hardest layer for everyone, including us.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780820712.0,
+      "replies": [
+        {
+          "id": "oqkbpo7",
+          "author": "IndependenceGold5902",
+          "body": "\"Libraries store, graphs connect\" — this reframe is exactly what we needed. We've been treating memory as retrieval and wondering why proactive modeling felt impossible. If behavioral patterns only emerge after enough cross-time connections, that changes the whole architecture. Curious how Penfield handles the bootstrapping problem — how many sessions before the graph has enough signal to start forming hypotheses?",
+          "score": 2,
+          "depth": 1,
+          "created_utc": 1780971062.0,
+          "replies": [
+            {
+              "id": "oql001l",
+              "author": "PenfieldLabs",
+              "body": "That's a difficult question to answer. It really depends on how dense each session is. Penfield will start storing memories immediately and as soon as you have more than one it can start building connections. It's useful compounds over time. The more data it has the better it works. It scales too, we've tested it with over 10,000 memories and 10s of thousands of relationships.\n\nThat said you could upload documents or session transcripts in the user portal so you don't have to start from zero. But taking that further, we provide open source tools that help you import existing knowledge bases into penfield. Have a look at [Obsidian Wikilink Types](https://github.com/penfieldlabs/obsidian-wikilink-types), [PENgram](https://github.com/penfieldlabs/pengram) and [Penfield Import](https://github.com/penfieldlabs/penfield-import).\n\nHappy to answer any other questions you have.",
+              "score": 1,
+              "depth": 2,
+              "created_utc": 1780980232.0,
+              "replies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "oqaws5u",
+      "author": "Stunning_Spare",
+      "body": "You shouldn't let agent do the job or you'll get a spaghetti and useless mess, what you describe is more less source of truth of someone's mind(tiny part). but you don't need that to do 1,2. just maintain your memory better and make special memory about it. \n\nI built a system similar to what you said,  it's a type of mental map, but I froze the project,  every layer is uncertainty , you have to maintain and stabilize it so the data can be pure but with each layer it degrades. and human mind , llm are both uncertainty . and  It costs a lot to develop and be used.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780853568.0,
+      "replies": [
+        {
+          "id": "oqkbsie",
+          "author": "IndependenceGold5902",
+          "body": "This is a really important warning. We're seeing the same uncertainty compound with each layer we add. Can I ask — at what point did you decide to freeze the project? Was it a specific layer that broke down, or just the accumulated maintenance cost?",
+          "score": 1,
+          "depth": 1,
+          "created_utc": 1780971089.0,
+          "replies": [
+            {
+              "id": "oqq4iov",
+              "author": "Stunning_Spare",
+              "body": "I found out I can do better than the original ways of sorting information, but its a structure change , and it will probably take few hundred dollar worth of api to see if it works, and face next unknown challenge. It only survives in golden test data and it still needs a lot of work. and quite expensive to run , probably 1 to 2 dollar for 1/hr hand type conversation. it's not a project for solo dev. \n\nBut I kind of understand what you say, bcs it captures your belief, what's triggers you, what cause you feel or do something, or your feelings towards something or someone. and it captures when there's a confliction, so when you shift belief or preferance, it's obvious for the system. and if similar things happen before, system can probably see a pattern of reactions.",
+              "score": 1,
+              "depth": 2,
+              "created_utc": 1781042331.0,
+              "replies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "oqim0cd",
+      "author": "Cinergy2050",
+      "body": "My exhibition project [littleguy.app](http://littleguy.app) was my earlier attempt to provide the kind of turn, embed, and graph system that meets these needs, but it's supersession wasn't bitemporal, which would be needed for the model to know \"Joe's favorite color is blue now but was red 6 months ago\". My latest project addresses all these concerns, but it's still in development, so can't really talk much about it, but yes, these problems you've outlined are specific to consumer/user memory systems, and there are lots to choose from. I'm thinking more about memory as a far larger problem, which is an entirely different game.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780950185.0,
+      "replies": []
+    },
+    {
+      "id": "oszysyi",
+      "author": "Bino5150",
+      "body": "When I built my agent, I used different memory capabilities in concert to make one overall, well rounded function.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1782071233.0,
+      "replies": []
+    },
+    {
+      "id": "opvokh1",
+      "author": "Tema_Art_7777",
+      "body": "If you use chatgpt, it definitely knows you from all of your chats. It is a fine balance between knowing you from all of your history vs the task you are working on now. They have surprised me many times in knowing that balance well - they can connect different streams - it is working.",
+      "score": 0,
+      "depth": 0,
+      "created_utc": 1780656477.0,
+      "replies": []
+    }
+  ]
+}

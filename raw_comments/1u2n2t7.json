@@ -1,0 +1,13 @@
+{
+  "post": {
+    "id": "1u2n2t7",
+    "title": "The hard part of agent memory isn't storage — it's knowing when to surface something. How are you solving retrieval timing?",
+    "selftext": "Most discussions about agent memory focus on what to store and how to represent it. But the problem I keep running into is different: knowing when a past memory is actually relevant to bring up.\n\nStoring everything is easy. The failure mode isn't forgetting — it's either:\n\n* surfacing something too early, before the user cares\n* surfacing something too late, after the moment has passed\n* never surfacing it at all, because the trigger condition was never met\n\nA concrete example: a user worked on Project A three months ago. Today they're starting something that looks similar. Should the agent:\n\n* mention Project A immediately when the new project starts?\n* wait until a specific overlap becomes clear?\n* only bring it up if the user hits the same problem they hit last time?\n\nWhat signals are people actually using to trigger memory retrieval — and how do you avoid making every conversation feel like a history lesson?",
+    "subreddit": "Rag",
+    "score": 1,
+    "url": "https://www.reddit.com/r/Rag/comments/1u2n2t7/",
+    "created_utc": 1781146719.0,
+    "num_comments": 0
+  },
+  "comments": []
+}

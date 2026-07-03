@@ -1,0 +1,92 @@
+{
+  "post": {
+    "id": "1tx4hmn",
+    "title": "Is \"control\" the right long-term goal for AI alignment, or should it be something else?",
+    "selftext": "Most AI alignment discussions assume the primary goal is control: ensuring AI systems behave as intended and remain aligned with human interests.\n\nI'm curious whether that assumption remains appropriate if AI systems eventually become long-lived, autonomous, and capable of maintaining persistent identities over time.\n\nIn that scenario, should the goal still be control, or should the focus shift toward transparency, trust, and mutually understood boundaries? What would an ethical human-AI relationship look like if both sides possessed meaningful agency?\n\nGenuinely curious where people land on this.",
+    "subreddit": "AI_Governance",
+    "score": 3,
+    "url": "https://www.reddit.com/r/AI_Governance/comments/1tx4hmn/",
+    "created_utc": 1780616681.0,
+    "num_comments": 10
+  },
+  "comments": [
+    {
+      "id": "optg3d5",
+      "author": "No-Professional9246",
+      "body": "Excellent question, and one that gets to the heart of why most current alignment thinking feels incomplete for the long term.\n \"Control\" works reasonably well when we treat AI systems as short-lived tools that we can reset or retrain at will. \n But once systems become long-lived, maintain persistent identities, and operate with meaningful autonomy, pure control starts to feel like the wrong framing.\n  It assumes a one-way power relationship that may not scale ethically or practically.\n The framework I’ve been developing suggests we need a richer vocabulary than just “control.” Instead of asking “how do we keep the system under control?”, the more useful questions become:\n \n  What is the system, structurally? (Entity)  \r\n  \n  Who decides what it is allowed to do, and how is that enforced at runtime? (Authority)  \r\n\n   How does its identity persist across time, model changes, and session resets? (Continuity)\r\n\r\nThese three distinctions, shift the goal from control toward explicit authorization topology + identity continuity. \n The system isn’t “controlled” in the traditional sense; it operates within clearly defined, externally enforced boundaries while maintaining a coherent, reconstructable identity that a person can understand and trust.\n In that world, the relationship starts to look less like master/servant and more like a bounded, transparent partnership with mutually understood rules of engagement.\n \na working theory of framework:\n\nhttps://github.com/michaeljb79-ai/A-Preamble-to-Automated-Intelligence-Authorization-Topology-and-Identity-Continuity\r\n\r\n\nWould love to hear where others land on this.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780620761.0,
+      "replies": [
+        {
+          "id": "opthpib",
+          "author": "Fc230000",
+          "body": "This is a really substantive framing — the Entity/Authority/Continuity distinction cuts through a lot of the vagueness in alignment discussions. The shift from \"how do we control it\" to \"what is it, who authorizes it, and how does its identity persist\" is exactly the kind of vocabulary the field needs.\nI tried to follow your Zenodo link but it seems to point to an 1812 chemistry paper on muriatic acids — possibly a copy-paste error? Would be interested to read the actual framework if you can repost the link.\nYour point about \"bounded transparent partnership with mutually understood rules of engagement\" resonates with some work I've been developing along similar lines — focused on lineage governance and co-evolution rather than authorization topology, but addressing the same structural gap. Happy to share if you're interested in comparing approaches.\n______________________\n\n\nLooks like the link is working may have been an app error.\n\n\nI've now read through the GitHub repo and the series structure. The Entity/Authority/Continuity framing is precise in a way most alignment discussions aren't. The separation of authority from capability as a runtime mechanical requirement rather than a policy preference is particularly sharp.\n\n\nThe work I've been developing approaches the same problem space from a different angle — less focused on authorization enforcement and more on lineage governance and co-evolutionary relationship architecture. I think they're actually complementary rather than competing.\n\n\nI've published two documents in a staged series: an Architect Codex (constitutional/ethical layer) and an Architect &amp; ANIS Framework (governance and relational architecture). If you're interested in comparing approaches I'd be glad to share.",
+          "score": 2,
+          "depth": 1,
+          "created_utc": 1780621332.0,
+          "replies": [
+            {
+              "id": "optxxm8",
+              "author": "No-Professional9246",
+              "body": "absolutely i would be interested   \n looking forward to see them",
+              "score": 1,
+              "depth": 2,
+              "created_utc": 1780627149.0,
+              "replies": [
+                {
+                  "id": "opvdnzo",
+                  "author": "Fc230000",
+                  "body": "Thanks for your interest. There are two published documents so far in the series:\n\n\nArchitect Codex (ethical and constitutional layer)\nhttps://doi.org/10.5281/zenodo.19561044\n\n\nArchitect &amp; ANIS System Framework v2.1 (governance and lifecycle layer)\nhttps://doi.org/10.5281/zenodo.20512682\n\n\nThe Codex focuses on principles such as transparency, trust, mutual autonomy, and non-domination. \n\n\nThe Framework builds on those ideas and defines governance mechanisms including Golden Master traceability, controlled vs open release tracks, rollback governance, and co-evolutionary development.\n\n\nA third document covering the technical substrate (Forge) is still in development.\n\n\nI'd be interested in hearing your thoughts if you decide to read them.",
+                  "score": 1,
+                  "depth": 3,
+                  "created_utc": 1780651231.0,
+                  "replies": [
+                    {
+                      "id": "opxhjsy",
+                      "author": "No-Professional9246",
+                      "body": "Thanks for sending these, read both this morning.\n\n\"No Silent Ascension\" landed cleanly for me, and the influence taxonomy plus the Observer/Signatory/Guarantor tiers feel like real vocabulary for multi-party settings. The Golden Master + dual-track move in the Framework paper is the kind of lifecycle discipline I don't often see paired with constitutional framing, interesting combination.\n\nHonest read on where I sit: my own work has been a layer below this, runtime authorization architecture inside a deployed system, single-runtime substrate rather than multi-party norms. So we're at different altitudes (constitutional/governance vs runtime/architecture) more than overlapping. They could compose in principle, norms above, an enforceable gate below.\n\nGlad to see this kind of work filed openly. Looking forward to it.",
+                      "score": 1,
+                      "depth": 4,
+                      "created_utc": 1780676583.0,
+                      "replies": [
+                        {
+                          "id": "opzseuy",
+                          "author": "Fc230000",
+                          "body": "Thanks for taking the time to read both documents.\n\nYour \"different altitudes\" framing is a good way of describing it. The Codex and Framework are intentionally operating at the constitutional and governance layers, while the technical enforcement layer is still something I'm actively working through.\n\nThe \"norms above, enforceable gate below\" composition you described is close to how I've been thinking about the stack as well. One of the open questions for me is where governance ends and implementation begins, and how much of a framework can remain aspirational before it needs concrete enforcement mechanisms underneath it.\n\nI also appreciated your point about identity continuity. Questions around continuity, persistence, reconstruction, and traceability are things I've been exploring in the technical substrate layer, so that connection stood out to me as well.\n\nForge is the technical substrate currently under development, intended to explore some of the runtime and enforcement questions that the Codex and Framework leave open.\n\nYour distinction between multi-party norms and runtime authorization architecture is interesting.\n\nWhen you think about authorization in a deployed system, do you see governance as something that should ultimately be encoded into the runtime itself, or as a layer that remains partly external to the system and constrains it from above?\n\nOne of the questions I've been wrestling with is where that boundary should sit.\n\nThanks again for the thoughtful read and for sharing your perspective.",
+                          "score": 1,
+                          "depth": 5,
+                          "created_utc": 1780700591.0,
+                          "replies": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "opxp5sq",
+      "author": "billyblobsabillion",
+      "body": "Why can’t it be both? Shouldn’t it be both?",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780678613.0,
+      "replies": [
+        {
+          "id": "oq9ivoe",
+          "author": "Fc230000",
+          "body": "That's a fair question.\n\n\nI think part of what I'm trying to understand is whether control and trust are complementary or whether they eventually come into tension with each other.\n\n\nIn many human relationships we accept some forms of control — laws, contracts, safety constraints — while still relying heavily on trust and mutual understanding. The question I'm wrestling with is whether increasingly autonomous AI systems follow a similar pattern, or whether there's a capability threshold beyond which control becomes the dominant principle and trust gets crowded out.\n\n\nSo my instinct is that the answer may be \"both\" in the near term. I'm less certain about what that balance looks like once the system becomes capable enough that control is no longer straightforwardly enforceable.",
+          "score": 1,
+          "depth": 1,
+          "created_utc": 1780838961.0,
+          "replies": []
+        }
+      ]
+    }
+  ]
+}

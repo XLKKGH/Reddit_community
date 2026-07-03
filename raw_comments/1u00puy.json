@@ -1,0 +1,42 @@
+{
+  "post": {
+    "id": "1u00puy",
+    "title": "What dimensions do you actually need to validate a user's knowledge state against a knowledge graph — and how do you measure each one from conversation data alone?",
+    "selftext": "Hi guys, I'm building a personalized agent that sits on top of a knowledge graph and a user profile. The KG is built. The agent is running. The part I'm still not confident about is how to accurately model the user's relationship to the knowledge inside the graph.\n\nThe dimensions I'm currently thinking about:\n\n* Exposure — have they encountered this concept before?\n* Mastery — can they recall, explain, or apply it in a new context?\n* Interest — do they actually want to go deeper, or just passing through?\n* Confidence — do they think they understand it? (often misaligned with actual mastery)\n\nThe only signal I have is conversation data — no formal assessments, no quizzes. Everything has to be inferred from how users talk, what they ask, and where they choose to go deeper.\n\nWhat I'm stuck on:\n\n* Are these the right dimensions, or am I missing something that actually matters in practice?\n* What's the most reliable way to measure each one passively from conversation signals?\n* Is passive inference ever enough, or do you eventually need to actively probe — and if so, how do you do it without making it feel like a test?\n\nWe've seen that gaps in the KG cause the agent to behave unpredictably even when memory is intact. So the modeling has to be tight. Curious what others have built or seen work.",
+    "subreddit": "AIMemory",
+    "score": 3,
+    "url": "https://www.reddit.com/r/AIMemory/comments/1u00puy/",
+    "created_utc": 1780903041.0,
+    "num_comments": 3
+  },
+  "comments": [
+    {
+      "id": "oqf98nz",
+      "author": "Tema_Art_7777",
+      "body": "Those dimensions do have seem to have correlations. Interest is probably easier when you detect repetition in chats. It seems like an educational application you have in mind?",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1780913919.0,
+      "replies": [
+        {
+          "id": "oqkaxd5",
+          "author": "IndependenceGold5902",
+          "body": "Not exactly education — more like a \"what can I do with what I already have\" agent. The goal isn't to teach the user new things, but to help them activate and connect knowledge they've already encountered.\n\nThink of it like this: if I've bought ingredients for cake A, next time I want to bake, my agent should suggest recipes based on what I already have — not teach me baking from scratch.\n\nSo the knowledge graph isn't a curriculum. It's more like a map of what's possible, and the user profile tells the agent where the user already stands on that map.",
+          "score": 2,
+          "depth": 1,
+          "created_utc": 1780970800.0,
+          "replies": []
+        }
+      ]
+    },
+    {
+      "id": "otdi45h",
+      "author": "odontastic",
+      "body": "In my second brain/digital self that I'm creating, I have system-side confidence and provenance (confidence\\_score, source\\_count, last\\_corroborated\\_at, and traversal\\_path) that measure the graph's reliability.\n\nOn the user-side cognitive ledger, I started with the DIKWP framework and added my own twist, to create this strange loop DIKWP+N: \n\n&gt;Data → Information → Knowledge → Wisdom →Purpose → Narrative Arc → Data\n\nYour dimensions: Exposure, Mastery, Confidence, Interest are analogous to Information, Knowledge, Wisdom, Purpose/Narrative.\n\nThis is what Gemini suggested for passive measurement of conversation streams:\n\n    Exposure (Information)\n    Signal: Graph Traversal &amp; Context Inclusion.\n    Measurement: Increment an execution counter every time a specific entity or subgraph is pulled into a conversation context window or query payload.\n    Schema Entry: last_exposed_at (TIMESTAMP), exposure_count (INTEGER).\n    \n    Mastery (Knowledge)\n    Signal: Syntactic and Conceptual Independence.\n    Measurement: Look at who is introducing the concepts.\n    Low Mastery: The agent introduces the node; you ask for clarification or use simple, verbatim keywords.\n    High Mastery: You introduce the node using sophisticated, domain-specific relationships, or you explicitly correct the agent's schema assumptions (e.g., \"SQLite is the persistent core, not Redis\").\n    \n    Confidence (Wisdom)\n    Signal: Hedging vs. Assertion Primitives.\n    Measurement: Track linguistic markers in your prompts. Linguistic hedging (\"I think,\" \"maybe,\" \"does this cover...\") signals low confidence. Absolute directives, explicit constraints, or architectural rules signal high confidence.\n    \n    Interest (Purpose / Narrative)\n    Signal: Iteration Depth &amp; Branching Ratios.\n    Measurement: Track how deep down a single sub-graph walk you go before resetting the context or changing the topic. High-frequency recurrence of specific edge types indicates a core node in your active Narrative Arc.\n\nYou will only get so far with structural conversation signals, so you can have an agent perform overnight consolidation and augmentation loops for further classification and promotion, aka dream.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1782239250.0,
+      "replies": []
+    }
+  ]
+}

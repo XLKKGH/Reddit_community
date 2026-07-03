@@ -1,0 +1,23 @@
+{
+  "post": {
+    "id": "1tx7s0t",
+    "title": "How you guys handle incremental updates to a knowledge base without full rebuilds?",
+    "selftext": "Every time I add a new document to my knowledge base, I feel like I’m forced to re-extract all entities and relations from scratch - or risk ending up with a fragmented, inconsistent graph.\n\nSpecifically:  \n\\- new entities might duplicate or contradict existing one  \n\\- new relations can invalidate old ones  \n\\- merging is nontrivial without a global view\n\nAre there established patterns for incremental KG construction? thins I’ve looked into: entity-centric upset, embedding similarity for setup, versioned subgraphs.\n\nHow are you solving this problem? Any libraries or architectures that handle this gracefully at scale?",
+    "subreddit": "AIMemory",
+    "score": 3,
+    "url": "https://www.reddit.com/r/AIMemory/comments/1tx7s0t/",
+    "created_utc": 1780625539.0,
+    "num_comments": 1
+  },
+  "comments": [
+    {
+      "id": "oq7t840",
+      "author": "JonaOnRed",
+      "body": "I just built a tool that - jk lol\nHaven't tried this myself yet but if your data is interconnected I understand GraphRAG solves a lot of this for you, as it is based on connections within your data at its core, so each time you add new data it knows to find and correctly update all those connections\n\n\nAnother method which I have some practice with is just maintaining (having your agent maintain) a general index of your data. Like a pointer file to the other doc files/sources\n\n\nSo when you add a new piece of data, you also look at the index, see if anything else might be relevant, go read each relevant source, and update those too",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780809660.0,
+      "replies": []
+    }
+  ]
+}

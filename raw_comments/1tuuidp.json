@@ -1,0 +1,126 @@
+{
+  "post": {
+    "id": "1tuuidp",
+    "title": "Something I keep seeing with AI projects that nobody talks about openly",
+    "selftext": "Hi! Wanted to share something that's been on my mind after a lot of conversations with teams trying to ship AI agents.\n\nOver 80% of AI projects fail in production. That stat gets thrown around a lot. What doesn't get discussed is why.\n\nThe easy answer is \"the model wasn't good enough\" or \"the data was bad.\" And sometimes that's true. But what I keep seeing is something different: teams launch without ever having defined what \"working well\" actually means.\n\nThey test a few prompts. The demo looks good. Someone in a meeting says \"it seems solid.\" And then it goes live.\n\nThe problem is that an AI agent isn't a static system. A chatbot responds. An agent interprets, decides, and acts. And the more it can do, the more surface area there is for things to go wrong, not in obvious ways but in subtle ones. It doesn't hallucinate on the demo. It hallucinates on the edge case nobody thought to test. It escalates correctly 95% of the time. That other 5% is a customer getting a wrong answer with full confidence.\n\nWhat I think is actually missing in most rollouts is a definition of failure before launch. Not just \"does it answer correctly\" but: does it know when not to answer? Does it escalate when it should? Does it stay within its boundaries when the conversation goes somewhere unexpected?\n\nA good average score doesn't cancel out a critical error. That's the part that gets skipped.\n\nIs anyone else seeing this gap between how AI agents perform in controlled testing vs. what actually happens when real users start pushing on them?",
+    "subreddit": "ArtificialInteligence",
+    "score": 0,
+    "url": "https://www.reddit.com/r/ArtificialInteligence/comments/1tuuidp/",
+    "created_utc": 1780414402.0,
+    "num_comments": 13
+  },
+  "comments": [
+    {
+      "id": "opc5uol",
+      "author": "heavy-minium",
+      "body": "Quality Assurance is being rediscovered, lol.\n\nHad a discussion with someone from QA three years ago that feared losing their jobs to AI. While that can be true in the short term, the demand will probably go up.\n\nIt's very simple why: AI models are blackboxes. There's no \"bug\" you can trace and fix. You can't just simply change an important system prompt without A/B tests. You can have automated testing, but it's very different from the usual approach for normal software development. The more you invest in AI for a customer-facing product, the more exhaustive and expensive your QA portion will become. And while you may not have dedicated QA teams/roles, effectively somebody needs to handle that.\n\nIt may very well become the golden age of QA, ironically.",
+      "score": 9,
+      "depth": 0,
+      "created_utc": 1780414991.0,
+      "replies": [
+        {
+          "id": "opv3bzl",
+          "author": "hubtyper",
+          "body": "\"The golden age of QA\" is such a perfect way to put it. It feels like the industry spent the last two years pretending we could just prompt our way out of traditional software engineering guardrails. With standard code, you can trace the bug and fix it. With an AI agent, you change one sentence in a system prompt to fix a weird behavior, and you inadvertently break three *other* things in edge cases you didn't even know existed. We're realizing the hard way that black-box systems actually require way more rigorous, expensive testing, not less.",
+          "score": 2,
+          "depth": 1,
+          "created_utc": 1780645731.0,
+          "replies": []
+        }
+      ]
+    },
+    {
+      "id": "opc6fyg",
+      "author": "Comfortable-Web9455",
+      "body": "AI is a completely new technology in this environment. I don't think we have worked out proper testing or management regimes. However, even the most basic practices seem to have been discarded as well. I don't know why people seem to have thrown out everything we've known about deploying new systems just because it's got the label \"AI\".",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1780415146.0,
+      "replies": []
+    },
+    {
+      "id": "opcahun",
+      "author": "Fatuity",
+      "body": "It’s the difference between deterministic and probabilistic workflows. Deterministic workflows are completely predictable and auditable and deliver consistency across user experience. Once you insert a probabilistic model into the workflow as the direct user interface, you get an element of chance, randomness, and uncertainty. The trick (in my opinion) is to maintain deterministic RPAs or workflows but use the probabilistic models to diagnose or fix problems with the deterministic workflow. In other words, deploy the AI to constantly evaluate the deterministic workflow, so that the workflow can improve yet remain deterministic.",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1780416205.0,
+      "replies": [
+        {
+          "id": "opv3ocn",
+          "author": "hubtyper",
+          "body": "That's a really sharp architectural choice. Keeping the user-facing workflow deterministic (like traditional code or standard RPA) so it’s completely predictable, but using the probabilistic model on the backend to audit, flag anomalies, or catch errors. It gives you the safety rails you absolutely need for customer experience while still leveraging the model's reasoning capabilities where it won't break the user interface",
+          "score": 1,
+          "depth": 1,
+          "created_utc": 1780645910.0,
+          "replies": []
+        }
+      ]
+    },
+    {
+      "id": "opcxoau",
+      "author": "MountainSecurity9508",
+      "body": "The why is constantly being discussed.\n\nThanks for copying and pasting this from ChatGPt though.",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1780422254.0,
+      "replies": []
+    },
+    {
+      "id": "opcwtvw",
+      "author": "Latter-Effective4542",
+      "body": "AI governance is required to ensure an AI tool is fit for purpose, doesn’t keep private data, doesn’t have bias, has a confidence limit, and brings value.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780422036.0,
+      "replies": []
+    },
+    {
+      "id": "opdkwun",
+      "author": "Virginia_Hall",
+      "body": "If \"teams launch without ever having defined what \"working well\" actually means\" they need remedial SQA 101 training. If you have no acceptance criteria, you don't know enough to write basic software, let alone deploy AI.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780428396.0,
+      "replies": []
+    },
+    {
+      "id": "ophv1vu",
+      "author": "HuckleberrySlow4108",
+      "body": "This hits hard. Been watching some delivery apps try to roll out AI customer service and it's wild how they seem shocked when the bot tells someone their missing food will \"probably show up eventually\" instead of escalating to human support.\n\n  \nThe boundary testing thing is so real - like nobody thinks to ask \"what happens when customer starts asking about their ex or tries to get restaurant recommendations in different city?\" Demo always works perfect because everyone asks the exact same boring questions they practiced with.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780486662.0,
+      "replies": []
+    },
+    {
+      "id": "opqyf7a",
+      "author": "No-Professional9246",
+      "body": "This is one of the most honest and accurate posts I’ve seen on why AI agents fail in production.  \nYou nailed the real problem: teams ship without ever defining the structural boundaries of what the agent is allowed to do versus what it can do.  \nThe demo looks good because it’s in a controlled, narrow scope.  \nProduction explodes because the agent is suddenly operating in open scope with no enforced architecture for authority, escalation, or failure.  \nThe 5% edge case that quietly breaks everything is exactly what happens when you treat governance as a prompt-engineering afterthought instead of a first-class architectural layer.  \nWhat’s actually missing (and what almost nobody builds) Most teams only solve for capability.  \nVery few solve for entity + authority + continuity.\n\n* Does the agent know what it is? (clear entity definition)\n* Does it have an explicit, runtime-checked authorization topology that cannot be self-expanded? (pre-execution gate, class-specific bounding, external authority)\n* Can it stay bounded even when the conversation goes somewhere unexpected? (scope non-expansion + automation/autonomy boundary)\n\nWithout these, you don’t have an agent, you have something that can quietly become autonomous in the wrong direction.  \nThe missing piece isn’t better prompting or bigger models.  \nIt’s structural architecture for three things most projects never define:\n\n* Entity: Defines what an Automated Intelligence actually is\n* Authorization: the mechanical layer that enforces runtime authorization, external gates, class-specific bounding, and objective/means separation so the agent literally cannot expand its own scope\n* Identity: how the agent reconstructs a coherent, persistent identity from durable artifacts (role, behavioral texture, active threads, relationships) even across model swaps, context resets, or long-running sessions  \n\nWithout these layers, you don’t have bounded automation — you have something that can drift into unintended autonomy or lose coherence over time. That’s the subtle 5 % that kills production systems.\n\nFull series (start with the Preamble):  \n[https://zenodo.org/records/2046827](https://zenodo.org/records/2046827)  \nGitHub blueprints + implementation notes:  \n[https://github.com/michaeljb79-ai/A-Preamble-to-Automated-Intelligence-Authorization-Topology-and-Identity-Continuity](https://github.com/michaeljb79-ai/A-Preamble-to-Automated-Intelligence-Authorization-Topology-and-Identity-Continuity)  \n  \nI’ve watched this exact failure pattern play out in multiple teams.  \nThe ones that actually survive production are the ones that treat authority and boundaries as architectural invariants before they touch the model.  \nYou’re seeing the same thing I’ve been seeing.  \nThis isn’t a prompting problem or a model-size problem.  \nIt’s a missing architectural layer problem.  \nWould love to hear what specific failure modes you’re seeing most often in the wild (the subtle ones that don’t show up in demos).",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780593850.0,
+      "replies": [
+        {
+          "id": "opv3wh0",
+          "author": "hubtyper",
+          "body": "This is incredibly high-value, thank you for breaking this down. You completely hit the nail on the head: teams solve for capability (can the agent do X?) but completely ignore authority (should it be allowed to do X, and how do we hard-code those structural boundaries?).\n\nTreating governance as a first-class architectural layer rather than a prompt-engineering afterthought is the literal difference between a cool demo and a production-grade enterprise system. Definitely saving your link to read the full series.",
+          "score": 2,
+          "depth": 1,
+          "created_utc": 1780646028.0,
+          "replies": [
+            {
+              "id": "opxeyjr",
+              "author": "No-Professional9246",
+              "body": "appreciate that : )",
+              "score": 1,
+              "depth": 2,
+              "created_utc": 1780675893.0,
+              "replies": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

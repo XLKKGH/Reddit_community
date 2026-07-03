@@ -14,13 +14,14 @@ from contextlib import contextmanager
 from flask import Flask, request, jsonify, render_template
 from dotenv import load_dotenv
 
-load_dotenv()
-app = Flask(__name__)
+ROOT = Path(__file__).parent.parent   # backend/ → repo root
+load_dotenv(ROOT / ".env")
+app = Flask(__name__, template_folder=str(ROOT / "frontend"))
 
 # ── config ────────────────────────────────────────────────────────────────────
-DB_FILE   = "data/research.db"
-POSTS_TXT = "posts.txt"
-RAW_DIR   = Path("raw_comments")
+DB_FILE   = str(ROOT / "data/research.db")
+POSTS_TXT = str(ROOT / "posts.txt")
+RAW_DIR   = ROOT / "raw_comments"
 API_KEY   = os.getenv("DEEPSEEK_API_KEY")
 API_BASE  = os.getenv("DEEPSEEK_API_BASE", "https://api.deepseek.com/v1")
 MODEL     = os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
@@ -448,17 +449,14 @@ def import_markdown():
     从 memory_kb_post/*.md 提取分析 → 写入 DB。
     比 LLM 快，用已有研究笔记作为 summary/takeaway。
     """
-    import sys
-    sys.path.insert(0, str(Path(".")))
-    # 动态引入 import_markdown 模块的核心函数
     import importlib.util
     spec = importlib.util.spec_from_file_location(
-        "import_markdown", Path("import_markdown.py")
+        "import_markdown", Path(__file__).parent / "import_markdown.py"
     )
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
 
-    md_dir = Path("memory_kb_post")
+    md_dir = ROOT / "memory_kb_post"
     if not md_dir.exists():
         return jsonify({"error": "memory_kb_post/ 目录不存在"}), 400
 

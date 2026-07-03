@@ -1,0 +1,41 @@
+{
+  "post": {
+    "id": "1txclno",
+    "title": "Memory+knowledge base still feels incomplete - what’s the actually missing layer for an agent that truly “knows” you?",
+    "selftext": "Most \"personalized agent\" stacks I've seen look like this:Long-term memory (episodic + semantic) + Personal knowledge base (RAG over your docs/notes) → stuffed into context → LLM  \n  And I think this is still fundamentally incomplete. Memory captures ‘what happened’. Knowledge base captures ‘what you know’  \n  But neither captures:   \n  1. How you reason and make decisions  \n  Your decision-making patterns under uncertainty, under time pressure, your implicit tradeoffs — none of this is in your memory or your docs. It has to be \\*inferred\\* from behavior over time.  \n2. Identity drift  \n  Your preferences change. An append-only memory system has no way to represent that the person today isn't the same as 6 months ago.  \n  You need belief revision, not just accumulation  \n 3. Proactive modeling  \n  The best collaborators don't wait for you to explain context - they've built a mental model of \\*you\\*. Current systems are reactive.  \nThe hard problem is: can an agent form hypotheses about you that you've never explicitly stated?",
+    "subreddit": "AI_Agents",
+    "score": 1,
+    "url": "https://www.reddit.com/r/AI_Agents/comments/1txclno/",
+    "created_utc": 1780640096.0,
+    "num_comments": 3
+  },
+  "comments": [
+    {
+      "id": "opy02pz",
+      "author": "Enough-Advice-8317",
+      "body": "I have to ask, why, to begin with, do you want the agent's memory to reflect what should have been your memory?\n\nUnless the use case we are talking about is creating your clone, I think that all of these things you said are extremely important and absolutely need to be reflected in the agent's memory system. However, I would argue that it's with the refinement that it has to reflect the agent's thinking process.",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1780681523.0,
+      "replies": []
+    },
+    {
+      "id": "opus6ha",
+      "author": "AutoModerator",
+      "body": "Thank you for your submission, for any questions regarding AI, please check out our wiki at https://www.reddit.com/r/ai_agents/wiki (this is currently in test and we are actively adding to the wiki)\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/AI_Agents) if you have any questions or concerns.*",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780640097.0,
+      "replies": []
+    },
+    {
+      "id": "opys6h6",
+      "author": "ExcitementSubject361",
+      "body": "You’ve pinpointed the problem exactly... the solution sounds simple (I actually had this idea almost a year and a half ago), but implementation is trickier than you’d think. You create a dataset using your own real data—user data—to build a user model, then train it using LoRA. Wrap the whole thing in a custom-tailored harness, and you're all set. Then you just need a meta-agent pipeline to handle regular retraining... the building blocks for all of this are available as open source now.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780689435.0,
+      "replies": []
+    }
+  ]
+}

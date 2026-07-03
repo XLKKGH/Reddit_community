@@ -6,8 +6,9 @@
 import re, sqlite3
 from pathlib import Path
 
-MD_DIR  = Path("memory_kb_post")
-DB_FILE = "data/research.db"
+ROOT    = Path(__file__).parent.parent   # backend/ → repo root
+MD_DIR  = ROOT / "memory_kb_post"
+DB_FILE = str(ROOT / "data/research.db")
 
 # ── text helpers ──────────────────────────────────────────────────────────────
 def clean(t: str) -> str:

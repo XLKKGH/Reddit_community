@@ -1,0 +1,42 @@
+{
+  "post": {
+    "id": "1u0nzbe",
+    "title": "is user memory supposed to be learned slowly or imported with consent?",
+    "selftext": "i keep seeing memory systems that learn from chat over time, but the first few sessions are still painfully generic.\n\ntried summaries, preference extraction, and pinned memories. all of it works a bit, but it feels slow when the user already has useful context sitting in other apps.\n\nnow i'm wondering if AI memory should start from consented user-owned data instead of only learning from future chats.\n\nwhat do you think should be remembered slowly vs brought in explicitly on day one?",
+    "subreddit": "AIMemory",
+    "score": 2,
+    "url": "https://www.reddit.com/r/AIMemory/comments/1u0nzbe/",
+    "created_utc": 1780960279.0,
+    "num_comments": 3
+  },
+  "comments": [
+    {
+      "id": "oqkmm6d",
+      "author": "IndependenceGold5902",
+      "body": "It's a really good question！If the AI memory cold start from 0 and learning from the future chat, I would definitely not gonna use that product lol. How do I know when will the agent \"knows\" me well or not？ I think on day one, the AI memory should ingest the chat history automatically to extract the info of the chat and files that the user have uploaded before. （It should be done automatically, or there would leave too much work for the user hahah）and the user can also uploaded some files from their local device to let the memory to ingest some useful info as well. Then, the memory can continuously \"know\" the user during each chat session they have. \n\nHere are the two ways that I can think of to improve the AI memory using experience. Do you have any other ideas?",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780974895.0,
+      "replies": [
+        {
+          "id": "or78g54",
+          "author": "InformalOutcome4964",
+          "body": "I built that too it's here [https://marginalia.polycode.co.uk/](https://marginalia.polycode.co.uk/)  \nWithout logging in you can access basic chat with a shared memory that recalls between sessions and between different visitors.",
+          "score": 1,
+          "depth": 1,
+          "created_utc": 1781258957.0,
+          "replies": []
+        }
+      ]
+    },
+    {
+      "id": "oqx71e6",
+      "author": "the8bit",
+      "body": "I built a chat -&gt; RAG generator for this actually, that is OSS (can link if interested, works on openai format)\n\nI think soon people will want to always carry all of their context and history with them. However, right now every system is so different and incompatible that transferring is very hard / slow / expensive. Eg I wanted to integrate that workflow into our current app for user onboarding, but it tends to take a few hours and ~$10 to run, so tough to just throw in",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1781128646.0,
+      "replies": []
+    }
+  ]
+}

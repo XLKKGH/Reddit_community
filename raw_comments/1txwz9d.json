@@ -1,0 +1,32 @@
+{
+  "post": {
+    "id": "1txwz9d",
+    "title": "how do you stop AI memory from becoming random guesses?",
+    "selftext": "one thing that keeps bothering me with AI memory is how quickly it turns into vibes.\n\nthe model sees a few interactions, decides the user likes something, saves it, and now every future answer is biased by a guess.\n\ni tried explicit memory only. clean, but users dont want to manage a settings page. tried inferred memory, but it gets creepy fast. tried per-app memory, but then nothing carries across tools.\n\na personal data API or persona SDK sounds useful only if the user can see and edit what is actually stored.\n\nhow are you making persistent user memory useful without letting it become a pile of assumptions?",
+    "subreddit": "AIMemory",
+    "score": 5,
+    "url": "https://www.reddit.com/r/AIMemory/comments/1txwz9d/",
+    "created_utc": 1780692401.0,
+    "num_comments": 4
+  },
+  "comments": [
+    {
+      "id": "opzb8xr",
+      "author": "KnownUnknownKadath",
+      "body": "You're right to be bothered about it.  \n  \nThe problem is that plausible prose can be easily be taken as factual.  \naka \"epistemia\":  *\"the structural condition in which linguistic plausibility substitutes for epistemic evaluation, producing the feeling of knowing without the labor of judgment.\"*  \n  \nIt's then potentially stored in memory without qualification, which gives it apparent authority.  \nSubsequent reads by future agents load it into context.   \nThis context is treated as warranted belief or knowledge.  \nWhich in turn becomes action, and there's no sense of where judgment actually entered the chain.\n\nSo, poorly structured interactions with memory magnify the issue, and this effect can insidiously grow over time.\n\nI'm working on a tool to help with this (aren't we all...), but it's really not a session memory; it's more of a remote team reasoning surface, if you will.",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1780695018.0,
+      "replies": []
+    },
+    {
+      "id": "oqd4bcj",
+      "author": "No-Professional9246",
+      "body": "The reason AI memory turns into \"vibes\" so quickly is that we are currently treating it as an internal, probabilistic model state rather than an external, deterministic data architecture.\n \n ​As long as the model is responsible for both storing the memory and inferring its meaning, you will always get biased guesses. You’re essentially asking the system to hallucinate its own context, which is why it becomes unreliable.\n\n  ​To move from \"random guesses\" to persistent, usable context, you have to decouple the memory from the model’s internal reasoning entirely.\n\n  This requires a shift to three structural distinctions:\n​Structural Entity Boundaries: The model should not be guessing who the user is or what they like. The system needs to define the entity (the user) and the scope of their data through an external, operator-owned structural definition—not a model-inferred persona.\n​Decoupled Authority Topology: The memory constraints, what the system is allowed to \"know\" or \"assume\" must be authored and enforced by a rule-set that sits outside the model. The model should never have the agency to decide what is \"important\" to save; it should only operate within the boundaries defined by that external topology.\n​Identity Continuity: You need a persistent, platform-independent signal for the user that survives session resets or tool-switching. If the context lives inside the app, the app \"forgets\" the moment you change the interaction type.\n\n  If the context lives in a localized, user-owned structural artifact, you don't need a settings page, you have a verifiable source of truth that remains consistent regardless of the tool.\n ​The \"random guessing\" stops the moment you stop letting the model build the world-model for itself.\n\n  It has to be provided with an external, deterministic blueprint of the user's requirements before it processes a single token.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780878635.0,
+      "replies": []
+    }
+  ]
+}

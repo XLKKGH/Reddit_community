@@ -1,0 +1,32 @@
+{
+  "post": {
+    "id": "1u2n12h",
+    "title": "The hard part of agent memory isn't storage — it's knowing when to surface something. How are you solving retrieval timing?",
+    "selftext": "Most discussions about agent memory focus on what to store and how to represent it. But the problem I keep running into is different: knowing when a past memory is actually relevant to bring up.\n\nStoring everything is easy. The failure mode isn't forgetting — it's either:\n\n* surfacing something too early, before the user cares\n* surfacing something too late, after the moment has passed\n* never surfacing it at all, because the trigger condition was never met\n\nA concrete example: a user worked on Project A three months ago. Today they're starting something that looks similar. Should the agent:\n\n* mention Project A immediately when the new project starts?\n* wait until a specific overlap becomes clear?\n* only bring it up if the user hits the same problem they hit last time?\n\nWhat signals are people actually using to trigger memory retrieval — and how do you avoid making every conversation feel like a history lesson?",
+    "subreddit": "AI_Agents",
+    "score": 1,
+    "url": "https://www.reddit.com/r/AI_Agents/comments/1u2n12h/",
+    "created_utc": 1781146585.0,
+    "num_comments": 2
+  },
+  "comments": [
+    {
+      "id": "oqyouwy",
+      "author": "AutoModerator",
+      "body": "Thank you for your submission, for any questions regarding AI, please check out our wiki at https://www.reddit.com/r/ai_agents/wiki (this is currently in test and we are actively adding to the wiki)\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/AI_Agents) if you have any questions or concerns.*",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1781146585.0,
+      "replies": []
+    },
+    {
+      "id": "or0foxx",
+      "author": "KapilNainani_",
+      "body": "Timing is genuinely the harder problem and most discussions skip past it because storage and retrieval are easier to demo.\n\nThe \"don't make every conversation a history lesson\" constraint is the right framing. Surfacing Project A immediately because it's vaguely similar is annoying, the user came to do something new, not get reminded of old work.\n\nWhat's worked better, wait for a specific trigger condition rather than topic similarity. \"Started something similar\" is too broad. \"Hit the same error/decision point as before\" is specific enough to be useful. The signal isn't \"this looks like Project A\", it's \"you're at a decision point where what happened in Project A is directly relevant.\"\n\nFor the \"never surfaces because trigger never met\" failure, one approach is passive availability rather than active surfacing. The agent doesn't proactively mention Project A, but if the user asks something where it's relevant, retrieval picks it up naturally because the context matches. Less \"the agent remembered\" and more \"the agent had access to relevant context when it mattered.\"\n\nThe hardest version of this, surfacing something the user would want to know but hasn't asked about and doesn't know to ask. That's where most implementations either over-trigger (annoying) or never trigger (memory feels useless). Haven't seen a clean solution to that specific case, usually ends up being a confidence threshold tuned through trial and error rather than a principled rule.\n\nWhat's the use case, is this for a coding assistant, general productivity agent, something else?\n\n\\[Engaged with the actual hard problem, gave a concrete reframe on triggers, honest about the unsolved part, ended with a question, builder to builder\\]",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1781175434.0,
+      "replies": []
+    }
+  ]
+}

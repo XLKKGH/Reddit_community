@@ -1,0 +1,152 @@
+{
+  "post": {
+    "id": "1tx8dhj",
+    "title": "Is an AI 'memory manager' that decides what to keep/forget actually feasible?",
+    "selftext": "I’ve been thinking about AI memory design and I’m not sure how realistic this idea is, so I wanted to ask people who know more about the field.\n\nInstead of storing everything a model interacts with, what if there was a separate system responsible for managing memory over time? for example, something that assigns importance to pieces of information in the conversation, and then decides what gets reinforced, compressed, or forgotten.\n\nKind of like a secondary memory AI that manages all the data from the chat history storage of a working AI. It could have several functions like having frequently used concepts get strengthened, rarely used or irrelevant ones decay, and even related concepts reinforcing each other. \n\nSo for example, if you tell the system something personal, the memory manager would decide how important it is and store it in short-term vs long-term memory. Later, if similar topics come up again, it could strengthen that memory. If it never becomes relevant again, it would gradually decay and possibly be deleted.\n\nI’m curious what people think",
+    "subreddit": "ArtificialInteligence",
+    "score": 4,
+    "url": "https://www.reddit.com/r/ArtificialInteligence/comments/1tx8dhj/",
+    "created_utc": 1780627178.0,
+    "num_comments": 20
+  },
+  "comments": [
+    {
+      "id": "opu1maa",
+      "author": "WorldsGreatestWorst",
+      "body": "This is akin to suggesting that they should make cars more fuel efficient by using different technologies and materials. Few would argue with it, but the hard part is execution not ideation.",
+      "score": 3,
+      "depth": 0,
+      "created_utc": 1780628501.0,
+      "replies": [
+        {
+          "id": "opu2jgd",
+          "author": "Embarrassed-Bus9956",
+          "body": "Very much true, I'm personally not that proficient with AI, so I have no idea whether something like this could actually work or not.",
+          "score": 1,
+          "depth": 1,
+          "created_utc": 1780628850.0,
+          "replies": [
+            {
+              "id": "opwuibt",
+              "author": "VeryOriginalName98",
+              "body": "The barrier isn't really AI, it's understanding how information relates and changes over time. If it were understanding AI, it would be solved by now.\n\nA couple people proposed Graph Based RAG, which kinda solves the \"relates\" part, but the \"changes over time\" part is what bites everyone.\n\nExample:\nBase:\nJohn Smith is your beat friend.\nYou grew up together.\nYou want him to be involved in all your major life events.\nChange:\nJohn Smith murdered your sister.\nProblem:\n\"Your birthday is coming up, I've invited your best friend John Smith.\"",
+              "score": 2,
+              "depth": 2,
+              "created_utc": 1780670388.0,
+              "replies": []
+            },
+            {
+              "id": "opu6ysc",
+              "author": "sugarw0000kie",
+              "body": "pretty low barrier way to tinker - setup openclaw, hook up some provider and tell it to set up different sorts of memory systems for itself",
+              "score": 0,
+              "depth": 2,
+              "created_utc": 1780630597.0,
+              "replies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "opu83e9",
+      "author": "No-Professional9246",
+      "body": "Yes\n   this is not only feasible, it’s one of the most important missing pieces in current AI memory design.\n  Most systems treat memory as “just store everything and retrieve when needed.” \n  What you’re describing ~ a dedicated memory manager that intelligently decides what to reinforce, compress, or forget, is exactly the right direction. \n But the deeper architectural insight is that this isn’t really a memory problem. \n It’s an identity continuity problem.\n  Memory surfaces facts.\r\nIdentity continuity reconstructs a coherent, persistent self from durable artifacts.\n  Instead of trying to make one model manage importance scoring + reinforcement + decay inside transient context, the cleaner approach is to externalize the continuity layer:\n   Use structured, user-owned artifacts (project state, behavioral texture, relational threads, role definitions) as the permanent record.\r\n  At the start of every session or after long gaps, the system runs a reconstruction protocol that rebuilds working identity from those artifacts.\n  The “memory manager” then becomes a policy layer that decides what gets written back into the artifacts (what to strengthen, what to decay, what to archive).\r\n\r\nThis is precisely what Segment 4 of the framework covers (Identity Continuity). It treats long-term memory not as passive storage, but as active, reconstructable identity.\n\n  Full series reconstruction blueprints:\n\r\nhttps://github.com/michaeljb79-ai/A-Preamble-to-Automated-Intelligence-Authorization-Topology-and-Identity-Continuity\n\nI’ve been building exactly this pattern in Reiva.io and it dramatically improves coherence on long-running agents",
+      "score": 4,
+      "depth": 0,
+      "created_utc": 1780631056.0,
+      "replies": []
+    },
+    {
+      "id": "opuvhpw",
+      "author": "ItayGutman",
+      "body": "this is actually a huge area of research right now, often called episodic memory or dynamic context management. i recall reading about some architectures that use a secondary vector database to simulate this, where a smaller model summarizes past interactions into weights before deciding what to prune. its definately tricky because you dont want to accidentally delete a subtle detail that becomes relevant later on",
+      "score": 3,
+      "depth": 0,
+      "created_utc": 1780641731.0,
+      "replies": []
+    },
+    {
+      "id": "opvq4ts",
+      "author": "Novel_Blackberry_470",
+      "body": "Funny thing is humans already do this badly all the time. We forget random useful stuff, remember useless arguments from 8 years ago, and suddenly recall something important when a weird trigger shows up. An AI memory system that is a little messy but mostly useful might actually end up feeling more natural than one trying to perfectly remember everything.",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1780657136.0,
+      "replies": []
+    },
+    {
+      "id": "optyvnj",
+      "author": "FlimsyAd2868",
+      "body": "The concept is definitely doable from technical standpoint, but the real challenge would be in defining what \"importance\" actually means for each context\n\n  \nYou'd need some way to measure relevance that goes beyond just frequency - like maybe a scoring system that considers emotional weight, user preferences, and how information connects to other stored data. The tricky part is making sure it doesn't accidentally delete something that seems unimportant now but becomes crucial later",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780627495.0,
+      "replies": [
+        {
+          "id": "opu1sjp",
+          "author": "Embarrassed-Bus9956",
+          "body": "I actually think occasionally forgetting might be beneficial. Like if something gets dropped and later reintroduced, then the re-encoding could strengthen the association, similar to how retrieval practice works in human memory.",
+          "score": 1,
+          "depth": 1,
+          "created_utc": 1780628567.0,
+          "replies": []
+        }
+      ]
+    },
+    {
+      "id": "opu5o29",
+      "author": "Imogynn",
+      "body": "Totally. I have a version I brewed that runs with Claude code. It's not super fancy but it's kinda amazing what it does as it adapts to conversations you had a month ago and says \"I thought we'd agreed z and now you're doing y\" and it decided without my prompting that z was worth remembering",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780630073.0,
+      "replies": []
+    },
+    {
+      "id": "opu5pna",
+      "author": "Beginning_Coconut_71",
+      "body": "Like subcog?\nhttps://github.com/zircote/subcog",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780630091.0,
+      "replies": []
+    },
+    {
+      "id": "opu8dbe",
+      "author": "erc80",
+      "body": "Yes. You can create static “facts” from the conversation and keep it cached.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780631168.0,
+      "replies": []
+    },
+    {
+      "id": "opuipvo",
+      "author": "GardenPrestigious202",
+      "body": "[https://github.com/AiLang-Author/HalCode9000](https://github.com/AiLang-Author/HalCode9000)",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780635638.0,
+      "replies": []
+    },
+    {
+      "id": "opujamd",
+      "author": "Fragrant_Track7744",
+      "body": "It is because you are the one who teaches it",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780635903.0,
+      "replies": []
+    },
+    {
+      "id": "opy59z4",
+      "author": "jacobpederson",
+      "body": "No.  I mean yes its been done roughly a thousand times at this point ( [https://github.com/MemPalace/mempalace](https://github.com/MemPalace/mempalace) ) - but the underlying issue cannot be solved.  The context window is too small.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1780682924.0,
+      "replies": []
+    }
+  ]
+}
