@@ -11,8 +11,9 @@ Usage:
 import re
 from pathlib import Path
 
-MD_DIR = Path("memory_kb_post")
-POSTS_FILE = Path("posts.txt")
+ROOT       = Path(__file__).parent.parent   # fetcher/ → repo root
+MD_DIR     = ROOT / "memory_kb_post"
+POSTS_FILE = ROOT / "posts.txt"
 
 URL_RE = re.compile(r"https://(?:www\.)?reddit\.com/r/[^/\s)]+/comments/[a-z0-9]+")
 
