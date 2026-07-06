@@ -4,7 +4,7 @@
     "title": "Agent Memory",
     "selftext": "Hi, something I've been wondering as a student diving into agent infra: every agent framework has a \"memory\" module. But they all just store stuff. Nobody seems to handle memory consolidation - merging duplicates, forgeeting outdated info, resolving conflicts. \n\nIs anyone working on this? Or is the assumption that vector search solves it? -&gt; personally think that it actually doesn't :(",
     "subreddit": "AI_Agents",
-    "score": 5,
+    "score": 4,
     "url": "https://www.reddit.com/r/AI_Agents/comments/1tosjmd/",
     "created_utc": 1779849805.0,
     "num_comments": 16

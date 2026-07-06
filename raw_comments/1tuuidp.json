@@ -14,7 +14,7 @@
       "id": "opc5uol",
       "author": "heavy-minium",
       "body": "Quality Assurance is being rediscovered, lol.\n\nHad a discussion with someone from QA three years ago that feared losing their jobs to AI. While that can be true in the short term, the demand will probably go up.\n\nIt's very simple why: AI models are blackboxes. There's no \"bug\" you can trace and fix. You can't just simply change an important system prompt without A/B tests. You can have automated testing, but it's very different from the usual approach for normal software development. The more you invest in AI for a customer-facing product, the more exhaustive and expensive your QA portion will become. And while you may not have dedicated QA teams/roles, effectively somebody needs to handle that.\n\nIt may very well become the golden age of QA, ironically.",
-      "score": 9,
+      "score": 7,
       "depth": 0,
       "created_utc": 1780414991.0,
       "replies": [
@@ -64,15 +64,6 @@
       "score": 2,
       "depth": 0,
       "created_utc": 1780422254.0,
-      "replies": []
-    },
-    {
-      "id": "opcwtvw",
-      "author": "Latter-Effective4542",
-      "body": "AI governance is required to ensure an AI tool is fit for purpose, doesn’t keep private data, doesn’t have bias, has a confidence limit, and brings value.",
-      "score": 1,
-      "depth": 0,
-      "created_utc": 1780422036.0,
       "replies": []
     },
     {

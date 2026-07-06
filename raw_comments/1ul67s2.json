@@ -4,17 +4,17 @@
     "title": "Am I the only one who almost never keeps an agent skill installed?",
     "selftext": "Maybe this is just me, but I've found that most agent skills optimize for looking impressive rather than being genuinely reusable.\n\nThe README is polished.\n\nThe demo works. \\^\\_\\^\n\nThen I install it ... and never use it again....  :-(\n\nThe few skills I've actually kept tend to be boring:\n\n\\- tiny\n\n\\- composable\n\n\\- easy to modify\n\n\\- don't require a huge dependency stack\n\nI'm curious whether other people have had the same experience, or if you've found places where high-quality skills consistently show up.",
     "subreddit": "AI_Agents",
-    "score": 4,
+    "score": 5,
     "url": "https://www.reddit.com/r/AI_Agents/comments/1ul67s2/",
     "created_utc": 1782961036.0,
-    "num_comments": 12
+    "num_comments": 13
   },
   "comments": [
     {
       "id": "ov1rp8w",
       "author": "BatResponsible1106",
       "body": "same here. the skills that stick are usually the ones solving one small repeatable problem well. if i have to relearn how they work they rarely survive.",
-      "score": 3,
+      "score": 5,
       "depth": 0,
       "created_utc": 1782962830.0,
       "replies": [
@@ -118,6 +118,15 @@
       "score": 1,
       "depth": 0,
       "created_utc": 1782989913.0,
+      "replies": []
+    },
+    {
+      "id": "ov4hz30",
+      "author": "heisdancingdancing",
+      "body": "Skills should be bespoke workflows for your business/personal tasks, or tool use guidelines. That's pretty much all they're good for.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783002308.0,
       "replies": []
     }
   ]

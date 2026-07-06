@@ -4,28 +4,19 @@
     "title": "Curious whether anyone else has had the same experience about skills",
     "selftext": "Every time I discover a cool skill repository I think: \"This one looks pretty useful.\" And ten minutes later I uninstall it. The README is usually more impressive than the actual workflow improvement.\n\nAt this point I've become much more skeptical of GitHub stars and flashy demos. they all look so good and can solve thousands of problems, but actually not really working on my end :( \n\nWondering if anyone else has had the same experience.",
     "subreddit": "aiagents",
-    "score": 5,
+    "score": 6,
     "url": "https://www.reddit.com/r/aiagents/comments/1ul6y3w/",
     "created_utc": 1782963136.0,
-    "num_comments": 7
+    "num_comments": 11
   },
   "comments": [
     {
       "id": "ov28hw2",
       "author": "tribat",
       "body": "I made 2 skills for this: /evaluate and /reddit-fetch. When I see something interesting (often on reddit) I have claude code evaluate if it's worth a) adopting or b) lifting the good stuff. 90% of the time it's \"You already have this, this, and this but these 3 things might be worth adding\". \n\nMy skills, [claude.md](http://claude.md), and other tools kinda just grow like weeds because I let Claude Code add any of them that seem worthwhile, but in my experience, it's very skeptical about adding new stuff.",
-      "score": 2,
+      "score": 3,
       "depth": 0,
       "created_utc": 1782969691.0,
-      "replies": []
-    },
-    {
-      "id": "ov2pjpw",
-      "author": "Proper-Campaign6834",
-      "body": "I used to have the same experience. A lot of repos optimize for the demo instead of the day-to-day workflow. I've started judging projects by three things: how quickly I can get them running, whether I can customize them easily, and whether I still use them a week later. GitHub stars are useful as a signal, but they don't tell you if a tool fits your workflow.",
-      "score": 1,
-      "depth": 0,
-      "created_utc": 1782977704.0,
       "replies": []
     },
     {
@@ -65,10 +56,46 @@
       "replies": []
     },
     {
+      "id": "ov6g2h1",
+      "author": "BendEnvironmental995",
+      "body": "Yeah same here most flashy repos look amazing in the README but fall apart when you actually try to use them",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783020275.0,
+      "replies": []
+    },
+    {
+      "id": "ov8o9n4",
+      "author": "New_Story_4784",
+      "body": "Skills are very unreliable, they just tell an agent what to do but can’t really enforce the actual workflow. That’s why creating a harness is better. For example, a small python script that actually enforces what is supposed to be done.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783044822.0,
+      "replies": []
+    },
+    {
+      "id": "ov9ldwa",
+      "author": "SakshamBaranwal",
+      "body": "My rule is simple now : if i can't integrate it into my existing workflow within 30min, i probably won't use it for the long term. A cool demo isn't enough anymore.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783057912.0,
+      "replies": []
+    },
+    {
+      "id": "ovcr6hj",
+      "author": "Psychological_Poem64",
+      "body": "Check if this helps you in any way don’t have much stars but it works\n\nhttps://github.com/amitpatole/verel",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783099441.0,
+      "replies": []
+    },
+    {
       "id": "ov22pgd",
       "author": "Rosie_grac",
       "body": "yep, you're not crazy. the README-to-reality gap on these skill repos is real.\n\nmy rough count: installed maybe 15-20 of these over the last few months, kept 2. the pattern is they nail the demo on the author's exact setup with curated inputs, then quietly fall apart the second your data looks slightly different or you step off the happy path. and the killer isn't the install — it's the hours you sink wiring it in before you realize it doesn't fit your actual workflow.\n\nrule I've landed on: if a repo only shows success cases and never shows how it fails, I skip it. github stars mean basically nothing now, half of them are launch-day hype from a twitter thread.\n\nthe 2 I actually kept are honestly dumb little single-purpose wrappers around one API call. turns out that's what I needed, not another \"orchestration framework.\"",
-      "score": 0,
+      "score": -1,
       "depth": 0,
       "created_utc": 1782967172.0,
       "replies": []

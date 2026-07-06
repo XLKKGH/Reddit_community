@@ -1,0 +1,354 @@
+[
+  {
+    "post": {
+      "id": "1ul67s2",
+      "title": "Am I the only one who almost never keeps an agent skill installed?",
+      "selftext": "Maybe this is just me, but I've found that most agent skills optimize for looking impressive rather than being genuinely reusable.\n\nThe README is polished.\n\nThe demo works. \\^\\_\\^\n\nThen I install it ... and never use it again....  :-(\n\nThe few skills I've actually kept tend to be boring:\n\n\\- tiny\n\n\\- composable\n\n\\- easy to modify\n\n\\- don't require a huge dependency stack\n\nI'm curious whether other people have had the same experience, or if you've found places where high-quality skills consistently show up.",
+      "subreddit": "AI_Agents",
+      "score": 5,
+      "url": "https://www.reddit.com/r/AI_Agents/comments/1ul67s2/",
+      "created_utc": 1782961036.0,
+      "num_comments": 13
+    },
+    "all_comments": [
+      {
+        "id": "ov1rp8w",
+        "author": "BatResponsible1106",
+        "body": "same here. the skills that stick are usually the ones solving one small repeatable problem well. if i have to relearn how they work they rarely survive.",
+        "score": 5,
+        "depth": 0,
+        "created_utc": 1782962830.0,
+        "replies": [
+          {
+            "id": "ov1t1w2",
+            "author": "IndependenceGold5902",
+            "body": "what skills you keep in the end then?",
+            "score": 2,
+            "depth": 1,
+            "created_utc": 1782963339.0,
+            "replies": []
+          }
+        ]
+      },
+      {
+        "id": "ov1orbw",
+        "author": "Acceptable-Win9726",
+        "body": "it's not just you. i've cleared out my agent configs like three times this year and every time i'm left with maybe two tools that i actually reach for\n\n  \nthe problem is over-complicated demos hide how fragile the skill is outside the happy path. stuff gets weird fast when it touches real data or slightly non-standard inputs\n\n  \nthe ones i keep are boring too. basically grep with a nicer interface",
+        "score": 3,
+        "depth": 0,
+        "created_utc": 1782961750.0,
+        "replies": [
+          {
+            "id": "ov1vvd0",
+            "author": "Different_Pain5781",
+            "body": "The best compliment for a skill is forgetting it's there because it just works",
+            "score": 2,
+            "depth": 1,
+            "created_utc": 1782964413.0,
+            "replies": []
+          },
+          {
+            "id": "ov1sxkl",
+            "author": "IndependenceGold5902",
+            "body": "what are the skills you keep? I feel like my agents getting dumber and slower with more skills installed. looking for some good skills to installed lo",
+            "score": 1,
+            "depth": 1,
+            "created_utc": 1782963294.0,
+            "replies": []
+          }
+        ]
+      },
+      {
+        "id": "ov1s6qh",
+        "author": "BrightCook5861",
+        "body": "Not just you. The skills that survive are usually the boring ones that solve one repeatable problem cleanly. If a skill needs a whole mental model, a big dependency stack, or only works in the demo path, I probably won’t keep it installed either.",
+        "score": 2,
+        "depth": 0,
+        "created_utc": 1782963011.0,
+        "replies": []
+      },
+      {
+        "id": "ov2axfu",
+        "author": "TrivialFluke",
+        "body": "the flashy demos are like those kitchen gadgets that only make avocado roses, cool for 5 minutes then it just takes up drawer space",
+        "score": 2,
+        "depth": 0,
+        "created_utc": 1782970788.0,
+        "replies": []
+      },
+      {
+        "id": "ov1mr4m",
+        "author": "AutoModerator",
+        "body": "Thank you for your submission, for any questions regarding AI, please check out our wiki at https://www.reddit.com/r/ai_agents/wiki (this is currently in test and we are actively adding to the wiki)\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/AI_Agents) if you have any questions or concerns.*",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1782961037.0,
+        "replies": []
+      },
+      {
+        "id": "ov2awo9",
+        "author": "iportnov",
+        "body": "I find skills not very much reusable across industry. If your job is building landing pages for websites, then you maybe have a skill that says \"You're a landing pages builder\", and it is very useful for you. And probably for other people who do exactly the same, too. But if another person does goods list pages, it is totally useless...  \nSo, imho it is much better to use those online available skill collections just as a reference, to build your own skills, which fit for your personal workflow.",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1782970779.0,
+        "replies": []
+      },
+      {
+        "id": "ov2dmi5",
+        "author": "percoAi",
+        "body": "Same experience. The skills I keep are usually small and boring because I can inspect them modify them and trust the boundary. Once a skill needs a giant setup or hides too much behavior it stops feeling reusable and starts feeling like another framework to maintain.",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1782972020.0,
+        "replies": []
+      },
+      {
+        "id": "ov2fo6b",
+        "author": "ArtDealer",
+        "body": "I'm 100% opposite.  Skills are awesome because you don't have to think about them.  I avoid MCPs if a CLI is available and i create a skill for it instead (datadog's newish CLI is the perfect example).  I don't use pre-built agents anymore.  I create the skill and forget it.  \n\n\"Hand-off the remaining tasks to an AI instance in a different worktree\" knows to emulate the /compact skill and add a prompt md file for next tasks into the global temp folder.\n\n\"Add that information to my learnings\" knows which obsidian vault and folder to put a new file and how to link it to my knowledge graph of certain criteria are met.\n\nAgent files were great back in the day (a few months ago), but skills have completely replaced them.  \"Launch an agent which does xyz using a certain skill\"",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1782972975.0,
+        "replies": []
+      },
+      {
+        "id": "ov3f2d7",
+        "author": "Low_Original5508",
+        "body": "honestly the ones i keep are the ones i could've written myself in an afternoon. makes me wonder if a \"skill\" as a shippable unit is even the right abstraction, vs just a few snippets in your own config that you actually understand and can fix when they break mid-run. the flashy ones fail in ways you can't debug because you never really knew what they did.",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1782989913.0,
+        "replies": []
+      },
+      {
+        "id": "ov4hz30",
+        "author": "heisdancingdancing",
+        "body": "Skills should be bespoke workflows for your business/personal tasks, or tool use guidelines. That's pretty much all they're good for.",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1783002308.0,
+        "replies": []
+      }
+    ]
+  },
+  {
+    "post": {
+      "id": "1ul6y3w",
+      "title": "Curious whether anyone else has had the same experience about skills",
+      "selftext": "Every time I discover a cool skill repository I think: \"This one looks pretty useful.\" And ten minutes later I uninstall it. The README is usually more impressive than the actual workflow improvement.\n\nAt this point I've become much more skeptical of GitHub stars and flashy demos. they all look so good and can solve thousands of problems, but actually not really working on my end :( \n\nWondering if anyone else has had the same experience.",
+      "subreddit": "aiagents",
+      "score": 6,
+      "url": "https://www.reddit.com/r/aiagents/comments/1ul6y3w/",
+      "created_utc": 1782963136.0,
+      "num_comments": 11
+    },
+    "all_comments": [
+      {
+        "id": "ov28hw2",
+        "author": "tribat",
+        "body": "I made 2 skills for this: /evaluate and /reddit-fetch. When I see something interesting (often on reddit) I have claude code evaluate if it's worth a) adopting or b) lifting the good stuff. 90% of the time it's \"You already have this, this, and this but these 3 things might be worth adding\". \n\nMy skills, [claude.md](http://claude.md), and other tools kinda just grow like weeds because I let Claude Code add any of them that seem worthwhile, but in my experience, it's very skeptical about adding new stuff.",
+        "score": 3,
+        "depth": 0,
+        "created_utc": 1782969691.0,
+        "replies": []
+      },
+      {
+        "id": "ov2rjvf",
+        "author": "TheGoddessInari",
+        "body": "Personally, we simply curate our own skills, treating them as manuals, not vibes or personas or roles.\n\nLetting the model learn from the context and easily achieve things that it literally can't without.",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1782978719.0,
+        "replies": []
+      },
+      {
+        "id": "ov2y8l8",
+        "author": "Faux_Real",
+        "body": "If I find something that reads well and it looks like I can use it, I will fork and customize it to my domain. I had your experience once and never again",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1782982066.0,
+        "replies": []
+      },
+      {
+        "id": "ov39cal",
+        "author": "Hybrid-Intelligence",
+        "body": "OMG yes! I find almost every Skill and GPT being shared to be entirely useless for the intended use case, at least relative what I can do for myself. \n\nFull disclosure, I'm not a developer or coder of any kind. I'm just a very heavy user. \n\nSo, there might be tons of skills out there helpful to developers and I would never know it. Everything I use and do is for regular office work, HR, project management, legal, business development, operations, etc.",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1782987452.0,
+        "replies": []
+      },
+      {
+        "id": "ov3ok99",
+        "author": "zenmatrix83",
+        "body": "I just make my own, anytime I work with an agent it it struggles I make a skill for that.  Anything general enough for most people to want the llm probably can do better on its own, anything specific enough you should make probably as it fits better.",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1782993530.0,
+        "replies": []
+      },
+      {
+        "id": "ov6g2h1",
+        "author": "BendEnvironmental995",
+        "body": "Yeah same here most flashy repos look amazing in the README but fall apart when you actually try to use them",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1783020275.0,
+        "replies": []
+      },
+      {
+        "id": "ov8o9n4",
+        "author": "New_Story_4784",
+        "body": "Skills are very unreliable, they just tell an agent what to do but can’t really enforce the actual workflow. That’s why creating a harness is better. For example, a small python script that actually enforces what is supposed to be done.",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1783044822.0,
+        "replies": []
+      },
+      {
+        "id": "ov9ldwa",
+        "author": "SakshamBaranwal",
+        "body": "My rule is simple now : if i can't integrate it into my existing workflow within 30min, i probably won't use it for the long term. A cool demo isn't enough anymore.",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1783057912.0,
+        "replies": []
+      },
+      {
+        "id": "ovcr6hj",
+        "author": "Psychological_Poem64",
+        "body": "Check if this helps you in any way don’t have much stars but it works\n\nhttps://github.com/amitpatole/verel",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1783099441.0,
+        "replies": []
+      },
+      {
+        "id": "ov22pgd",
+        "author": "Rosie_grac",
+        "body": "yep, you're not crazy. the README-to-reality gap on these skill repos is real.\n\nmy rough count: installed maybe 15-20 of these over the last few months, kept 2. the pattern is they nail the demo on the author's exact setup with curated inputs, then quietly fall apart the second your data looks slightly different or you step off the happy path. and the killer isn't the install — it's the hours you sink wiring it in before you realize it doesn't fit your actual workflow.\n\nrule I've landed on: if a repo only shows success cases and never shows how it fails, I skip it. github stars mean basically nothing now, half of them are launch-day hype from a twitter thread.\n\nthe 2 I actually kept are honestly dumb little single-purpose wrappers around one API call. turns out that's what I needed, not another \"orchestration framework.\"",
+        "score": -1,
+        "depth": 0,
+        "created_utc": 1782967172.0,
+        "replies": []
+      }
+    ]
+  },
+  {
+    "post": {
+      "id": "1ul6boy",
+      "title": "Why are good agent skills so hard to discover?",
+      "selftext": "Every time I discover a cool skill repository I think: \"This one looks useful\"\n\nTen minutes later I uninstall it. The README is usually more impressive than the actual workflow improvement :-(\n\nAt this point I've become much more skeptical of GitHub stars and flashy demos.\n\nWondering if anyone else has had the same experience. and if you have some skills you consistently use, pls tell me (No Ads pls)",
+      "subreddit": "learnAIAgents",
+      "score": 13,
+      "url": "https://www.reddit.com/r/learnAIAgents/comments/1ul6boy/",
+      "created_utc": 1782961337.0,
+      "num_comments": 15
+    },
+    "all_comments": [
+      {
+        "id": "ov4irvb",
+        "author": "heisdancingdancing",
+        "body": "Skills should be bespoke workflows for your business/personal tasks, or tool use guidelines (documentation for CLI tools). That's pretty much all they're good for.",
+        "score": 3,
+        "depth": 0,
+        "created_utc": 1783002522.0,
+        "replies": [
+          {
+            "id": "ov7mxvs",
+            "author": "bromanyeah",
+            "body": "yawp",
+            "score": 1,
+            "depth": 1,
+            "created_utc": 1783032690.0,
+            "replies": []
+          }
+        ]
+      },
+      {
+        "id": "ov93dja",
+        "author": "ebytes111",
+        "body": "The most game-changing skills for me that I discovered were superpowers skills. If you learn how to use them and structure your workflow around them, you’ll be shipping extremely good software",
+        "score": 3,
+        "depth": 0,
+        "created_utc": 1783050392.0,
+        "replies": []
+      },
+      {
+        "id": "ov33rwf",
+        "author": "Hot-Leadership-6431",
+        "body": "Ordinary people usually turn their experiences, workflows, and their work skills into skills. There are truly infinite incidents, accidents, work, and experiences in the world. In other words, there is no skill that matches your experience. So, you might as well watch Meta Agent. It could be called an advertisement, but honestly, it was well-made. Try it. It's really easy to create an agent.\n\n[agentlas.cloud](http://agentlas.cloud/en)",
+        "score": 2,
+        "depth": 0,
+        "created_utc": 1782984840.0,
+        "replies": []
+      },
+      {
+        "id": "ov68671",
+        "author": "iridescent_herb",
+        "body": "Yeah I have had the fomo of downloading bunch of skills but in the end the one you build yourself will be far better suited",
+        "score": 2,
+        "depth": 0,
+        "created_utc": 1783018182.0,
+        "replies": []
+      },
+      {
+        "id": "ov6ph5i",
+        "author": "Loyd2888",
+        "body": "Really the only generic skills I've used with some success are for are designing and planning - but all of my day to day skills are bespoke to my respective repo.",
+        "score": 2,
+        "depth": 0,
+        "created_utc": 1783022769.0,
+        "replies": []
+      },
+      {
+        "id": "ov9dcow",
+        "author": "Choom_from_Heywood",
+        "body": "you need a constraint lattice to keep agents in their lane to do respective tasks.",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1783054397.0,
+        "replies": []
+      },
+      {
+        "id": "ovas53z",
+        "author": "Far-Pomelo-1483",
+        "body": "Make your own based on the repos use case and commit them to the repo not globally.",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1783078054.0,
+        "replies": []
+      },
+      {
+        "id": "ovbixmg",
+        "author": "Due-Guard221",
+        "body": "it’s been around a year since i started working with agent skills, and i’ve also made agent skills for few people and companie and i’ll be honest, most skills look useful in the readme because the demo is built around the cleanest possible path. real work is never that clean.\n\ntoday’s ai-native companies have very complex and personalized internal operations. the useful workflows are usually not “summarize this page” or “make a chart.” they are messy things like pulling context from 4 internal tools, following company-specific rules, checking edge cases, writing to the right system, and knowing when not to act.\n\nthat’s where most public skill repos fail. they are too generic. they don’t know your docs, your naming conventions, your database shape, your approval process, your customer edge cases, or your internal shortcuts. so the readme feels impressive, but when you try it in your actual workflow, it saves almost no time.\n\nif i was there in ur shoes i will judge the skills by asking: does this remove one painful repeated workflow from my day, or is it just a cool bullshit demo?\n\nthe best skills i’ve seen are  too boring and specific to a point the readme flies above my head, thats when i know , yeah it can be good lol. they have clear inputs, clear outputs, narrow permissions, examples, logs, fallback behavior, and they don’t try to be a full employee. they just do one annoying job really well.\n\nfrom my exp the solution is  building small internal skill packs around your own workflows, dont try to copy it from open source. start with the stuff you repeat every week, write the exact process once, connect only the tools needed, add guardrails, and test it on real messy cases.\n\ngithub stars are almost useless for this so forget abt it",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1783087023.0,
+        "replies": []
+      },
+      {
+        "id": "ovd3u6l",
+        "author": "Bino5150",
+        "body": "Get an agent that creates and curates its own skills as it goes, based on your particular workflow.",
+        "score": 1,
+        "depth": 0,
+        "created_utc": 1783102873.0,
+        "replies": [
+          {
+            "id": "oved9hz",
+            "author": "sean-adapt",
+            "body": "This is the way. Then a way to share them with your team to share the good stuff.",
+            "score": 2,
+            "depth": 1,
+            "created_utc": 1783115869.0,
+            "replies": []
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,115 @@
+{
+  "post": {
+    "id": "1ul6boy",
+    "title": "Why are good agent skills so hard to discover?",
+    "selftext": "Every time I discover a cool skill repository I think: \"This one looks useful\"\n\nTen minutes later I uninstall it. The README is usually more impressive than the actual workflow improvement :-(\n\nAt this point I've become much more skeptical of GitHub stars and flashy demos.\n\nWondering if anyone else has had the same experience. and if you have some skills you consistently use, pls tell me (No Ads pls)",
+    "subreddit": "learnAIAgents",
+    "score": 13,
+    "url": "https://www.reddit.com/r/learnAIAgents/comments/1ul6boy/",
+    "created_utc": 1782961337.0,
+    "num_comments": 15
+  },
+  "comments": [
+    {
+      "id": "ov4irvb",
+      "author": "heisdancingdancing",
+      "body": "Skills should be bespoke workflows for your business/personal tasks, or tool use guidelines (documentation for CLI tools). That's pretty much all they're good for.",
+      "score": 3,
+      "depth": 0,
+      "created_utc": 1783002522.0,
+      "replies": [
+        {
+          "id": "ov7mxvs",
+          "author": "bromanyeah",
+          "body": "yawp",
+          "score": 1,
+          "depth": 1,
+          "created_utc": 1783032690.0,
+          "replies": []
+        }
+      ]
+    },
+    {
+      "id": "ov93dja",
+      "author": "ebytes111",
+      "body": "The most game-changing skills for me that I discovered were superpowers skills. If you learn how to use them and structure your workflow around them, you’ll be shipping extremely good software",
+      "score": 3,
+      "depth": 0,
+      "created_utc": 1783050392.0,
+      "replies": []
+    },
+    {
+      "id": "ov33rwf",
+      "author": "Hot-Leadership-6431",
+      "body": "Ordinary people usually turn their experiences, workflows, and their work skills into skills. There are truly infinite incidents, accidents, work, and experiences in the world. In other words, there is no skill that matches your experience. So, you might as well watch Meta Agent. It could be called an advertisement, but honestly, it was well-made. Try it. It's really easy to create an agent.\n\n[agentlas.cloud](http://agentlas.cloud/en)",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1782984840.0,
+      "replies": []
+    },
+    {
+      "id": "ov68671",
+      "author": "iridescent_herb",
+      "body": "Yeah I have had the fomo of downloading bunch of skills but in the end the one you build yourself will be far better suited",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1783018182.0,
+      "replies": []
+    },
+    {
+      "id": "ov6ph5i",
+      "author": "Loyd2888",
+      "body": "Really the only generic skills I've used with some success are for are designing and planning - but all of my day to day skills are bespoke to my respective repo.",
+      "score": 2,
+      "depth": 0,
+      "created_utc": 1783022769.0,
+      "replies": []
+    },
+    {
+      "id": "ov9dcow",
+      "author": "Choom_from_Heywood",
+      "body": "you need a constraint lattice to keep agents in their lane to do respective tasks.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783054397.0,
+      "replies": []
+    },
+    {
+      "id": "ovas53z",
+      "author": "Far-Pomelo-1483",
+      "body": "Make your own based on the repos use case and commit them to the repo not globally.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783078054.0,
+      "replies": []
+    },
+    {
+      "id": "ovbixmg",
+      "author": "Due-Guard221",
+      "body": "it’s been around a year since i started working with agent skills, and i’ve also made agent skills for few people and companie and i’ll be honest, most skills look useful in the readme because the demo is built around the cleanest possible path. real work is never that clean.\n\ntoday’s ai-native companies have very complex and personalized internal operations. the useful workflows are usually not “summarize this page” or “make a chart.” they are messy things like pulling context from 4 internal tools, following company-specific rules, checking edge cases, writing to the right system, and knowing when not to act.\n\nthat’s where most public skill repos fail. they are too generic. they don’t know your docs, your naming conventions, your database shape, your approval process, your customer edge cases, or your internal shortcuts. so the readme feels impressive, but when you try it in your actual workflow, it saves almost no time.\n\nif i was there in ur shoes i will judge the skills by asking: does this remove one painful repeated workflow from my day, or is it just a cool bullshit demo?\n\nthe best skills i’ve seen are  too boring and specific to a point the readme flies above my head, thats when i know , yeah it can be good lol. they have clear inputs, clear outputs, narrow permissions, examples, logs, fallback behavior, and they don’t try to be a full employee. they just do one annoying job really well.\n\nfrom my exp the solution is  building small internal skill packs around your own workflows, dont try to copy it from open source. start with the stuff you repeat every week, write the exact process once, connect only the tools needed, add guardrails, and test it on real messy cases.\n\ngithub stars are almost useless for this so forget abt it",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783087023.0,
+      "replies": []
+    },
+    {
+      "id": "ovd3u6l",
+      "author": "Bino5150",
+      "body": "Get an agent that creates and curates its own skills as it goes, based on your particular workflow.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783102873.0,
+      "replies": [
+        {
+          "id": "oved9hz",
+          "author": "sean-adapt",
+          "body": "This is the way. Then a way to share them with your team to share the good stuff.",
+          "score": 2,
+          "depth": 1,
+          "created_utc": 1783115869.0,
+          "replies": []
+        }
+      ]
+    }
+  ]
+}
