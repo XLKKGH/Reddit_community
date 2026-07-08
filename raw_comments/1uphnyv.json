@@ -1,0 +1,69 @@
+{
+  "post": {
+    "id": "1uphnyv",
+    "title": "I've kept 2 out of 20ish skills this year. The time I waste  wiring them in is the real killer",
+    "selftext": "I've installed maybe 15-20 skills over the las few months and kept 2. The killer isn't the install, but the hours I sink wiring them into my workflow before realizing they don't actually fit. I want to get faster at the kill decision. Right now my only real rule is \"if i can't integrate it within 30min, I probably won't use it long term\" That's it......\n\nWhat signals tell you a skill is dead on arrival? especially the non-obvious ones - the stuff you only notice after getting burned a few times.",
+    "subreddit": "AI_Agents",
+    "score": 7,
+    "url": "https://www.reddit.com/r/AI_Agents/comments/1uphnyv/",
+    "created_utc": 1783390231.0,
+    "num_comments": 10
+  },
+  "comments": [
+    {
+      "id": "ow07i2h",
+      "author": "AutoModerator",
+      "body": "Thank you for your submission, for any questions regarding AI, please check out our wiki at https://www.reddit.com/r/ai_agents/wiki (this is currently in test and we are actively adding to the wiki)\n\n*I am a bot, and this action was performed automatically. Please [contact the moderators of this subreddit](/message/compose/?to=/r/AI_Agents) if you have any questions or concerns.*",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783390231.0,
+      "replies": []
+    },
+    {
+      "id": "ow0bzhd",
+      "author": "ExactInstruction4864",
+      "body": "my quick way to screen skills is simple: I only keep them if I need to solve or optimize a specific problem, or use them frequently. For example, when tweaking UI elements, it’s hard for me to describe exactly what design I want via prompts. If a skill can quickly refine the design into something decent, I’ll save it and reuse it later.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783391572.0,
+      "replies": []
+    },
+    {
+      "id": "ow0ed6d",
+      "author": "Key_Art8704",
+      "body": "My kill signal is simpler than the 30 minute rule, if the setup requires me to manually configure environment variables or mess with API keys outside the agent's own config file, I kill it immediately. The ones that stick are the ones where the tool call itself carries all the context it needs. I burned maybe four hours last month wiring up a browser automation skill that worked great in isolation but kept failing because the agent would pass stale session tokens between calls. The integration overhead wasn't in the setup, it was in the runtime state management. I kinda wish I'd tested that under load before spending a whole afternoon on it",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783392320.0,
+      "replies": [
+        {
+          "id": "ow12wo6",
+          "author": "whiskeyunscripted",
+          "body": "welll the \"worked great in isolation\" trap is the one that gets everyone. demos run single-shot, clean state, no concurrency. the failures that actually cost you a workflow, stale tokens, race conditions, whatever breaks under repetition, don't show up until you're already three hours into wiring it in. by then you're debugging your own integration, not the skill.\n\nalmost makes the 30 minute rule too generous. the real question isn't \"can I wire this in fast,\" it's \"does this survive being used the way I'll actually use it\", and you can't answer that in 30 minutes no matter how good the demo looked.",
+          "score": 1,
+          "depth": 1,
+          "created_utc": 1783401947.0,
+          "replies": []
+        }
+      ]
+    },
+    {
+      "id": "ow0kflz",
+      "author": "Barneythebrown",
+      "body": "I've found the biggest red flag is when the skill only works after you start changing your workflow to accommodate it. Good tools adapt to you, not the other way around.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783394403.0,
+      "replies": []
+    },
+    {
+      "id": "ow0tiou",
+      "author": "CODE_HEIST",
+      "body": "the hidden cost is not installing the skill, it is trusting it enough to keep it in the workflow. if setup takes longer than the problem it solves, it becomes shelfware even if the demo looked great.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783397915.0,
+      "replies": []
+    }
+  ]
+}
