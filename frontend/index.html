@@ -7,139 +7,151 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f1f5f9;color:#1e293b;min-height:100vh}
-a{color:#3b82f6;text-decoration:none}a:hover{text-decoration:underline}
+a{color:#3b82f6;text-decoration:none}
 
-/* header */
-.header{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%);color:white;padding:24px 32px}
-.header h1{font-size:1.4rem;font-weight:700;margin-bottom:16px}
+/* ── header ── */
+.header{background:linear-gradient(135deg,#0f172a,#1e3a5f);color:white;padding:22px 28px}
+.header h1{font-size:1.3rem;font-weight:700;margin-bottom:14px}
 .header h1 span{color:#60a5fa}
-.add-form{display:flex;gap:10px;max-width:700px}
-.add-form input{flex:1;padding:10px 14px;border-radius:8px;border:none;font-size:.9rem;
+.add-form{display:flex;gap:8px;max-width:660px}
+.add-form input{flex:1;padding:9px 13px;border-radius:7px;border:none;font-size:.88rem;
   background:rgba(255,255,255,.12);color:white;outline:none}
 .add-form input::placeholder{color:rgba(255,255,255,.4)}
 .add-form input:focus{background:rgba(255,255,255,.2)}
-.btn{padding:10px 18px;border:none;border-radius:8px;cursor:pointer;font-size:.88rem;font-weight:600;transition:all .15s}
+.header-actions{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+.btn{padding:8px 15px;border:none;border-radius:7px;cursor:pointer;font-size:.83rem;font-weight:600;transition:all .15s}
 .btn-primary{background:#3b82f6;color:white}.btn-primary:hover{background:#2563eb}
 .btn-import{background:#0ea5e9;color:white}.btn-import:hover{background:#0284c7}
+.btn-md{background:#0d9488;color:white}.btn-md:hover{background:#0f766e}
 .btn-analyze{background:#8b5cf6;color:white;position:relative}.btn-analyze:hover{background:#7c3aed}
 .btn-summarize{background:#f59e0b;color:white}.btn-summarize:hover{background:#d97706}
-/* post summary blocks */
-.post-question{margin:10px 20px 0;padding:10px 14px;background:#f0f9ff;border-left:3px solid #38bdf8;
-  border-radius:0 6px 6px 0;font-size:.86rem;color:#0c4a6e;line-height:1.6}
-.post-question-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
-  color:#0ea5e9;margin-bottom:4px}
-.post-overview{margin:8px 20px 12px;padding:10px 14px;background:#fafafa;border:1px solid #e2e8f0;
-  border-radius:6px;font-size:.84rem;color:#334155;line-height:1.7}
-.post-overview-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
-  color:#64748b;margin-bottom:4px}
+.btn-export{background:#475569;color:white;text-decoration:none;display:inline-block}
+.btn-export:hover{background:#334155;color:white}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .badge{position:absolute;top:-7px;right:-7px;background:#ef4444;color:white;
-  border-radius:10px;font-size:.65rem;font-weight:700;padding:1px 6px;min-width:18px;text-align:center}
-.header-actions{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
-.divider{width:1px;height:24px;background:rgba(255,255,255,.2);margin:0 2px}
-.toast{font-size:.82rem;padding:6px 12px;border-radius:6px;background:rgba(255,255,255,.1);display:none}
+  border-radius:10px;font-size:.65rem;font-weight:700;padding:1px 6px}
+.divider{width:1px;height:22px;background:rgba(255,255,255,.2)}
+.toast{font-size:.8rem;padding:5px 11px;border-radius:6px;display:none;background:rgba(255,255,255,.1)}
 .toast.show{display:inline-block}
 .toast.success{background:rgba(34,197,94,.25);color:#86efac}
 .toast.error{background:rgba(239,68,68,.25);color:#fca5a5}
 .toast.info{background:rgba(59,130,246,.25);color:#93c5fd}
 
-/* tabs */
-.tabs-bar{background:white;border-bottom:2px solid #e2e8f0;padding:0 32px;
-  display:flex;gap:0;position:sticky;top:0;z-index:10;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.tab{padding:14px 20px;cursor:pointer;font-size:.88rem;font-weight:600;color:#64748b;
-  border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;display:flex;align-items:center;gap:6px}
+/* ── tabs ── */
+.tabs-bar{background:white;border-bottom:2px solid #e2e8f0;padding:0 28px;
+  display:flex;gap:0;position:sticky;top:0;z-index:10;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.tab{padding:12px 18px;cursor:pointer;font-size:.86rem;font-weight:600;color:#64748b;
+  border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;display:flex;align-items:center;gap:5px}
 .tab:hover{color:#1e293b}
 .tab.active{color:#3b82f6;border-bottom-color:#3b82f6}
-.tab .cnt{background:#f1f5f9;color:#64748b;font-size:.7rem;font-weight:700;
-  padding:1px 7px;border-radius:10px}
+.tab .cnt{background:#f1f5f9;color:#64748b;font-size:.68rem;font-weight:700;padding:1px 6px;border-radius:9px}
 .tab.active .cnt{background:#dbeafe;color:#2563eb}
 
-/* container */
-.container{max-width:860px;margin:28px auto;padding:0 20px}
-.empty-state{text-align:center;padding:60px 20px;color:#94a3b8}
+/* ── grid ── */
+.container{max-width:1100px;margin:24px auto;padding:0 20px}
+.empty-state{text-align:center;padding:60px 20px;color:#94a3b8;display:none}
 .empty-state .icon{font-size:3rem;margin-bottom:12px}
-.category-header{display:flex;align-items:center;gap:10px;margin:8px 0 16px;
-  font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#94a3b8}
+.category-header{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;
+  color:#94a3b8;margin:20px 0 12px;display:flex;align-items:center;gap:8px}
 .category-header::after{content:'';flex:1;height:1px;background:#e2e8f0}
 
-.pending-section{background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;
-  padding:16px 20px;margin-bottom:20px}
-.pending-section h3{font-size:.85rem;color:#d97706;font-weight:600;margin-bottom:10px}
-.pending-item{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.82rem;color:#92400e}
-.pending-dot{width:6px;height:6px;border-radius:50%;background:#fbbf24;flex-shrink:0}
+.posts-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
 
-/* post card */
-.post-card{background:white;border-radius:12px;margin-bottom:14px;
-  box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden}
+/* ── post card (compact) ── */
+.post-card{background:white;border-radius:10px;padding:16px;cursor:pointer;
+  box-shadow:0 1px 3px rgba(0,0,0,.06);border:2px solid transparent;
+  transition:border-color .15s,box-shadow .15s;display:flex;flex-direction:column;gap:8px}
+.post-card:hover{box-shadow:0 3px 10px rgba(0,0,0,.1)}
+.post-card.active{border-color:#3b82f6;box-shadow:0 3px 10px rgba(59,130,246,.15)}
 .post-card.has-new{border-left:4px solid #ef4444}
-.post-header{padding:16px 20px;cursor:pointer;user-select:none;display:flex;align-items:flex-start;gap:12px}
-.post-header:hover{background:#f8fafc}
-.post-badge{min-width:44px;padding-top:2px}
-.new-badge{background:#ef4444;color:white;font-size:.68rem;font-weight:700;
-  padding:3px 7px;border-radius:12px;letter-spacing:.5px;white-space:nowrap}
-.sub-badge{font-size:.75rem;color:#64748b;font-weight:500}
-.post-info{flex:1}
-.post-title{font-size:.93rem;font-weight:600;margin-bottom:6px;color:#1e293b;line-height:1.4}
-.post-title a{color:inherit}.post-title a:hover{color:#3b82f6}
-.post-meta{display:flex;flex-wrap:wrap;gap:8px;font-size:.76rem;color:#64748b}
-.post-meta .hl{color:#d97706;font-weight:600}
-.post-meta .newc{color:#ef4444;font-weight:600}
-.post-meta .unanalyzed{color:#8b5cf6;font-weight:600}
-.post-toggle{color:#94a3b8;font-size:1rem;transition:transform .2s;padding-top:2px}
-.post-card.open .post-toggle{transform:rotate(180deg)}
-
-/* category selector */
-.cat-selector{font-size:.72rem;padding:2px 8px;border-radius:6px;border:1px solid #e2e8f0;
+.card-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.76rem;color:#64748b}
+.card-sub{font-weight:600;color:#475569}
+.card-new{background:#ef4444;color:white;font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:9px}
+.card-title{font-size:.92rem;font-weight:700;color:#1e293b;line-height:1.4}
+.card-question{font-size:.81rem;color:#475569;line-height:1.55;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-clamp:2;
+  -webkit-box-orient:vertical;overflow:hidden}
+.card-stats{display:flex;align-items:center;gap:8px;font-size:.76rem;flex-wrap:wrap}
+.stat-hl{color:#d97706;font-weight:600}
+.stat-new{color:#ef4444;font-weight:600}
+.stat-pending{color:#8b5cf6;font-weight:600}
+.card-actions{display:flex;align-items:center;gap:6px;margin-top:2px}
+.btn-batch{padding:4px 10px;font-size:.75rem;border-radius:6px;border:none;
+  background:#8b5cf6;color:white;cursor:pointer;font-weight:600}
+.btn-batch:hover{background:#7c3aed}
+.cat-selector{font-size:.72rem;padding:3px 7px;border-radius:6px;border:1px solid #e2e8f0;
   background:white;color:#64748b;cursor:pointer;outline:none;margin-left:auto}
-.cat-selector:hover{border-color:#94a3b8}
 
-/* comments */
-.comments-body{border-top:1px solid #f1f5f9;padding:14px 20px;display:none}
-.post-card.open .comments-body{display:block}
-.no-comments{color:#94a3b8;font-size:.85rem;padding:8px 0}
-.section-label{font-size:.7rem;font-weight:700;text-transform:uppercase;
-  letter-spacing:.8px;color:#94a3b8;margin:10px 0 7px}
-.comment-card{border:1px solid #e2e8f0;border-radius:8px;padding:13px;
-  margin-bottom:9px;background:#f8fafc}
-.comment-card.is-new{background:#fff7ed;border-color:#fed7aa}
-.comment-card.is-highlight{background:#fffbeb;border-color:#fcd34d}
-.comment-card.not-analyzed{background:#f5f3ff;border-color:#ddd6fe;opacity:.85}
-.c-header{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-bottom:7px}
-.c-author{font-weight:600;color:#1e40af;font-size:.86rem}
-.c-score{color:#ef4444;font-size:.78rem;font-weight:600}
-.c-new{background:#ef4444;color:white;font-size:.64rem;font-weight:700;padding:2px 6px;border-radius:10px}
-.c-hl{background:#fbbf24;color:white;font-size:.64rem;font-weight:700;padding:2px 6px;border-radius:10px}
-.c-pending{background:#8b5cf6;color:white;font-size:.64rem;font-weight:600;padding:2px 6px;border-radius:10px}
-.c-stars{color:#f59e0b;font-size:.78rem}
-.c-date{color:#94a3b8;font-size:.73rem;margin-left:auto}
-.c-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px}
-.tag{padding:2px 6px;border-radius:10px;font-size:.68rem;font-weight:500}
-.c-score-txt{font-size:.76rem;color:#64748b}
-.c-block{margin:8px 0;padding:10px 12px;border-radius:7px;background:white;border:1px solid #e9ecef}
-.c-block-takeaway{background:#f0fdf4;border-color:#bbf7d0}
-.c-block-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+/* ── detail (full-width expand) ── */
+.post-detail-row{grid-column:1 / -1}
+.post-detail{background:white;border-radius:10px;padding:20px 24px;
+  border:2px solid #3b82f6;box-shadow:0 4px 16px rgba(59,130,246,.1)}
+.detail-header{margin-bottom:16px}
+.detail-title{font-size:1.05rem;font-weight:700;color:#1e293b;margin-bottom:6px}
+.detail-url{font-size:.8rem;color:#3b82f6;word-break:break-all;margin-bottom:10px}
+.detail-url:hover{text-decoration:underline}
+.info-block{padding:10px 14px;border-radius:7px;margin-bottom:10px;font-size:.85rem;line-height:1.7}
+.info-block.question{background:#f0f9ff;border-left:3px solid #38bdf8;color:#0c4a6e}
+.info-block.summary{background:#fafafa;border:1px solid #e2e8f0;color:#334155}
+.info-block-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
   color:#94a3b8;margin-bottom:5px}
-.c-block-body{font-size:.86rem;color:#1e293b;line-height:1.75}
-details.body-wrap summary{cursor:pointer;color:#6b7280;font-size:.78rem;padding:3px 0;user-select:none}
-details.body-wrap summary:hover{color:#374151}
-.body-text{margin-top:6px;padding:10px;background:white;border-radius:6px;
-  border:1px solid #e5e7eb;font-size:.81rem;color:#374151;line-height:1.6;white-space:pre-wrap}
-.post-actions{display:flex;gap:8px;padding:0 20px 12px;justify-content:flex-end}
-.btn-sm{padding:5px 12px;font-size:.76rem;border-radius:6px;border:1px solid #e2e8f0;
-  background:white;cursor:pointer;color:#64748b;transition:all .15s}
-.btn-sm:hover{border-color:#94a3b8;color:#374151}
-.btn-sm.danger:hover{border-color:#ef4444;color:#ef4444}
-.btn-sm.mark-read{border-color:#3b82f6;color:#3b82f6}
+.comments-section{margin-top:16px}
+.sec-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;
+  color:#94a3b8;margin:12px 0 8px}
+/* comment row */
+.comment-row{padding:10px 12px;border-radius:7px;margin-bottom:8px;background:#f8fafc;border:1px solid #e9ecef}
+.comment-row.highlight-row{background:#fffbeb;border-color:#fcd34d}
+.comment-row.unanalyzed{background:#f5f3ff;border-color:#ddd6fe;opacity:.8}
+.cr-header{display:flex;align-items:center;gap:7px;margin-bottom:6px;flex-wrap:wrap}
+.cr-author{font-weight:600;color:#1e40af;font-size:.85rem}
+.cr-score{color:#ef4444;font-size:.78rem;font-weight:600}
+.cr-hl{background:#fbbf24;color:white;font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:9px}
+.cr-new{background:#ef4444;color:white;font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:9px}
+.cr-pending{background:#8b5cf6;color:white;font-size:.65rem;padding:2px 6px;border-radius:9px}
+.cr-date{color:#94a3b8;font-size:.72rem;margin-left:auto}
+.cr-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.tag{padding:2px 6px;border-radius:9px;font-size:.68rem;font-weight:500}
+.cr-bullet{font-size:.86rem;color:#374151;line-height:1.6}
+.cr-block{padding:9px 11px;border-radius:6px;margin:6px 0}
+.cr-block.trans{background:white;border:1px solid #e2e8f0}
+.cr-block.summ{background:white;border:1px solid #e2e8f0}
+.cr-block.take{background:#f0fdf4;border:1px solid #bbf7d0}
+.cr-block-label{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#94a3b8;margin-bottom:4px}
+.cr-block.take .cr-block-label{color:#16a34a}
+.cr-block-body{font-size:.84rem;line-height:1.7;color:#1e293b}
+/* new comment row design */
+.comment-row.new-row{border-left:3px solid #ef4444}
+.cr-body{font-size:.84rem;color:#1e293b;line-height:1.65;white-space:pre-wrap;
+  padding:6px 0;border-bottom:1px solid #f0f0f0;margin-bottom:6px}
+.cr-trans{font-size:.84rem;color:#374151;line-height:1.65;padding:6px 8px;
+  background:#f8f9fa;border-radius:5px;margin-bottom:6px}
+.cr-trans-label{color:#0ea5e9;margin-right:4px;font-size:.8rem}
+/* analysis collapsible */
+.cr-analysis-wrap{margin-top:4px}
+.cr-analysis-toggle{cursor:pointer;font-size:.78rem;font-weight:600;color:#6366f1;
+  list-style:none;padding:3px 0;user-select:none}
+.cr-analysis-toggle::-webkit-details-marker{display:none}
+.cr-analysis-toggle:hover{color:#4f46e5}
+.highlight-row .cr-analysis-toggle{color:#d97706}
+.cr-analysis-body{margin-top:8px;padding:10px 12px;background:white;border-radius:6px;
+  border:1px solid #e2e8f0}
+.highlight-row .cr-analysis-body{background:#fffbeb;border-color:#fcd34d}
+
+/* pending section */
+.pending-section{background:#fffbeb;border:1px solid #fcd34d;border-radius:9px;
+  padding:14px 18px;margin-bottom:18px;grid-column:1/-1}
+.pending-section h3{font-size:.82rem;color:#d97706;font-weight:600;margin-bottom:8px}
+.pending-item{font-size:.8rem;color:#92400e;padding:3px 0}
 
 /* loading */
 .loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);
   display:none;align-items:center;justify-content:center;z-index:100}
-.loading-box{background:white;border-radius:12px;padding:32px 40px;text-align:center;min-width:280px}
-.spinner{width:36px;height:36px;border:3px solid #e2e8f0;border-top-color:#3b82f6;
-  border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px}
+.loading-box{background:white;border-radius:11px;padding:28px 36px;text-align:center;min-width:260px}
+.spinner{width:34px;height:34px;border:3px solid #e2e8f0;border-top-color:#3b82f6;
+  border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{color:#374151;font-size:.95rem;font-weight:600}
-.loading-sub{color:#94a3b8;font-size:.78rem;margin-top:6px}
+.loading-text{color:#374151;font-size:.92rem;font-weight:600}
+.loading-sub{color:#94a3b8;font-size:.76rem;margin-top:5px}
 </style>
 </head>
 <body>
@@ -148,43 +160,34 @@ details.body-wrap summary:hover{color:#374151}
   <h1>🧠 Reddit Research <span>Tracker</span></h1>
   <div class="add-form">
     <input id="urlInput" type="text" placeholder="粘贴 Reddit 帖子 URL…"/>
-    <button class="btn btn-primary" onclick="addUrl()">＋ 添加追踪</button>
+    <button class="btn btn-primary" onclick="addUrl()">＋ 添加</button>
   </div>
   <div class="header-actions">
     <button class="btn btn-import" onclick="importData()">📥 导入 raw_comments</button>
-    <button class="btn btn-md" onclick="importMarkdown()" style="background:#0d9488;color:white">📓 从研究笔记导入</button>
+    <button class="btn btn-md" onclick="importMarkdown()">📓 研究笔记导入</button>
     <div class="divider"></div>
+    <button class="btn btn-summarize" onclick="summarizePosts()">📊 生成帖子总结</button>
     <button class="btn btn-analyze" id="btnAnalyze" onclick="analyzeAll()">
-      🤖 LLM 分析剩余
+      🤖 逐条分析
       <span class="badge" id="unanalyzedBadge" style="display:none">0</span>
     </button>
-    <button class="btn btn-summarize" onclick="summarizePosts()">📊 生成帖子总结</button>
-    <a class="btn" id="btnExport" href="/api/export/html?category=all" download style="background:#475569;color:white;text-decoration:none">📄 导出当前分类</a>
+    <div class="divider"></div>
+    <button class="btn" id="btnReset" onclick="resetAnalysis()" style="background:#dc2626;color:white;display:none">🔄 重置分析</button>
+    <a class="btn btn-export" id="btnExport" href="/api/export/html?category=all" download>📄 导出全部</a>
     <span class="toast" id="toast"></span>
   </div>
 </div>
 
-<!-- tabs -->
 <div class="tabs-bar">
-  <div class="tab active" onclick="switchTab('all')" id="tab-all">
-    全部 <span class="cnt" id="cnt-all">0</span>
-  </div>
-  <div class="tab" onclick="switchTab('memory')" id="tab-memory">
-    🧠 Memory <span class="cnt" id="cnt-memory">0</span>
-  </div>
-  <div class="tab" onclick="switchTab('knowledge_base')" id="tab-knowledge_base">
-    📚 Knowledge Base <span class="cnt" id="cnt-knowledge_base">0</span>
-  </div>
-  <div class="tab" onclick="switchTab('skills')" id="tab-skills">
-    🛠 Skills <span class="cnt" id="cnt-skills">0</span>
-  </div>
+  <div class="tab active" onclick="switchTab('all')" id="tab-all">全部 <span class="cnt" id="cnt-all">0</span></div>
+  <div class="tab" onclick="switchTab('memory')" id="tab-memory">🧠 Memory <span class="cnt" id="cnt-memory">0</span></div>
+  <div class="tab" onclick="switchTab('knowledge_base')" id="tab-knowledge_base">📚 Knowledge Base <span class="cnt" id="cnt-knowledge_base">0</span></div>
+  <div class="tab" onclick="switchTab('skills')" id="tab-skills">🛠 Skills <span class="cnt" id="cnt-skills">0</span></div>
 </div>
 
-<div class="empty-state" id="emptyState" style="display:none">
+<div class="empty-state" id="emptyState">
   <div class="icon">📭</div>
-  <p>还没有数据<br><br>
-  另一台电脑 fetch + git push → 这台 git pull<br>
-  → 「导入 raw_comments」→「LLM 分析」</p>
+  <p>还没有数据<br><br>另一台电脑 fetch + git push → 这台 git pull<br>→ 导入 → 分析</p>
 </div>
 <div class="container" id="container"></div>
 
@@ -197,283 +200,264 @@ details.body-wrap summary:hover{color:#374151}
 </div>
 
 <script>
-const TAG_COLORS={
-  "#用户痛点":"#ef4444","#技术方案":"#3b82f6","#产品反馈":"#8b5cf6",
-  "#使用场景":"#10b981","#哲学思考":"#f59e0b","#隐私安全":"#6366f1",
-  "#跨平台":"#14b8a6","#记忆管理":"#ec4899","#个性化":"#84cc16",
-  "#工作流":"#f97316","#反对意见":"#dc2626","#类比参考":"#0ea5e9",
-};
+const TAG_COLORS={"#用户痛点":"#ef4444","#技术方案":"#3b82f6","#产品反馈":"#8b5cf6","#使用场景":"#10b981","#哲学思考":"#f59e0b","#隐私安全":"#6366f1","#跨平台":"#14b8a6","#记忆管理":"#ec4899","#个性化":"#84cc16","#工作流":"#f97316","#反对意见":"#dc2626","#类比参考":"#0ea5e9"};
 const CAT_LABELS={"memory":"🧠 Memory","knowledge_base":"📚 Knowledge Base","skills":"🛠 Skills"};
 const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-const stars=q=>"★".repeat(q)+"☆".repeat(5-q);
 const tsDate=ts=>ts?new Date(ts*1000).toISOString().slice(0,10):"";
-const tagHtml=tags=>(tags||[]).map(t=>{
-  const c=TAG_COLORS[t]||"#6b7280";
-  return `<span class="tag" style="background:${c}20;color:${c};border:1px solid ${c}40">${t}</span>`;
-}).join("");
+const stars=q=>"★".repeat(q)+"☆".repeat(5-q);
+const rich=t=>esc(t||"").replace(/\n/g,"<br>");
+const tagHtml=tags=>(tags||[]).map(t=>{const c=TAG_COLORS[t]||"#6b7280";return`<span class="tag" style="background:${c}20;color:${c};border:1px solid ${c}40">${t}</span>`;}).join("");
 
-let currentTab="all";
-let allPosts=[];
+let currentTab="all", allPosts=[], expandedId=null;
 
-function switchTab(tab){
-  currentTab=tab;
-  document.querySelectorAll(".tab").forEach(el=>el.classList.remove("active"));
-  document.getElementById("tab-"+tab).classList.add("active");
-  // 更新导出链接
-  const btn = document.getElementById("btnExport");
-  if(btn){
-    btn.href = `/api/export/html?category=${tab}`;
-    btn.textContent = tab==="all" ? "📄 导出全部" : `📄 导出 ${CAT_LABELS[tab]||tab}`;
-  }
-  renderPosts();
+// ── render compact card ───────────────────────────────────────────
+function renderCard(p){
+  const catOpts=["memory","knowledge_base","skills"].map(c=>`<option value="${c}" ${p.category===c?"selected":""}>${CAT_LABELS[c]}</option>`).join("");
+  const isActive = p.id === expandedId;
+  const cls = ["post-card", isActive?"active":"", p.has_new?"has-new":""].filter(Boolean).join(" ");
+  const preview = p.question_summary
+    ? `<div class="card-question">${esc(p.question_summary)}</div>` : "";
+  return `<div class="${cls}" id="card-${p.id}" onclick="toggleDetail('${p.id}')">
+    <div class="card-meta">
+      <span class="card-sub">r/${esc(p.subreddit)}</span>
+      <span>${tsDate(p.created_utc)}</span>
+      <span>▲ ${p.score||0}</span>
+      ${p.has_new?`<span class="card-new">🔴 +${p.new_count}</span>`:""}
+    </div>
+    <div class="card-title">${esc(p.title)}</div>
+    ${preview}
+    <div class="card-stats">
+      <span>💬 ${(p.comments||[]).length} 条</span>
+      ${p.hl_count?`<span class="stat-hl">⭐ ${p.hl_count}</span>`:""}
+      ${p.has_new?`<span class="stat-new">🆕 ${p.new_count}</span>`:""}
+      ${p.unanalyzed?`<span class="stat-pending">🤖 ${p.unanalyzed} 待分析</span>`:""}
+    </div>
+    <div class="card-actions" onclick="event.stopPropagation()">
+      ${p.unanalyzed?`<button class="btn-batch" onclick="batchAnalyze('${p.id}')">🔄 批量分析</button>`:""}
+      <select class="cat-selector" onchange="setCategory('${p.id}',this.value)">${catOpts}</select>
+    </div>
+  </div>`;
 }
 
-// 把 • 换行文本渲染成 html（支持 bullet points 和普通段落）
-function renderRich(text){
-  if(!text) return "";
-  return esc(text).replace(/\n/g,"<br>");
-}
+// ── render comment row ────────────────────────────────────────────
+function renderCommentRow(c){
+  const a   = c.analysis;
+  const isHl = a?.highlight;
+  const cls  = ["comment-row", isHl?"highlight-row":"", c.is_new?"new-row":""].filter(Boolean).join(" ");
 
-function renderComment(c){
-  const a=c.analysis;
-  if(!c.analyzed||!a){
-    return `<div class="comment-card not-analyzed ${c.is_new?'is-new':''}">
-      <div class="c-header">
-        <span class="c-author">u/${esc(c.author)}</span>
-        <span class="c-score">▲ ${c.score}</span>
-        ${c.is_new?'<span class="c-new">NEW</span>':""}
-        <span class="c-pending">待分析</span>
-        <span class="c-date">${tsDate(c.created_utc)}</span>
+  // 原文 + 翻译（始终可见）
+  const bodySection = `
+    <div class="cr-body">${esc(c.body)}</div>
+    ${a?.translation ? `<div class="cr-trans"><span class="cr-trans-label">🌐</span>${rich(a.translation)}</div>` : ""}`;
+
+  // 分析详情（仅 analyzed 时显示，隐藏在 details 里）
+  const analysisSection = (c.analyzed && a) ? `
+    <details class="cr-analysis-wrap">
+      <summary class="cr-analysis-toggle">${isHl?"⭐ 查看精选分析":"查看分析"} ▾</summary>
+      <div class="cr-analysis-body">
+        ${(a.tags||[]).length ? `<div class="cr-tags">${tagHtml(a.tags)}</div>` : ""}
+        ${a.summary ? `<div class="cr-block summ"><div class="cr-block-label">📝 总结</div><div class="cr-block-body">${rich(a.summary)}</div></div>` : ""}
+        ${a.takeaway ? `<div class="cr-block take"><div class="cr-block-label">💡 Key Takeaway</div><div class="cr-block-body">${rich(a.takeaway)}</div></div>` : ""}
+        ${isHl && a.quality ? `<div style="font-size:.76rem;color:#64748b;margin-top:4px">${stars(a.quality)} ${esc(a.quality_reason||"")}</div>` : ""}
       </div>
-      <details class="body-wrap"><summary>查看英文原文</summary>
-        <div class="body-text">${esc(c.body)}</div></details>
-    </div>`;
-  }
-  const cls=["comment-card",c.is_new?"is-new":"",a.highlight?"is-highlight":""].filter(Boolean).join(" ");
+    </details>` : "";
+
   return `<div class="${cls}">
-    <div class="c-header">
-      <span class="c-author">u/${esc(c.author)}</span>
-      <span class="c-score">▲ ${c.score}</span>
-      ${c.is_new?'<span class="c-new">NEW</span>':""}
-      ${a.highlight?'<span class="c-hl">⭐ 精选</span>':""}
-      <span class="c-stars" title="${a.quality||0}/5">${stars(a.quality||0)}</span>
-      <span class="c-score-txt">${a.quality||0}/5 — ${esc(a.quality_reason||"")}</span>
-      <span class="c-date">${tsDate(c.created_utc)}</span>
+    <div class="cr-header">
+      <span class="cr-author">u/${esc(c.author)}</span>
+      <span class="cr-score">▲ ${c.score}</span>
+      ${c.is_new ? '<span class="cr-new">NEW</span>' : ""}
+      ${isHl ? '<span class="cr-hl">⭐ 精选</span>' : ""}
+      <span class="cr-date">${tsDate(c.created_utc)}</span>
     </div>
-    ${(a.tags||[]).length ? `<div class="c-tags">${tagHtml(a.tags)}</div>` : ""}
-
-    ${a.translation ? `
-    <div class="c-block">
-      <div class="c-block-title">🌐 中文翻译</div>
-      <div class="c-block-body">${renderRich(a.translation)}</div>
-    </div>` : ""}
-
-    ${a.summary ? `
-    <div class="c-block">
-      <div class="c-block-title">📝 评论总结</div>
-      <div class="c-block-body">${renderRich(a.summary)}</div>
-    </div>` : ""}
-
-    ${a.takeaway ? `
-    <div class="c-block c-block-takeaway">
-      <div class="c-block-title">💡 Key Takeaway</div>
-      <div class="c-block-body">${renderRich(a.takeaway)}</div>
-    </div>` : ""}
-
-    <details class="body-wrap">
-      <summary>查看英文原文</summary>
-      <div class="body-text">${esc(c.body)}</div>
-    </details>
+    ${bodySection}
+    ${analysisSection}
   </div>`;
 }
 
-function renderPost(p){
-  const newCs =(p.comments||[]).filter(c=>c.is_new);
-  const hls   =(p.comments||[]).filter(c=>c.analyzed&&c.analysis?.highlight&&!c.is_new);
-  const others=(p.comments||[]).filter(c=>!c.is_new&&!(c.analyzed&&c.analysis?.highlight));
-  let body="";
-  if(!(p.comments||[]).length){body='<p class="no-comments">暂无评论</p>';}
-  else{
-    if(newCs.length){body+=`<div class="section-label">🆕 新增（${newCs.length}）</div>`+newCs.map(renderComment).join("");}
-    if(hls.length){body+=`<div class="section-label">⭐ 精选</div>`+hls.map(renderComment).join("");}
-    if(others.length){body+=`<div class="section-label">全部评论</div>`+others.map(renderComment).join("");}
+// ── render detail panel ───────────────────────────────────────────
+function renderDetail(p){
+  const all = (p.comments||[]);
+  const hls = all.filter(c=>c.analyzed&&c.analysis?.highlight);
+  const rest = all.filter(c=>!(c.analyzed&&c.analysis?.highlight));
+
+  let comments = "";
+  if(hls.length){
+    comments += `<div class="sec-label">⭐ 精选（${hls.length}）</div>` + hls.map(renderCommentRow).join("");
   }
-  const catOpts=["memory","knowledge_base","skills"].map(c=>
-    `<option value="${c}" ${p.category===c?"selected":""}>${CAT_LABELS[c]}</option>`).join("");
-  return `<div class="post-card ${p.has_new?"has-new":""}" id="post-${p.id}">
-    <div class="post-header" onclick="togglePost('${p.id}')">
-      <div class="post-badge">
-        ${p.has_new?`<span class="new-badge">🔴 +${p.new_count}</span>`
-                   :`<span class="sub-badge">r/${p.subreddit}</span>`}
+  if(rest.length){
+    comments += `<div class="sec-label">全部评论（${rest.length}）</div>` + rest.map(renderCommentRow).join("");
+  }
+  if(!all.length) comments = '<p style="color:#94a3b8;font-size:.84rem">暂无评论</p>';
+
+  return `<div class="post-detail-row">
+    <div class="post-detail">
+      <div class="detail-header">
+        <div class="detail-title">${esc(p.title)}</div>
+        <a class="detail-url" href="${p.url}" target="_blank">🔗 ${esc(p.url)}</a>
+        ${p.question_summary ? `<div class="info-block question"><div class="info-block-label">💭 这帖在问什么</div>${rich(esc(p.question_summary))}</div>` : ""}
+        ${p.post_summary ? `<div class="info-block summary"><div class="info-block-label">📋 社区观点总结</div>${rich(esc(p.post_summary))}</div>` : ""}
       </div>
-      <div class="post-info">
-        <div class="post-title">
-          <a href="${p.url}" target="_blank" onclick="event.stopPropagation()">${esc(p.title)}</a>
-        </div>
-        <div class="post-meta">
-          ${p.has_new?`<span>r/${p.subreddit}</span>`:""}
-          <span>${tsDate(p.created_utc)}</span>
-          <span>▲ ${p.score||0}</span>
-          <span>💬 ${(p.comments||[]).length} 条</span>
-          ${p.hl_count?`<span class="hl">⭐ ${p.hl_count} 精选</span>`:""}
-          ${p.has_new?`<span class="newc">🆕 ${p.new_count}</span>`:""}
-          ${p.unanalyzed?`<span class="unanalyzed">🤖 ${p.unanalyzed} 待分析</span>`:""}
-          <select class="cat-selector" onchange="setCategory('${p.id}',this.value)" onclick="event.stopPropagation()">${catOpts}</select>
-        </div>
-      </div>
-      <div class="post-toggle">▼</div>
-    </div>
-    ${p.question_summary ? `
-    <div class="post-question" onclick="togglePost('${p.id}')">
-      <div class="post-question-label">💭 这帖在问什么</div>
-      ${renderRich(esc(p.question_summary))}
-    </div>` : ""}
-    ${p.post_summary ? `
-    <div class="post-overview" onclick="togglePost('${p.id}')">
-      <div class="post-overview-label">📋 社区观点总结</div>
-      ${renderRich(esc(p.post_summary))}
-    </div>` : ""}
-    <div class="comments-body">${body}</div>
-    <div class="post-actions">
-      ${p.has_new?`<button class="btn-sm mark-read" onclick="markRead('${p.id}')">✓ 已读</button>`:""}
-      <button class="btn-sm danger" onclick="deletePost('${p.id}')">🗑 停止追踪</button>
+      <div class="comments-section">${comments}</div>
     </div>
   </div>`;
 }
 
+// ── toggle detail ─────────────────────────────────────────────────
+function toggleDetail(id){
+  expandedId = expandedId===id ? null : id;
+  renderPosts();
+  if(expandedId){
+    setTimeout(()=>{
+      const el=document.getElementById(`card-${id}`);
+      if(el) el.scrollIntoView({behavior:'smooth',block:'nearest'});
+    },50);
+  }
+}
+
+// ── render grid ───────────────────────────────────────────────────
 function renderPosts(){
   const ct = document.getElementById("container");
   const em = document.getElementById("emptyState");
   const visible = currentTab==="all" ? allPosts : allPosts.filter(p=>p.category===currentTab);
-  const hasPending = (allPosts._pending||[]).length > 0;
+  const pending = allPosts._pending||[];
 
-  if(!visible.length && !hasPending){
+  if(!visible.length && !pending.length){
     em.style.display="block"; ct.style.display="none"; return;
   }
   em.style.display="none"; ct.style.display="block";
 
   let html="";
-  // pending section (only on 'all' tab)
-  if(currentTab==="all" && hasPending){
-    html+=`<div class="pending-section"><h3>⏳ 等待抓取</h3>`+
-      allPosts._pending.map(u=>`<div class="pending-item"><span class="pending-dot"></span><a href="${u}" target="_blank">${u}</a></div>`).join("")+
-      `</div>`;
+
+  // pending
+  if(currentTab==="all" && pending.length){
+    html+=`<div class="posts-grid"><div class="pending-section"><h3>⏳ 等待抓取</h3>`+
+      pending.map(u=>`<div class="pending-item">🔗 <a href="${u}" target="_blank">${u}</a></div>`).join("")+
+      `</div></div>`;
   }
+
+  // posts grouped by category
+  const renderGroup = posts => {
+    let g="";
+    for(let i=0;i<posts.length;i+=2){
+      const a=posts[i], b=posts[i+1];
+      g+=renderCard(a);
+      if(b) g+=renderCard(b);
+      // after this row, inject detail if one is expanded
+      if(expandedId===a.id) g+=renderDetail(a);
+      else if(b && expandedId===b.id) g+=renderDetail(b);
+    }
+    return g;
+  };
+
   if(currentTab==="all"){
     ["memory","knowledge_base","skills"].forEach(cat=>{
-      const ps=allPosts.filter(p=>p.category===cat);
+      const ps=visible.filter(p=>p.category===cat);
       if(!ps.length) return;
-      html+=`<div class="category-header">${CAT_LABELS[cat]}</div>`;
-      html+=ps.map(renderPost).join("");
+      html+=`<div class="category-header" style="margin-top:${html?'24px':'0'}">${CAT_LABELS[cat]} <span style="font-weight:400;font-size:.8rem">(${ps.length})</span></div>`;
+      html+=`<div class="posts-grid">${renderGroup(ps)}</div>`;
     });
   } else {
-    html+=visible.map(renderPost).join("");
+    html+=`<div class="posts-grid">${renderGroup(visible)}</div>`;
   }
   ct.innerHTML=html;
 }
 
-function updateCounts(posts){
-  const counts={all:posts.length,memory:0,knowledge_base:0,skills:0};
-  posts.forEach(p=>{ if(counts[p.category]!==undefined) counts[p.category]++; });
-  Object.entries(counts).forEach(([k,v])=>{
-    const el=document.getElementById("cnt-"+k);
-    if(el) el.textContent=v;
-  });
-}
-
 function renderAll({posts, pending_urls, total_unanalyzed}){
-  allPosts = posts || [];
-  allPosts._pending = pending_urls || [];
-  const badge = document.getElementById("unanalyzedBadge");
-  badge.textContent = total_unanalyzed;
-  badge.style.display = total_unanalyzed > 0 ? "inline-block" : "none";
-  updateCounts(allPosts);
+  allPosts = posts||[];
+  allPosts._pending = pending_urls||[];
+  const badge=document.getElementById("unanalyzedBadge");
+  badge.textContent=total_unanalyzed;
+  badge.style.display=total_unanalyzed>0?"inline-block":"none";
+  // counts
+  const cnts={all:allPosts.length,memory:0,knowledge_base:0,skills:0};
+  allPosts.forEach(p=>{if(cnts[p.category]!==undefined)cnts[p.category]++;});
+  Object.entries(cnts).forEach(([k,v])=>{const el=document.getElementById("cnt-"+k);if(el)el.textContent=v;});
   renderPosts();
 }
 
-function togglePost(id){document.getElementById(`post-${id}`).classList.toggle("open")}
-
-async function setCategory(postId, cat){
-  await fetch(`/api/post/${postId}/category`,{method:"PUT",
-    headers:{"Content-Type":"application/json"},body:JSON.stringify({category:cat})});
-  await loadPosts();
-  showToast(`✓ 已移到 ${CAT_LABELS[cat]}`,"info");
+function switchTab(tab){
+  currentTab=tab; expandedId=null;
+  document.querySelectorAll(".tab").forEach(el=>el.classList.remove("active"));
+  document.getElementById("tab-"+tab).classList.add("active");
+  // export button
+  const btnExp=document.getElementById("btnExport");
+  if(btnExp){btnExp.href=`/api/export/html?category=${tab}`;btnExp.textContent=tab==="all"?"📄 导出全部":`📄 导出 ${CAT_LABELS[tab]||tab}`;}
+  // reset button: only show when on a specific category tab (not "all")
+  const btnReset=document.getElementById("btnReset");
+  if(btnReset){
+    btnReset.style.display = tab!=="all" ? "inline-block" : "none";
+    btnReset.textContent = `🔄 重置 ${CAT_LABELS[tab]||tab} 分析`;
+  }
+  renderPosts();
 }
 
-function showLoading(text,sub=""){
-  document.getElementById("loadingText").textContent=text;
-  document.getElementById("loadingSub").textContent=sub;
-  document.getElementById("loadingOverlay").style.display="flex";
-}
-function hideLoading(){document.getElementById("loadingOverlay").style.display="none"}
-function showToast(msg,type="success"){
-  const t=document.getElementById("toast");
-  t.textContent=msg;t.className=`toast show ${type}`;
-  setTimeout(()=>t.className="toast",4000);
-}
+// ── loading / toast ───────────────────────────────────────────────
+function showLoading(text,sub=""){document.getElementById("loadingText").textContent=text;document.getElementById("loadingSub").textContent=sub;document.getElementById("loadingOverlay").style.display="flex";}
+function hideLoading(){document.getElementById("loadingOverlay").style.display="none";}
+function showToast(msg,type="success"){const t=document.getElementById("toast");t.textContent=msg;t.className=`toast show ${type}`;setTimeout(()=>t.className="toast",5000);}
 
-async function loadPosts(){
-  const r=await fetch("/api/posts");
-  renderAll(await r.json());
-}
+// ── API ───────────────────────────────────────────────────────────
+async function loadPosts(){const r=await fetch("/api/posts");renderAll(await r.json());}
+
 async function addUrl(){
-  const input=document.getElementById("urlInput");
-  const url=input.value.trim();if(!url)return;
+  const input=document.getElementById("urlInput");const url=input.value.trim();if(!url)return;
   const r=await fetch("/api/add",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});
-  const d=await r.json();
-  if(d.error){showToast(d.error,"error");return;}
-  input.value="";await loadPosts();
-  showToast("✓ 已加入 posts.txt","info");
-}
-async function importMarkdown(){
-  showLoading("从研究笔记导入分析…","读取 memory_kb_post/*.md，无需调用 LLM");
-  try{
-    const r=await fetch("/api/import/markdown",{method:"POST"});
-    const d=await r.json();
-    if(d.error){showToast(d.error,"error");return;}
-    await loadPosts();
-    showToast(`✓ ${d.message}${d.unanalyzed>0?" — 剩余 "+d.unanalyzed+" 条可用「LLM 分析」补全":""}`);
-  }catch(e){showToast("失败: "+e.message,"error");}
-  finally{hideLoading();}
+  const d=await r.json();if(d.error){showToast(d.error,"error");return;}
+  input.value="";await loadPosts();showToast("✓ 已加入 posts.txt","info");
 }
 
 async function importData(){
-  showLoading("正在导入 raw_comments 到数据库…","快速操作，不调用 LLM");
+  showLoading("导入 raw_comments…","快速操作");
+  try{const r=await fetch("/api/import",{method:"POST"});const d=await r.json();if(d.error){showToast(d.error,"error");return;}await loadPosts();showToast(`✓ ${d.message}`);}
+  catch(e){showToast("失败: "+e.message,"error");}finally{hideLoading();}
+}
+
+async function importMarkdown(){
+  showLoading("从研究笔记导入…","读取 memory_kb_post/*.md");
+  try{const r=await fetch("/api/import/markdown",{method:"POST"});const d=await r.json();if(d.error){showToast(d.error,"error");return;}await loadPosts();showToast(`✓ ${d.message}`);}
+  catch(e){showToast("失败: "+e.message,"error");}finally{hideLoading();}
+}
+
+async function analyzeAll(){
+  showLoading("LLM 逐条分析…","每条评论约 3-5 秒");
+  try{const r=await fetch("/api/analyze",{method:"POST"});const d=await r.json();if(d.error){showToast(d.error,"error");return;}await loadPosts();showToast(`✓ ${d.message}`);}
+  catch(e){showToast("失败: "+e.message,"error");}finally{hideLoading();}
+}
+
+async function resetAnalysis(){
+  if(currentTab==="all") return;
+  const label = CAT_LABELS[currentTab]||currentTab;
+  if(!confirm(`确认重置「${label}」下所有 LLM 生成的分析？研究笔记导入的内容不受影响。`)) return;
+  showLoading(`重置 ${label} 分析中…`,"重置后需要逐个帖子点「批量分析」重新生成");
   try{
-    const r=await fetch("/api/import",{method:"POST"});const d=await r.json();
+    const r=await fetch(`/api/reset/category/${currentTab}`,{method:"POST"});
+    const d=await r.json();
     if(d.error){showToast(d.error,"error");return;}
     await loadPosts();
-    showToast(`✓ ${d.message}${d.unanalyzed>0?" — 点「LLM 分析」处理 "+d.unanalyzed+"条":""}`);
-  }catch(e){showToast("导入失败: "+e.message,"error");}
-  finally{hideLoading();}
-}
-async function analyzeAll(){
-  showLoading("LLM 分析中…","每条评论约 3-5 秒，请耐心等待");
-  try{
-    const r=await fetch("/api/analyze",{method:"POST"});const d=await r.json();
-    if(d.error){showToast(d.error,"error");return;}
-    await loadPosts();showToast(`✓ ${d.message}`);
-  }catch(e){showToast("分析失败: "+e.message,"error");}
-  finally{hideLoading();}
-}
-async function summarizePosts(){
-  showLoading("生成帖子总结…","用 LLM 生成每个帖子的问题概括和社区观点总结");
-  try{
-    const r=await fetch("/api/summarize/posts",{method:"POST"});const d=await r.json();
-    if(d.error){showToast(d.error,"error");return;}
-    await loadPosts();showToast(`✓ ${d.message}`);
+    showToast(`✓ 已重置 ${d.reset} 条评论，可以重新批量分析了`);
   }catch(e){showToast("失败: "+e.message,"error");}
   finally{hideLoading();}
 }
-async function markRead(id){
-  await fetch(`/api/clear-new/${id}`,{method:"POST"});await loadPosts();
-}
-async function deletePost(id){
-  if(!confirm("停止追踪此帖子？")) return;
-  await fetch(`/api/delete/${id}`,{method:"DELETE"});await loadPosts();showToast("已移除");
+
+async function batchAnalyze(postId){
+  showLoading("批量分析帖子…","一次调用分析所有评论");
+  try{const r=await fetch(`/api/analyze/batch/${postId}`,{method:"POST"});const d=await r.json();if(d.error){showToast(d.error,"error");return;}await loadPosts();showToast(`✓ ${d.message}`);}
+  catch(e){showToast("失败: "+e.message,"error");}finally{hideLoading();}
 }
 
-document.getElementById("urlInput").addEventListener("keydown",e=>{if(e.key==="Enter")addUrl()});
+async function summarizePosts(){
+  showLoading("生成帖子总结…");
+  try{const r=await fetch("/api/summarize/posts",{method:"POST"});const d=await r.json();if(d.error){showToast(d.error,"error");return;}await loadPosts();showToast(`✓ ${d.message}`);}
+  catch(e){showToast("失败: "+e.message,"error");}finally{hideLoading();}
+}
+
+async function setCategory(postId,cat){
+  await fetch(`/api/post/${postId}/category`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({category:cat})});
+  await loadPosts();showToast(`✓ 已移到 ${CAT_LABELS[cat]}`,"info");
+}
+
+document.getElementById("urlInput").addEventListener("keydown",e=>{if(e.key==="Enter")addUrl();});
 loadPosts();
 </script>
 </body>
