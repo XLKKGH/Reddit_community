@@ -1,0 +1,41 @@
+{
+  "post": {
+    "id": "1upi481",
+    "title": "The README is always better than the skills. What's your redflag that kills a skill instantly?",
+    "selftext": "I've stopped trusting skills repos. The README is always more impressive than the actual improvement. Half of them are launch-day hype with a polished demo and zero resilience off the happy path. \n\nI've done giving skills the benefit of the doubt. I want a hard checklist of red flags so i can filter faster. \n\nMine: \n\n\\- only shows success cases, never how it fails \n\n\\- \"orchestration framework\" energy for waht should be one api call \n\n\\- i can't read the source and understand it in 5 min \n\nwhat red flag makes you nope out immediately?",
+    "subreddit": "learnAIAgents",
+    "score": 5,
+    "url": "https://www.reddit.com/r/learnAIAgents/comments/1upi481/",
+    "created_utc": 1783391442.0,
+    "num_comments": 3
+  },
+  "comments": [
+    {
+      "id": "ow1b62w",
+      "author": "xaviergoby",
+      "body": "Absououtely",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783405859.0,
+      "replies": []
+    },
+    {
+      "id": "ow1juu6",
+      "author": "techgeek1216",
+      "body": "As a genuine rule of thumb I only use Anthropic vetted skills, I’m very wary of prompt injection or similar attacks",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783410204.0,
+      "replies": []
+    },
+    {
+      "id": "ow32wl3",
+      "author": "Loyd2888",
+      "body": "At this point I basically do all skills myself specific to my repos. Even my own open source skills are built from my needs from my repos. Unless they are embedding a skill into a workflow just make it yourself..",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783432429.0,
+      "replies": []
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "post": {
+    "id": "1uqeyja",
+    "title": "what's on your \"instant uninstall\" checklist for agent skills?",
+    "selftext": "I've noticed I uninstall way more skills than I keep... At this point, i've got a mental checklist - if a skill hits any of these, it's gone same day: \n\n\\- README only shows the happy path, no failures \n\n\\- breaks the moment my data isn;t perfectly clean \n\n\\- i have to relearn how it works every time i use it \n\n\\- adds a whole dependency stack for one tiny job \n\nkinda curious what's on your? what's the single thing that makes you delete a skill on the spot - no second chances? (try to have a reusable kill-criteria list so I stop wasting time wiring skills in before realizing they don't fit )",
+    "subreddit": "claudeskills",
+    "score": 9,
+    "url": "https://www.reddit.com/r/claudeskills/comments/1uqeyja/",
+    "created_utc": 1783475241.0,
+    "num_comments": 2
+  },
+  "comments": [
+    {
+      "id": "owacv46",
+      "author": "ZealousidealCup3992",
+      "body": "Interesting point! really. on my side it was more that I thought I will use it more often and then not really. Or as you stated in third point &gt; I could really adopted some of them.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783517883.0,
+      "replies": []
+    },
+    {
+      "id": "owbjjob",
+      "author": "macbig273",
+      "body": "I almost only use skill I've designed, except a few on the anthropic official marketplace",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783529149.0,
+      "replies": []
+    }
+  ]
+}

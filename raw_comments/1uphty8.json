@@ -1,0 +1,41 @@
+{
+  "post": {
+    "id": "1uphty8",
+    "title": "what's on your \"instant uninstall\" checklist for agent skills?",
+    "selftext": "I've noticed I uninstall way more skills than I keep... At this point, i've got a mental checklist - if a skill hits any of these, it's gone same day: \n\n\\- README only shows the happy path, no failures \n\n\\- breaks the moment my data isn;t perfectly clean \n\n\\- i have to relearn how it works every time i use it \n\n\\- adds a whole dependency stack for one tiny job \n\nkinda curious what's on your? what's the single thing that makes you delete a skill on the spot - no second chances? (try to have a reusable kill-criteria list so I stop wasting time wiring skills in before realizing they don't fit )",
+    "subreddit": "aiagents",
+    "score": 2,
+    "url": "https://www.reddit.com/r/aiagents/comments/1uphty8/",
+    "created_utc": 1783390674.0,
+    "num_comments": 3
+  },
+  "comments": [
+    {
+      "id": "ow2jd7f",
+      "author": "AlwaysAtBallmerPeak",
+      "body": "Takes too much context. Less is more.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783426423.0,
+      "replies": []
+    },
+    {
+      "id": "ow3jykh",
+      "author": "SpeakCodeToMe",
+      "body": "I don't keep any skills. I don't need something clogging up context on every single session. If I find something particularly useful I will set aside either the stack of .md files or a python script and tell the agent where it is and to use it when I want it used.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783437059.0,
+      "replies": []
+    },
+    {
+      "id": "ow8woo8",
+      "author": "AlexHardy08",
+      "body": "To be honest I don't install any skills. When I need something I tell the agent to make one. \n\nPlus my agent has a tool called Prima Materia, which allows him to make any skill, tool, agent, etc. on his own based on the task he is running. \n\nHe has a skill index where before making something new he checks everything that has been created there and they reuse it.",
+      "score": 1,
+      "depth": 0,
+      "created_utc": 1783496923.0,
+      "replies": []
+    }
+  ]
+}
